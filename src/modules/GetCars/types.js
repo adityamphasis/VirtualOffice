@@ -1,0 +1,3 @@
+export const GETCARS_REQUEST = 'GetCars/GETCARS_REQUEST';
+export const GETCARS_SUCCESS = 'GetCars/GETCARS_SUCCESS';
+export const GETCARS_FAILURE = 'GetCars/GETCARS_FAILURE';
