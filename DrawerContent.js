@@ -91,8 +91,8 @@ import { DrawerActions } from 'react-navigation';
            <View style={{width:'100%',height:1,backgroundColor:'gray',marginTop:'10%'}}>
              </View>
 
-        <View style={styles.screenContainer}>
-         <ScrollView style= {{width: '100%', height: '100%',backgroundColor:'white'}}>
+      
+         <View style= {{width: '100%', height: '100%',backgroundColor:'white'}}>
 
 
 
@@ -103,8 +103,7 @@ import { DrawerActions } from 'react-navigation';
  <Text style={styles.tileTitle}> Home </Text>
 </TouchableOpacity>
 
-
-<View style={{width:'100%',height:1,backgroundColor:'gray',marginTop:'5%'}}>
+ <View  style={styles.divider}>
              </View>
 
  <TouchableOpacity style= {styles.tile} onPress={this.navigateToScreen('ProfileScreen')} >
@@ -114,18 +113,17 @@ import { DrawerActions } from 'react-navigation';
  <Text style={styles.tileTitle}> Profile </Text>
 </TouchableOpacity>
 
-<View style={{width:'100%',height:1,backgroundColor:'gray',marginTop:'5%'}}>
+ <View  style={styles.divider}>
              </View>
 
-{/* <TouchableOpacity style= {styles.tile} onPress={this.navigateToScreen('PaymentMethodScreen')}>
+ <TouchableOpacity style= {styles.tile} onPress={this.navigateToScreen('PaymentMethodScreen')}>
 <Image resizeMode="contain" style={styles.tileIcon}
     source = {require('./assets/support.png')}
    />
 <Text style={styles.tileTitle}> Support </Text>
-</TouchableOpacity> */}
-
-{/* <View style={{width:'100%',height:1,backgroundColor:'gray',marginTop:'5%'}}>
-             </View>  */}
+</TouchableOpacity>
+ <View  style={styles.divider}>
+             </View>
 
 
 
@@ -138,21 +136,21 @@ import { DrawerActions } from 'react-navigation';
 
 </TouchableOpacity>
 
-<View style={{width:'100%',height:1,backgroundColor:'gray',marginTop:'5%'}}>
+<View style={styles.divider}>
              </View>
 
 
- {/* <View  style={{height: '100%', overflow: "hidden", width: '100%', backgroundColor: 'transparent'}}>
+ <View  style={styles.bottomView}>
 
 
-                  <Image  resizeMode="cover"  style= {{ position:'absolute', width: '100%', height: '100%'}}
+                  <Image  resizeMode="cover"  style= {styles.bottomImage}
                  source = {require('./assets/mnubgnw.jpg')}
                   />
 
-                     </View> */}
+                     </View>
 
-</ScrollView>
- </View>
+</View>
+
 
 
 
@@ -168,6 +166,7 @@ import { DrawerActions } from 'react-navigation';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:'white'
     },
     headerContainer: {
         height: 150,
@@ -176,8 +175,10 @@ const styles = StyleSheet.create({
         color: '#fff8f8',
     },
     screenContainer: {
+     height:'50%',
         paddingTop: 0,
-        marginBottom: 180
+        backgroundColor:'green'
+      //  marginBottom: 180
 
     },
     screenStyle: {
@@ -190,8 +191,28 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginLeft: 20
     },
+    divider:
+    {
+      width:'100%',
+      height:1,
+      backgroundColor:'gray',
+      //marginTop:'5%'
+    },
+    bottomView:
+    {
+      height: '100%',
+      overflow: "hidden",
+      width: '100%',
+      backgroundColor: 'green'
+    },
+    bottomImage:
+    { 
+      position:'absolute',
+       width: '100%', 
+       height: '30%'
+      },
   tile:{
-   height: '25%',
+   height: '10%',
    width: '100%',
    backgroundColor: 'transparent',
    flexDirection: 'row',
@@ -202,11 +223,11 @@ const styles = StyleSheet.create({
    tileIcon:{
      width: 22,
      height: 22,
-     marginTop: 10,
+    // marginTop: 10,
      marginLeft: 20
    },
    tileTitle:{
-      marginTop: 9,
+     // marginTop: 9,
       fontSize: 17,
 
       color: 'rgb(30,77,155)',

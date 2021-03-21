@@ -127,6 +127,7 @@ export default class Splash extends React.Component  {
 
 
   componentDidMount() {
+    this.getData()
     //this.ShowAlertWithDelay();
    // this.JWTTokenValidation();
 
@@ -210,12 +211,12 @@ export default class Splash extends React.Component  {
         console.error(e)
     }
   }
- componentWillMount(){
-  this.getData()
+//  componentWillMount(){
+//   // this.getData()
 
-  //this.asyncDecrypt('0N8i5mV248eTflXzyhQQqOYYi4PgOa18c1iptmMa99KMELXpNZQKtsJc50T2yqT52XmdUb7Vj/oySQTO2g9wRKlXS/yyDSi/efNT2eYV4wpHBWGWvaXp0Emldg87tItvTJn2cf4mMLYoyxqzeewBheU1nVjwMIcHp3+vNSZuSr4/ajLsSZgM0WPiGessdW4FaTjUwQU9YVtCk/D8PyqtFsYjeCV+gTkkjIel2mUeNFcjYqo/CcR1XHxJrz0i1PP8EP57bcM8CVDgtV5bRixnyqOQjBWxOqGvSJGTl4FXm7X6q4Xx7vsziLGV0UaljoJBhy4QeCJWyAu41iS/47H7nMnOITurYiqKG5zcJxfI2KYAXR0UQ7Ylvq7heUWufbPig1yWRCNjjyBBA2DEi+W9lRHtyI8OlLac8sNo3n1xS2JSS2uPNBG0CQX+gRsCB53eUQu73LCcYPeAk0BgsgW8P8ZUS2NyD40baYXsfiuL5o92TagQ02kQeIlZkH1jS7o+mtcLMRsZaPITBkbraYq/6h+ZDjbxnq3xItXmBQw+e3kNulcjqOmuoY7N06D22ZP3/1rkLYBxdCBiHPAdfwQZ0B0b9hy3B98+LPndTu2NYrgKWrs3VhLrguGM/Wng7AwS/lJKcKIvXBIsQRfw/4uI4QMbufffehBTMi4mlGpfB3c=','e675f725e675f725','6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a')
+//   //this.asyncDecrypt('0N8i5mV248eTflXzyhQQqOYYi4PgOa18c1iptmMa99KMELXpNZQKtsJc50T2yqT52XmdUb7Vj/oySQTO2g9wRKlXS/yyDSi/efNT2eYV4wpHBWGWvaXp0Emldg87tItvTJn2cf4mMLYoyxqzeewBheU1nVjwMIcHp3+vNSZuSr4/ajLsSZgM0WPiGessdW4FaTjUwQU9YVtCk/D8PyqtFsYjeCV+gTkkjIel2mUeNFcjYqo/CcR1XHxJrz0i1PP8EP57bcM8CVDgtV5bRixnyqOQjBWxOqGvSJGTl4FXm7X6q4Xx7vsziLGV0UaljoJBhy4QeCJWyAu41iS/47H7nMnOITurYiqKG5zcJxfI2KYAXR0UQ7Ylvq7heUWufbPig1yWRCNjjyBBA2DEi+W9lRHtyI8OlLac8sNo3n1xS2JSS2uPNBG0CQX+gRsCB53eUQu73LCcYPeAk0BgsgW8P8ZUS2NyD40baYXsfiuL5o92TagQ02kQeIlZkH1jS7o+mtcLMRsZaPITBkbraYq/6h+ZDjbxnq3xItXmBQw+e3kNulcjqOmuoY7N06D22ZP3/1rkLYBxdCBiHPAdfwQZ0B0b9hy3B98+LPndTu2NYrgKWrs3VhLrguGM/Wng7AwS/lJKcKIvXBIsQRfw/4uI4QMbufffehBTMi4mlGpfB3c=','e675f725e675f725','6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a')
 
-  }
+//   }
 
 //   async  asyncDecrypt(cipher, key, iv) {
 //     try {

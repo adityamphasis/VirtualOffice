@@ -141,11 +141,13 @@ appInstall()
 
   gotoMSell()
   {
-    IntentLauncher.startAppByPackageName('com.enparadigm.bharthiaxa')
+    
+  IntentLauncher.startAppByPackageName('com.enparadigm.bharthiaxa')
   .then((result) => {
     console.log('startAppByPackageName started');
   })
   .catch((error) => console.warn('startAppByPackageName: could not open', error));
+
   }
 
   closePopUp = () =>
@@ -159,6 +161,28 @@ appInstall()
 
 checkAppInstallStatus = () =>
 {
+
+
+  IntentLauncher.isAppInstalled('com.enparadigm.bharthiaxa')
+  .then((result) => {
+    console.log('isAppInstalled yes',result);
+    
+    this.setState({
+      checkinstallstatus:true
+    })
+  })
+  .catch((error) => 
+  {
+    console.log("gdfsdvfgfvfhg",error);
+    this.setState({
+      checkinstallstatus:false
+    })
+  }
+ 
+ );
+  
+
+
   // To check by app name:
 // AppInstalledChecker
 // .isAppInstalled('M-Sell')
@@ -173,21 +197,21 @@ checkAppInstallStatus = () =>
 // });
 
 //To check using URL (works on iOS and Android):
-AppInstalledChecker
-.checkURLScheme('M-Sell') // omit the :// suffix
-.then((isInstalled) => {
-    // isInstalled is true if the app is installed or false if not
+// AppInstalledChecker
+// .checkURLScheme('M-Sell') // omit the :// suffix
+// .then((isInstalled) => {
+//     // isInstalled is true if the app is installed or false if not
 
-    console.log("App not found",isInstalled);
+//     console.log("App not found",isInstalled);
 
-    alert(isInstalled)
+//     alert(isInstalled)
 
-    this.setState({
-      checkinstallstatus:isInstalled
-    })
+//     this.setState({
+//       checkinstallstatus:isInstalled
+//     })
 
-    //alert('App installed')
-})
+//     //alert('App installed')
+// })
 
 // To check using package name (Android only):
 // AppInstalledChecker
@@ -272,6 +296,8 @@ CheckJWTToken()
     //let decResponse = decryptData("rT/lgzM78o/24AyqFmdOF3/PeVhs6Exj0gXuU6LbWEPyWbe7cbfqZj3YbrmbqV+OQz5deQp4CLj2efcjM/jLyHe2wBSLaS3HVJYT8fj7us/2xOqjJWsDwRwZObUofyUJriGmFXwTtrNolsTW4h4VOWffql3OecJsdELEaSF/I1POKXi2MmEtZKA63glc7MctDg5ApcmpZuKLKKVqxB0YdZ9D6/7/wYDUZJ/MFlLiA23ywwkTdeKnbYeI0kJ0mjFN",'6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a','$!rl@$b!')
     //console.log("vdgfhhg",decResponse);
 
+   // this.checkAppInstallStatus();
+
     var sales = response.data.IsSalesAgent;
     var etoken = response.data.EncodedJWT
     console.log("gafsvfhvb",sales);
@@ -341,7 +367,7 @@ showAlert = () =>
 }
 renderVersionPopup()
 {
- // alert(!this.state.checkinstallstatus)
+  alert(this.state.checkinstallstatus)
   if(this.state.checkinstallstatus === false)
   {
 
@@ -721,7 +747,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     position:'absolute',
-    backgroundColor: 'rgb(234,240,248)',
+    backgroundColor: 'red',
     justifyContent: 'center',
     alignItems:'center',
     //opacity:0.9
@@ -731,7 +757,7 @@ const styles = StyleSheet.create({
 
   overlayView1:{
     //flex: 0.8,
-    top: Platform.OS === 'ios' ? wp('64%') : wp('66%'),
+    top: wp('56%'),
     left: 0,
     right: 0,
     bottom: 0,
@@ -776,7 +802,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     backgroundColor: '#ffffff',
     height:wp('10.66%'),
-    width: '100%'
+    width: '100%',
+    marginTop:'5%',
    },
     tab1BG:{
      backgroundColor: 'transparent',

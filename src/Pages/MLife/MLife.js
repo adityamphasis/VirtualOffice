@@ -119,6 +119,9 @@ showAlert = () =>
         </TouchableOpacity>
         
    </View>
+
+   <ScrollView style={styles.mainContainer}>
+    
   
     <View style={styles.imgcontainer}>
    
@@ -178,8 +181,8 @@ showAlert = () =>
             <Text style={styles.appdppescription}> For reward and recognition </Text>
         </TouchableOpacity>
        
-        
       </View>
+      
 
       <View style={styles.container1}>
     <TouchableOpacity
@@ -194,6 +197,8 @@ showAlert = () =>
         </TouchableOpacity>
         
       </View>
+    
+      </ScrollView>
     
        
     </SafeAreaView>
@@ -224,16 +229,17 @@ const styles = StyleSheet.create({
     },
     elevation:10,
   },
-  overlayView:{
+  mainContainer:{
     flex: 1,
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom:0,
+  //marginBottom:10,
     position:'absolute',
     backgroundColor: 'rgb(234,240,248)',
-    justifyContent: 'center',
-    alignItems:'center',
+   // content: 'center',
+   // alignItems:'center',
     
     
   },
@@ -431,7 +437,6 @@ const styles = StyleSheet.create({
       backgroundColor: 'transparent',
       width:  wp('100%'),
       flex:0.1,
-     
       flexDirection:'row',
       marginStart:10,
       marginEnd:10,
@@ -441,7 +446,7 @@ imgcontainer: {
   backgroundColor: 'transparent',
   width:  wp('100%'),
   flex:0.2,
-  marginTop:30,
+  marginTop:'25%',
   justifyContent: 'center',
   alignItems:'center',
  // flexDirection:'row'
@@ -450,16 +455,17 @@ container1: {
   backgroundColor: 'transparent',
   width:  wp('100%'),
   flex:0.2,
-  marginTop:'20%',
+  marginTop:'15%',
   justifyContent: 'center',
   alignItems:'center',
+  marginBottom:'5%'
  
 },
   container: {
          backgroundColor: 'transparent',
          width:  wp('100%'),
          flex:0.2,
-         marginTop:'20%',
+         marginTop:'15%',
          justifyContent: 'space-between',
          flexDirection:'row'
   },
