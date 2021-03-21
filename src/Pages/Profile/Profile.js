@@ -54,9 +54,9 @@ export default class ProfileScreen extends React.Component  {
 
 }
 
- componentWillMount(){
+//  componentWillMount(){
 
-  }
+//   }
   goBack()
   {
     this.props.navigation.goBack();

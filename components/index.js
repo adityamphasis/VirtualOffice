@@ -1,4 +1,5 @@
 export { default as Button } from './Button';
+export { default as ButtonOutline } from './ButtonOutline';
 export { default as ButtonContainer } from './ButtonContainer';
 export { default as Form } from './Form';
 export { default as FormLabel } from './FormLabel';
