@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
       height: '100%',
       overflow: "hidden",
       width: '100%',
-      backgroundColor: 'green'
+      backgroundColor: 'white'
     },
     bottomImage:
     { 

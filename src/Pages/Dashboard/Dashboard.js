@@ -12,6 +12,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { AppInstalledChecker, CheckPackageInstallation } from 'react-native-check-app-install';
 import AppLink from 'react-native-app-link';
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
+import Clipboard from '@react-native-community/clipboard';
 const {data} = NativeModules;
 
 
@@ -128,7 +129,7 @@ appInstall()
     console.log("sdfbsn",getConfiguration('salesflag'));
     if(getConfiguration('salesflag'))
     {
-      this.props.navigation.navigate('MCustomer',{encToken:this.state.encryptedToken})
+      this.props.navigation.navigate('MCustomer',{encToken:this.state.encryptedToken, screen:'customer'})
     }
     else
       {
@@ -148,6 +149,20 @@ appInstall()
   })
   .catch((error) => console.warn('startAppByPackageName: could not open', error));
 
+  }
+
+  gotoVymo()
+  {
+    IntentLauncher.startAppByPackageName('com.getvymo.android')
+  .then((result) => {
+    console.log('startAppByPackageName started');
+  })
+  .catch((error) => console.warn('startAppByPackageName: could not open', error));
+  }
+
+  copyToClipboard()
+  {
+    Clipboard.setString(getConfiguration('encryptedToken',''))
   }
 
   closePopUp = () =>
@@ -367,7 +382,7 @@ showAlert = () =>
 }
 renderVersionPopup()
 {
-  alert(this.state.checkinstallstatus)
+
   if(this.state.checkinstallstatus === false)
   {
 
@@ -420,12 +435,12 @@ renderVersionPopup()
        <View style={styles.appcontainer1}>
           <TouchableOpacity
              style={styles.appBackground}
-             onPress={() => this.showAlert()}>
+             onPress={() => this.gotoVymo()}>
           <Image resizeMode="contain" style={styles.appIcon}
              source = {require('../../../assets/vymo.png')} />
                <Text style={styles.appName}> VYMO </Text>
           </TouchableOpacity>
-          <Text style={styles.appdppescription}> Manage Leads </Text>
+          <Text style={styles.appdppescription}>Manage Leads</Text>
           </View>
           <View style={styles.appcontainer1}>
           <TouchableOpacity
@@ -435,7 +450,7 @@ renderVersionPopup()
               source = {require('../../../assets/m_shell.png')}/>
                <Text style={styles.appName}> M-Sell </Text>
           </TouchableOpacity>
-          <Text style={styles.appdppescription}> Engage with Customers </Text>
+          <Text style={styles.appdppescription}>Engage with Customers</Text>
           </View>
           </View>
          </View>
@@ -470,7 +485,7 @@ renderVersionPopup()
         <SafeAreaView style={styles.background}>
           <View style={styles.headerView}>
         <TouchableOpacity
-           style={styles.backTouchable}>
+           style={styles.backTouchable} onPress={() => this.copyToClipboard()}>
         <Image resizeMode="contain" style={styles.leftLogo}
             source = {require('../../../assets/logo_rht.png')}/>
         </TouchableOpacity>
@@ -705,13 +720,13 @@ const styles = StyleSheet.create({
   headerTitle:{
    color: 'rgb(30,77,155)',
    fontSize:15,
-
-  },
+   fontFamily:'WorkSans-Regular'
+   },
   headerTitle1:{
     width:'auto',
    color: 'rgb(30,77,155)',
    fontSize:15,
-   fontWeight:'bold'
+   fontFamily:'WorkSans-Bold'
 
   },
   imgprofile:{
@@ -747,17 +762,16 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     position:'absolute',
-    backgroundColor: 'red',
+    backgroundColor: 'rgb(234,240,248)',
     justifyContent: 'center',
     alignItems:'center',
-    //opacity:0.9
+    opacity:0.9
 
 
   },
 
   overlayView1:{
-    //flex: 0.8,
-    top: wp('56%'),
+    top: wp('68%'),
     left: 0,
     right: 0,
     bottom: 0,
@@ -930,7 +944,8 @@ const styles = StyleSheet.create({
       color: 'rgb(30,77,155)',
       fontWeight:'bold',
       fontSize:15,
-      top:5
+      top:5,
+      fontFamily:'WorkSans-Bold'
      },
      installText:{
       color: 'white',
@@ -943,7 +958,7 @@ const styles = StyleSheet.create({
       fontSize:16,
       textAlign:'center',
       top:5,
-
+      fontFamily:'WorkSans-Regular'
      },
      appBackground:{
       width:wp('25%'),
