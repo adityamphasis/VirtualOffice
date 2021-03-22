@@ -29,49 +29,65 @@ const HelloWorld = NativeModules.HelloWorldModule;
 const appArray = [
   {
     icon: require('../../../assets/i-EARN.png'),
-    appName: 'i-Earn',
+    appName: 'MSell',
     isInstalled: false,
     isLatest: false,
     versionCode: 0,
-    lastUpdated: '27/07/2021',
-    androidId: 'com.myntra.android',
-    iosId: '123455'
+    lastUpdated: 1,
+    androidId: 'com.enparadigm.bharthiaxa',
+    bundleId: 'com.enparadigm.bharthiaxa',
+    iosId: 'id1518565564'
+  },
+  {
+    icon: require('../../../assets/i-EARN.png'),
+    appName: 'i-Earn',
+    isInstalled: false,
+    isLatest: false,
+    versionCode: 1,
+    lastUpdated: 1,
+    androidId: 'com.bhartiaxa.mlife',
+    bundleId: 'com.bhartiaxa.mlife',
+    iosId: 'id1550263609'
   }, {
     icon: require('../../../assets/i-WIN.png'),
     appName: 'i-Win',
     versionCode: 0,
     isInstalled: false,
     isLatest: false,
-    lastUpdated: '27/07/2021',
-    androidId: 'com.app.flipkart',
-    iosId: '123455'
+    lastUpdated: 1,
+    androidId: 'com.xoxoday.compass ',
+    bundleId: 'com.xoxoday.compass ',
+    iosId: 'id1504258298'
   }, {
     icon: require('../../../assets/i-LEARN.png'),
     appName: 'i-Learn',
     versionCode: 0,
     isInstalled: false,
     isLatest: false,
-    lastUpdated: '27/07/2021',
-    androidId: 'com.app.flipkart',
-    iosId: '123455'
+    lastUpdated: 1,
+    androidId: 'com.re.bharthiaxa',
+    bundleId: 'com.re.bharthiaxa',
+    iosId: 'id1518565564'
   }, {
     icon: require('../../../assets/i-RECRUIT.png'),
     appName: 'i-Recruit',
     versionCode: 0,
     isInstalled: false,
     isLatest: false,
-    lastUpdated: '27/07/2021',
-    androidId: 'com.app.flipkart',
-    iosId: '123455'
+    lastUpdated: 1,
+    androidId: 'com.re.bharthiaxa',
+    bundleId: 'com.re.bharthiaxa',
+    iosId: 'id1518565564'
   }, {
     icon: require('../../../assets/i-SERVICE.png'),
     appName: 'i-Service',
     versionCode: 0,
     isInstalled: false,
     isLatest: false,
-    lastUpdated: '27/07/2021',
-    androidId: 'com.app.flipkart',
-    iosId: '123455'
+    lastUpdated: 1,
+    androidId: 'com.re.bharthiaxa',
+    bundleId: 'com.re.bharthiaxa',
+    iosId: 'id1518565564'
   }
 ]
 
