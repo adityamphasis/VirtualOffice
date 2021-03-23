@@ -122,8 +122,8 @@ gotoService = () =>
         </TouchableOpacity>
        
         <View style={styles.welcomContainer}>
-        <Text style={styles.headerTitle}> Welcome to</Text>
-        <Text style={styles.headerTitle1}>M-Life</Text>
+        {/* <Text style={styles.headerTitle}> Welcome to</Text> */}
+        {/* <Text style={styles.headerTitle1}>M-Life</Text> */}
         </View>
         <TouchableOpacity
            style={styles.backTouchable}
@@ -227,7 +227,7 @@ gotoService = () =>
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#f5f5f5',
   },
   headerView:{
     flexDirection:'row',
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     bottom:0,
   //marginBottom:10,
     position:'absolute',
-    backgroundColor: 'rgb(234,240,248)',
+    backgroundColor: '#f5f5f5',
    // content: 'center',
    // alignItems:'center',
     

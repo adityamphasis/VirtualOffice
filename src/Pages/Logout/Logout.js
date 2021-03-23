@@ -12,7 +12,8 @@ import {
   ScrollView,
   Keyboard,
   Platform,
-  Linking
+  Linking,
+  processColor
 } from 'react-native';
 import { DrawerActions } from 'react-navigation-drawer';
 import { WebView } from 'react-native-webview';
@@ -23,7 +24,7 @@ import {
 // import { CachedImage } from 'react-native-cached-image';
 import { getConfiguration , setConfiguration} from '../../utils/configuration';
 import { authorize, refresh, revoke, prefetchConfiguration } from 'react-native-app-auth';
-
+var Browser = require('react-native-browser');
 // const config = {
 //   issuer: 'https://accounts.bharti-axalife.com/oidc/logout?' + "id_token_hint=" + getConfiguration('token'),
 //   //clientId: 'Bj4ppdGozkaf4fOTeYameOExlfIa',
@@ -52,9 +53,23 @@ export default class LogoutScreen extends React.Component {
 
   componentDidMount()
   {
-    console.log("gvzhxbvxn",config);
-    //let url = 'https://accounts.bharti-axalife.com/oidc/logout?' + "id_token_hint=" + this.state.accessToken + "&post_logout_redirect_uri" + "com.bhartiaxa.virtualoffice://oauth"
-   // Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+   // console.log("gvzhxbvxn",config);
+    let url = 'https://accounts.bharti-axalife.com/oidc/logout?' + "id_token_hint=" + this.state.accessToken + "&post_logout_redirect_uri" + "com.bhartiaxa.virtualoffice://oauth"
+
+
+    // Browser.open(url, {
+    //                 showUrlWhileLoading: false,
+    //                 loadingBarTintColor: processColor('#d64bbd'),
+    //                 navigationButtonsHidden: false,
+    //                 showActionButton: true,
+    //                 showDoneButton: true,
+    //                 doneButtonTitle: 'Done',
+    //                 showPageTitles: true,
+    //                 disableContextualPopupMenu: false,
+    //                 hideWebViewBoundaries: false,
+    //                 buttonTintColor: processColor('#d64bbd')
+    //               });
+    Linking.openURL(url).catch((err) => console.error('An error occurred', err));
     // if (Platform.OS === 'ios')
     // {
     //   this.setState({

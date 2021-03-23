@@ -185,8 +185,8 @@ getAgentProfile = () =>
             source = {require('../../../assets/logo_rht.png')}/>
         </TouchableOpacity>
         <View style={styles.welcomContainer}>
-        <Text style={styles.headerTitle}> Welcome to</Text>
-        <Text style={styles.headerTitle1}> i-service</Text>
+        {/* <Text style={styles.headerTitle}> Welcome to</Text> */}
+        {/* <Text style={styles.headerTitle1}> i-service</Text> */}
         </View>
         <TouchableOpacity
            style={styles.backTouchable}
@@ -426,7 +426,7 @@ getAgentProfile = () =>
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#f5f5f5',
   },
   headerView:{
     flexDirection:'row',

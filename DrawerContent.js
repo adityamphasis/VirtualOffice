@@ -61,11 +61,11 @@ class DrawerContent extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={{ height: 180, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ height: 180, backgroundColor: '#d3d3d3', alignItems: 'center', justifyContent: 'center' }}>
 
           <View style={{ height: 'auto', overflow: "hidden", width: '100%', marginTop: '20%', backgroundColor: 'transparent', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 
-            <View style={{ height: 70, overflow: "hidden", width: 70, borderWidth: 2, borderColor: 'white', borderRadius: 35, backgroundColor: 'transparent' }}>
+            <View style={{ height: 70, overflow: "hidden", width: 70, borderWidth: 2, borderColor: 'transparent', borderRadius: 35, backgroundColor: 'transparent' }}>
 
 
               <Image resizeMode="cover" style={{ position: 'absolute', width: '100%', height: '100%' }}
@@ -94,7 +94,7 @@ class DrawerContent extends Component {
         </View>
 
 
-        <View style={{ width: '100%', height: '100%', backgroundColor: 'white' }}>
+        <View style={{ width: '100%', height: '100%', backgroundColor: '#d3d3d3' }}>
 
 
 
@@ -168,7 +168,7 @@ class DrawerContent extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: '#d3d3d3'
   },
   headerContainer: {
     height: 150,
@@ -205,13 +205,16 @@ const styles = StyleSheet.create({
     height: '100%',
     overflow: "hidden",
     width: '100%',
-    backgroundColor: 'white'
+    backgroundColor: 'transparent',
+    bottom:0,
+  
   },
   bottomImage:
   {
     position: 'absolute',
     width: '100%',
-    height: '30%'
+    height: '30%',
+   
   },
   tile: {
     height: '10%',
