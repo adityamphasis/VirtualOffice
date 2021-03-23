@@ -6,27 +6,26 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
-import Navigation  from './Navigation';
-import {API_ROOT} from './env';
+import React, { Component } from 'react';
+import { Platform, StyleSheet, Text, View, Alert } from 'react-native';
+import Navigation from './Navigation';
+import { API_ROOT } from './env';
 import configureStore from './src/redux/store';
 import { Provider } from 'react-redux';
-import {setConfiguration} from './src/utils/configuration';
+import { setConfiguration } from './src/utils/configuration';
 type Props = {};
 
 
 export default class App extends Component<Props> {
 
 
-componentDidMount() {
-  setConfiguration('API_ROOT', API_ROOT);
+  componentDidMount() {
+    setConfiguration('API_ROOT', API_ROOT);
   }
 
   componentWillUnmount() {
- 
-}
 
+  }
 
 
   render() {
@@ -34,11 +33,9 @@ componentDidMount() {
     return (
       <View style={styles.container}>
 
-     
-<Provider store = { store }>
-      <Navigation />
-</Provider>
-
+        <Provider store={store}>
+          <Navigation />
+        </Provider>
 
       </View>
     );

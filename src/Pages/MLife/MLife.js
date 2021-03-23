@@ -41,9 +41,9 @@ export default class MLife extends React.Component  {
    
 }
 
- componentWillMount(){
+//  componentWillMount(){
  
-  }
+//   }
 
   openDrawerClick() {
     this.props.navigation.navigate('SideMenu');
