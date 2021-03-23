@@ -11,7 +11,8 @@ import {
   SafeAreaView,
   ScrollView,
   Keyboard,
-  Platform
+  Platform,
+  processColor
 } from 'react-native';
 import { DrawerActions } from 'react-navigation-drawer';
 import { WebView } from 'react-native-webview';
@@ -21,7 +22,7 @@ import {
 } from 'react-native-responsive-screen';
 // import { CachedImage } from 'react-native-cached-image';
 import { getConfiguration , setConfiguration} from '../../utils/configuration';
-
+var Browser = require('react-native-browser');
 
 // const htmlContent = '<body onload="document.createElement("form").submit.call(document.getElementById("myForm"))">' +
 // '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
