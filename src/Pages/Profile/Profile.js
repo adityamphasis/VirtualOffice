@@ -13,11 +13,16 @@ import axios from 'react-native-axios';
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { encryptData, decryptData } from '../../utils/AES';
 
+import { Loader } from '../../../components';
+
 
 export default class ProfileScreen extends React.Component {
+
+
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       clickOnApp: false,
       Channnel: 'DSF',
       bcode: '9953',
@@ -65,6 +70,8 @@ export default class ProfileScreen extends React.Component {
 
   getEmployeeProfile = async () => {
 
+    this.setState({ isLoading: true });
+
     let url = "https://online.bharti-axalife.com/MiscServices/DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted"
 
     const params = {
@@ -97,7 +104,9 @@ export default class ProfileScreen extends React.Component {
   }
 
 
-  getAgentProfile = () => {
+  getAgentProfile = async () => {
+
+    this.setState({ isLoading: true });
 
     let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails"
 
@@ -133,6 +142,8 @@ export default class ProfileScreen extends React.Component {
 
     const result = await decryptData(data.response);
 
+    this.setState({ isLoading: true });
+
     console.log('agent profile result => ', result);
 
   }
@@ -140,6 +151,8 @@ export default class ProfileScreen extends React.Component {
   parseEmployeeApiData = async (data) => {
 
     const result = await decryptData(data.response);
+
+    this.setState({ isLoading: true });
 
     console.log('employee profile result => ', result);
 
