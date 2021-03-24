@@ -182,6 +182,8 @@ export default class ProfileScreen extends React.Component {
           </TouchableOpacity>
         </View>
 
+        <Loader visible={this.state.isLoading}/>
+
         <ScrollView style={{ backgroundColor: 'transparent' }}>
 
           <View style={styles.imgcontainer}>
@@ -403,8 +405,6 @@ export default class ProfileScreen extends React.Component {
 
 
         </ScrollView>
-
-
 
       </View>
 
