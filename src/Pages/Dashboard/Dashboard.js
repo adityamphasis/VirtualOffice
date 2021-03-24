@@ -38,7 +38,7 @@ const appArray = [
     lastUpdated: 1,
     androidId: 'com.enparadigm.bharthiaxa',
     bundleId: 'com.enparadigm.bharthiaxa',
-    iosId: 'id1518565564'
+    iosId: 'm-sell/id1518565564'
   },
   {
     icon: require('../../../assets/i-EARN.png'),
@@ -73,16 +73,6 @@ const appArray = [
   }, {
     icon: require('../../../assets/i-RECRUIT.png'),
     appName: 'i-Recruit',
-    versionCode: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    androidId: 'com.re.bharthiaxa',
-    bundleId: 'com.re.bharthiaxa',
-    iosId: 'id1518565564'
-  }, {
-    icon: require('../../../assets/i-SERVICE.png'),
-    appName: 'i-Service',
     versionCode: 0,
     isInstalled: false,
     isLatest: false,
@@ -234,6 +224,7 @@ export default class Dashboard extends React.Component {
 
     this.props.navigation.navigate('MLife')
   }
+
   gotomcustomer = () => {
     console.log("sdfbsn", getConfiguration('salesflag'));
     if (getConfiguration('salesflag')) {
@@ -245,16 +236,16 @@ export default class Dashboard extends React.Component {
   }
 
 
-  gotomcustomer = () => {
-    console.log("sdfbsn", getConfiguration('salesflag'));
-    if (getConfiguration('salesflag')) {
-      this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken })
-    }
-    else {
-      alert('Available only for Agents')
-    }
+  // gotomcustomer = () => {
+  //   console.log("sdfbsn", getConfiguration('salesflag'));
+  //   if (getConfiguration('salesflag')) {
+  //     this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken })
+  //   }
+  //   else {
+  //     alert('Available only for Agents')
+  //   }
 
-  }
+  // }
 
   gotoVymo() {
     IntentLauncher.startAppByPackageName('com.getvymo.android')
@@ -511,17 +502,26 @@ export default class Dashboard extends React.Component {
 
   }
 
-
   closeVersionPopup = () => {
     this.setState({ showVersionPopup: false });
+  }
+
+  onInstallUpdatePress = (item) => {
+
+    if (Platform.OS == 'android') {
+      Linking.openURL("http://play.google.com/store/apps/details?id=" + item.androidId);
+    } else {
+      Linking.openURL("https://apps.apple.com/us/app/" + item.iosId);
+    }
+
   }
 
   renderItem = ({ item }) => {
 
     return (
       <View style={{
-        backgroundColor: 'rgba(30,77,155,0.06)',
-        borderColor: 'grey',
+        backgroundColor: 'white',
+        borderColor: 'green',
         borderRadius: 10,
         elevation: 1,
         margin: 10,
@@ -538,8 +538,8 @@ export default class Dashboard extends React.Component {
         </View>
         <View style={{ width: 1, backgroundColor: 'grey', height: '90%' }} />
         <View style={{ flex: 4, alignItems: 'center', paddingLeft: 30, paddingRight: 30 }}>
-          {!item.isInstalled && <ButtonOutline textColor='rgb(30,77,155)' borderColor='green' title='Install' />}
-          {item.isInstalled && !item.isLatest && <ButtonOutline textColor='rgb(30,77,155)' borderColor='yellow' title='Update' />}
+          {!item.isInstalled && <ButtonOutline onPress={() => this.onInstallUpdatePress(item)} textColor='rgb(30,77,155)' borderColor='green' title='Install' />}
+          {item.isInstalled && !item.isLatest && <ButtonOutline onPress={() => this.onInstallUpdatePress(item)} textColor='rgb(30,77,155)' borderColor='yellow' title='Update' />}
           {item.isInstalled && item.isLatest && <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'rgb(30,77,155)', textAlign: 'center' }}>{'Installed'}</Text>}
           {item.isInstalled && <Text style={{ fontSize: 12, color: 'rgb(30,77,155)', textAlign: 'center' }}>{'Last Updated on ' + item.lastUpdated}</Text>}
         </View>
@@ -928,14 +928,14 @@ const styles = StyleSheet.create({
     padding: 10
   },
   welcomContainer:
-     {
-      width:'30%',
-      height: '100%',
+  {
+    width: '30%',
+    height: '100%',
 
-      marginLeft:'30%',
-      justifyContent:'center',
-      alignItems:'center'
-     },
+    marginLeft: '30%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 
   overlayView1: {
     top: wp('66%'),
@@ -1098,8 +1098,8 @@ const styles = StyleSheet.create({
     marginStart: 10,
     marginEnd: 10,
     borderRadius: 10,
-    borderWidth:1,
-    borderColor:'#a4a4a4'
+    borderWidth: 1,
+    borderColor: '#a4a4a4'
     // shadowColor: "#000000",
     // shadowOpacity: 0.3,
     // shadowRadius: 2,

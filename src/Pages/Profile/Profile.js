@@ -201,7 +201,7 @@ getAgentProfile = () =>
 
 
 
-<ScrollView style={{ backgroundColor:'transparent',marginBottom:10}}>
+<ScrollView style={{ backgroundColor:'transparent'}}>
 
 
   <View style={styles.imgcontainer}>
@@ -406,6 +406,17 @@ getAgentProfile = () =>
 
 
         </View>
+      </View>
+
+      <View style={{backgroundColor: 'transparent',
+    width:  wp('95%'),
+    height:hp('6%'),
+    marginTop:20,
+    flexDirection:'column',
+    marginStart:10,
+    marginEnd:10,
+   }}>
+       
       </View>
 
 

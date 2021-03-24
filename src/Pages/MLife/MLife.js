@@ -187,7 +187,7 @@ gotoService = () =>
         </TouchableOpacity>
         <TouchableOpacity
            style={styles.appBackground}
-           onPress={() => this.gotoWin()}>
+           onPress={() => this.showAlert()}>
              <View style={styles.appiconView}>
                <Image resizeMode="contain" style={styles.appIcon}
             source = {require('../../../assets/i-WIN.png')}/>
