@@ -36,7 +36,6 @@
     "react-native-app-link": "^1.0.0",
     "react-native-axios": "^0.17.1",
     "react-native-browser": "^0.6.2",
-    "react-native-check-app-install": "0.0.5",
     "react-native-crypto": "^2.2.0",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-intent-launcher": "^0.2.1",

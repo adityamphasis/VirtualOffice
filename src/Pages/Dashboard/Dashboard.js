@@ -9,8 +9,6 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
-// import { AppInstalledChecker, CheckPackageInstallation } from 'react-native-check-app-install';
-
 import RNAndroidInstalledApps from 'react-native-android-installed-apps';
 import moment from "moment";
 
@@ -18,15 +16,12 @@ import { DrawerActions } from 'react-navigation-drawer';
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import axios from 'react-native-axios';
 import { Page, Button, ButtonOutline, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
-import { ScrollView } from 'react-native-gesture-handler';
+
 import AppLink from 'react-native-app-link';
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
 import Clipboard from '@react-native-community/clipboard';
-const { data } = NativeModules;
 
-
-
-const HelloWorld = NativeModules.HelloWorldModule;
+import { encryptData, decryptData } from '../../utils/AES';
 
 const appArray = [
   {
@@ -49,7 +44,7 @@ const appArray = [
     lastUpdated: 1,
     androidId: 'com.bhartiaxa.mlife',
     bundleId: 'com.bhartiaxa.mlife',
-    iosId: 'id1550263609'
+    iosId: 'm-life/id1550263609'
   }, {
     icon: require('../../../assets/i-WIN.png'),
     appName: 'i-Win',
@@ -57,9 +52,9 @@ const appArray = [
     isInstalled: false,
     isLatest: false,
     lastUpdated: 1,
-    androidId: 'com.xoxoday.compass ',
-    bundleId: 'com.xoxoday.compass ',
-    iosId: 'id1504258298'
+    androidId: 'com.xoxoday.compass',
+    bundleId: 'com.xoxoday.compass',
+    iosId: 'compass-xoxo/id1504258298'
   }, {
     icon: require('../../../assets/i-LEARN.png'),
     appName: 'i-Learn',
@@ -67,9 +62,9 @@ const appArray = [
     isInstalled: false,
     isLatest: false,
     lastUpdated: 1,
-    androidId: 'com.re.bharthiaxa',
-    bundleId: 'com.re.bharthiaxa',
-    iosId: 'id1518565564'
+    androidId: '',
+    bundleId: '',
+    iosId: ''
   }, {
     icon: require('../../../assets/i-RECRUIT.png'),
     appName: 'i-Recruit',
@@ -77,9 +72,9 @@ const appArray = [
     isInstalled: false,
     isLatest: false,
     lastUpdated: 1,
-    androidId: 'com.re.bharthiaxa',
-    bundleId: 'com.re.bharthiaxa',
-    iosId: 'id1518565564'
+    androidId: '',
+    bundleId: '',
+    iosId: ''
   }
 ]
 
@@ -102,47 +97,6 @@ export default class Dashboard extends React.Component {
   }
 
 
-  // componentDidMount() {
-
-  //this.appInstall()
-  //BackHandler.addEventListener("hardwareBackPress", this.handleBackPress); 
-
-  //  IntentLauncher.isAppInstalled('com.enparadigm.bharthiaxa')
-  // .then((result) => {
-  //   console.log('isAppInstalled yes',result);
-  // })
-  // .catch((error) => console.warn('isAppInstalled: no', error));
-
-
-  //this.saveData()
-
-  // }
-
-  // saveData()
-  // {
-  //   data.getTorchStatus((error, isOn) => {
-  //     this.setState({isOn: isOn});
-  //   });
-  // }
-
-
-  // handleBackButton = () => {
-  //   Alert.alert(
-  //       'Exit App',
-  //       'Exiting the application?', [{
-  //           text: 'Cancel',
-  //           onPress = () => console.log('Cancel Pressed'),
-  //           style: 'cancel'
-  //       }, {
-  //           text: 'OK',
-  //           onPress = () => BackHandler.exitApp()
-  //       }, ], {
-  //           cancelable: false
-  //       }
-  //    )
-  //    return true;
-  //  } 
-
   appInstall() {
     AppLink.openInStore({ appName: "M-Sell", appStoreId: '529379082', appStoreLocale: 'us', playStoreId: 'id=com.enparadigm.bharthiaxa' }).then((datares) => {
       // do stuff
@@ -159,6 +113,7 @@ export default class Dashboard extends React.Component {
   componentDidMount() {
     this.CheckJWTToken();
     this.getInstalledAppData();
+    this.versionControlService();
   }
 
   componentWillUnmount() {
@@ -175,8 +130,6 @@ export default class Dashboard extends React.Component {
     appArray.map(app => {
       console.log(JSON.stringify(app.androidId));
       let index = this.installedApps.findIndex(x => x.packageName === app.androidId);
-
-      console.log('findApp index', JSON.stringify(index));
 
       if (index != -1) {
         app.isInstalled = true;
@@ -198,10 +151,7 @@ export default class Dashboard extends React.Component {
       const apps = await RNAndroidInstalledApps.getNonSystemApps();
       if (apps)
         this.installedApps = apps;
-      console.log('apps', JSON.stringify(this.installedApps));
-
       this.getAppsData();
-
     } catch (e) {
       console.log('apps Error', JSON.stringify(e));
       this.getAppsData();
@@ -221,7 +171,6 @@ export default class Dashboard extends React.Component {
 
   gotomlife = () => {
     //this.logout()
-
     this.props.navigation.navigate('MLife')
   }
 
@@ -234,18 +183,6 @@ export default class Dashboard extends React.Component {
       alert('Available only for Agents')
     }
   }
-
-
-  // gotomcustomer = () => {
-  //   console.log("sdfbsn", getConfiguration('salesflag'));
-  //   if (getConfiguration('salesflag')) {
-  //     this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken })
-  //   }
-  //   else {
-  //     alert('Available only for Agents')
-  //   }
-
-  // }
 
   gotoVymo() {
     IntentLauncher.startAppByPackageName('com.getvymo.android')
@@ -303,45 +240,6 @@ export default class Dashboard extends React.Component {
       );
   }
 
-
-  // To check by app name:
-  // AppInstalledChecker
-  // .isAppInstalled('M-Sell')
-  // .then((isInstalled) => {
-  //     // isInstalled is true if the app is installed or false if not
-  //     alert(isInstalled)
-
-  //     this.setState({
-  //       checkinstallstatus:isInstalled
-  //     })
-
-  // });
-
-  //To check using URL (works on iOS and Android):
-  // AppInstalledChecker
-  // .checkURLScheme('M-Sell') // omit the :// suffix
-  // .then((isInstalled) => {
-  //     // isInstalled is true if the app is installed or false if not
-
-  //     console.log("App not found",isInstalled);
-
-  //     alert(isInstalled)
-
-  //     this.setState({
-  //       checkinstallstatus:isInstalled
-  //     })
-
-  //     //alert('App installed')
-  // })
-
-  // To check using package name (Android only):
-  // AppInstalledChecker
-  // .isAppInstalledAndroid('com.enparadigm.bharthiaxa')
-  // .then((isInstalled) => {
-  //     // isInstalled is true if the app is installed or false if not
-
-  // });
-
   installApp = () => {
     // https://play.google.com/store/apps/details?id=com.enparadigm.bharthiaxa&hl=en&gl=US
     Linking.openURL("market://details?id=com.enparadigm.bharthiaxa&hl=en&gl=US");
@@ -362,9 +260,7 @@ export default class Dashboard extends React.Component {
 
     axios.get(finalurl, {
       "headers": {
-
         "content-type": "application/json",
-
       },
     })
       .then(function (response) {
@@ -392,15 +288,6 @@ export default class Dashboard extends React.Component {
       "PartnerKey": "JWT12SER02"
     };
 
-    // let encParams = {
-
-    //   "request":"LwxtRjw9brRKKRgOiXyKUgCZj7a6NEchDOVtTrtDsRjdEM84sxK6/zWMymmwKKiiD8URnPsH9SIHQ1Sl9gFCUhMKu8EJdGUt6U92oFGNrzmFSGVgajvu4OqrF8SBCWWJGj56hIrrleHgtQjZf3VqJ7/4rt7rUY8/ZGv33ccxV/WwPhN06uyefW+wWUHQ5sKHstZf2mSi+8iS87pYm0KTC02ZbWderNtRvR7Rn73rSxEYh0SoimTLfJ3didD2gY6hAXCunVcGA+d7Q6q+Kd7/LUlnCyP0FGonPc7dFEmYzUO4O4nU+H+2NBZM0c2S8DewbvlY5TGJG1WfO2CIdu5h9wfaUXAhBW0NDKb6hE1C6/gdoTj5bOCtQN92K1TfZkjUveDvAvcK3WNqXa6AnjS2aqgCU14U/YYPADhnI2zGOYeCWPRitEfWXuP3b5gYKNwXacB8aI58vma1Hhy9caLFGJknpf/rQIiePeUWbOGqgV0bAtomj18ks6Wbi3yaCknz/tGbov4izs70bKSftxFi6qnzl880NvEeApr2o3mJ/YnudwQoUpyyLEWwQ+Rbj4A8VLM/WE1LCOQ9dO0z7wN+hk2OYUgASrE7RUSjfuDI62GlRRtf3ny78/0x71oexk6oVgVc8+hRa+YbigjPv1hC3idYAdUBCFGrZ213eX4VAzBz+jXurkyNmYcEQ1wUQTX3QxNyrC+228AcN9cw5u9E4tzo5f1xshTGpskhk3r+KrFopjBKJBxGAILm8CHrhYO7mdDzEBxeSen9OrxBSszAqVfpZ3dDXhdCwKNsoQUooaPyERP8mR4h32feO6JPghG9rTLAO8rkGa64pVq4n5CuP+oMz5USoyZnhuWOFmWA8yE58lGlJwjAUsazPZMRzZh84H0wPrG1mwxEPQXMPBFUHgzhjFhb1w4KPj+xtKMZ9k8/lx9Lv+4bUKmg5FW40btyAMK2WEDNHtMo9rvfZTd0Px7tUJzktF1o6S8qWRwhnLYqeoIvKy+ApMnvNQWC9G7SBjHs2jHd64m4ulMV9h/teKSTkdvfoVD7IEmvQDwleRC4E8E5igXvjN3wuVE5DEzIe+1ciBjYLE4035BGABDwkxMv3IXaKVeGQctKmCi5pH56Y1AGAJE3e7k25dHGtqN2l7pocoDWbDjgMYJhF84xL1BFQ8bot1Gz9yj/yGfJusJfQa9njiuKa2djRE43fofIMsZWfRA9C9LPs2UNz+uIXgZgfVn1ss14KQ0oUz5s/MwS1dTSL0J0aSDlZKdG0IBNPWk2T8+MTBW3A9+LJ5oUIuAIZ0gpm6bn+4x4ezU8naRHzjH6Bt4yon4QBzuXw/sGQkh/L7ayfziSjlqqpgSyybwysX8KtLVARsffQW1WzW8uEK7K2zk+PWbgDt8qDxLv"
-
-
-
-    //   };
-    //console.log("vdgfhhg", decryptData(response.CheckAgentCodeJWTResult,key,salt));
-
     axios.post(url, params, {
       "headers": {
 
@@ -410,10 +297,6 @@ export default class Dashboard extends React.Component {
     })
       .then(function (response) {
         console.log("vdgf42253465656hhg", response.data);
-        //let decResponse = decryptData("rT/lgzM78o/24AyqFmdOF3/PeVhs6Exj0gXuU6LbWEPyWbe7cbfqZj3YbrmbqV+OQz5deQp4CLj2efcjM/jLyHe2wBSLaS3HVJYT8fj7us/2xOqjJWsDwRwZObUofyUJriGmFXwTtrNolsTW4h4VOWffql3OecJsdELEaSF/I1POKXi2MmEtZKA63glc7MctDg5ApcmpZuKLKKVqxB0YdZ9D6/7/wYDUZJ/MFlLiA23ywwkTdeKnbYeI0kJ0mjFN",'6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a','$!rl@$b!')
-        //console.log("vdgfhhg",decResponse);
-
-        // this.checkAppInstallStatus();
 
         var sales = response.data.IsSalesAgent;
         var etoken = response.data.EncodedJWT
@@ -442,37 +325,42 @@ export default class Dashboard extends React.Component {
 
   }
 
-  versionControlService = () => {
+  parseVersionApiData = async (data) => {
+
+    const result = await decryptData(data.response);
+
+    console.log('result => ', result);
+
+  }
+
+  versionControlService = async () => {
 
     let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestService/Service1.svc/GetVersionControlDetails"
 
-    let encParams = {
-      "request": "bIUNut6Ks+Z1mTyaFx9dI+N9nxOrxQPSNsOkASCTDquWxiWumx6e8gKAn7YrNcikIxHS9Z9LEYjMDOxwHivKFw=="
-    };
+    const param = 'bIUNut6Ks+Z1mTyaFx9dI+N9nxOrxQPSNsOkASCTDquWxiWumx6e8gKAn7YrNcikIxHS9Z9LEYjMDOxwHivKFw==';
 
-    //console.log("vdgfhhg", decryptData(response.CheckAgentCodeJWTResult,key,salt));
+    // const param = await encryptData();
+
+    let encParams = {
+      "request": param
+    };
 
     axios.post(url, encParams, {
       "headers": {
-
         "content-type": "application/json",
+      }
+    }).then(response => {
+      // const result =  response.toJson();
+      console.log("version response => ", JSON.stringify(response.data));
 
-      },
-    })
-      .then(function (response) {
-        console.log("vdgf42253465656hhg", response);
-        //let decResponse = decryptData("rT/lgzM78o/24AyqFmdOF3/PeVhs6Exj0gXuU6LbWEPyWbe7cbfqZj3YbrmbqV+OQz5deQp4CLj2efcjM/jLyHe2wBSLaS3HVJYT8fj7us/2xOqjJWsDwRwZObUofyUJriGmFXwTtrNolsTW4h4VOWffql3OecJsdELEaSF/I1POKXi2MmEtZKA63glc7MctDg5ApcmpZuKLKKVqxB0YdZ9D6/7/wYDUZJ/MFlLiA23ywwkTdeKnbYeI0kJ0mjFN",'6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a','$!rl@$b!')
-        //console.log("vdgfhhg",decResponse);
+      this.parseVersionApiData(response.data);
 
-      })
-      .catch(function (error) {
-
-        console.log("cvzgvxbhvb", error);
-
-      });
-
+    }).catch(error => {
+      console.log("version error", JSON.stringify(error));
+    });
 
   }
+
   showAlert = () => {
     alert('Comming Soon')
   }
@@ -509,8 +397,20 @@ export default class Dashboard extends React.Component {
   onInstallUpdatePress = (item) => {
 
     if (Platform.OS == 'android') {
+
+      if (item.androidId === '') {
+        alert('Application details not available.');
+        return;
+      }
+
       Linking.openURL("http://play.google.com/store/apps/details?id=" + item.androidId);
     } else {
+
+      if (item.bundleId === '') {
+        alert('Application details not available.');
+        return;
+      }
+
       Linking.openURL("https://apps.apple.com/us/app/" + item.iosId);
     }
 
@@ -840,7 +740,6 @@ export default class Dashboard extends React.Component {
   }
 
 }
-
 
 
 const styles = StyleSheet.create({
