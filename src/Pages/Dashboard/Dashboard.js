@@ -34,6 +34,16 @@ const appArray = [
     androidId: 'com.enparadigm.bharthiaxa',
     bundleId: 'com.enparadigm.bharthiaxa',
     iosId: 'm-sell/id1518565564'
+  }, {
+    icon: require('../../../assets/i-EARN.png'),
+    appName: 'B.A.S.E Academy',
+    isInstalled: false,
+    isLatest: false,
+    versionCode: 0,
+    lastUpdated: 1,
+    androidId: 'com.chaptervitamins.bhartiaxa',
+    bundleId: 'com.chaptervitamins.bharthiaxa',
+    iosId: ''
   },
   {
     icon: require('../../../assets/i-EARN.png'),
@@ -112,8 +122,7 @@ export default class Dashboard extends React.Component {
 
   componentDidMount() {
     this.CheckJWTToken();
-    this.getInstalledAppData();
-    this.versionControlService();
+    // this.getInstalledAppData();
   }
 
   componentWillUnmount() {
@@ -175,11 +184,10 @@ export default class Dashboard extends React.Component {
   }
 
   gotomcustomer = () => {
-    console.log("sdfbsn", getConfiguration('salesflag'));
+    // console.log("sdfbsn", getConfiguration('salesflag'));
     if (getConfiguration('salesflag')) {
       this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken, screen: 'customer' })
-    }
-    else {
+    } else {
       alert('Available only for Agents')
     }
   }
@@ -247,7 +255,7 @@ export default class Dashboard extends React.Component {
 
   logout = () => {
 
-    const savedToken = getConfiguration('token')
+    const savedToken = getConfiguration('token');
 
     let url = "https://accounts.bharti-axalife.com/oidc/logout?"
 
@@ -279,8 +287,6 @@ export default class Dashboard extends React.Component {
 
   CheckJWTToken() {
 
-    // let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTService/Service1.svc/CheckAgentCodeJWT"
-
     let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTService/Service1.svc/WE_CheckAgentCodeJWT"
 
     let params = {
@@ -290,9 +296,7 @@ export default class Dashboard extends React.Component {
 
     axios.post(url, params, {
       "headers": {
-
         "content-type": "application/json",
-
       },
     })
       .then(function (response) {
@@ -390,7 +394,7 @@ export default class Dashboard extends React.Component {
 
   }
 
-  closeVersionPopup = () => {
+  closeVersionPopup = async () => {
     this.setState({ showVersionPopup: false });
   }
 
@@ -406,7 +410,7 @@ export default class Dashboard extends React.Component {
       Linking.openURL("http://play.google.com/store/apps/details?id=" + item.androidId);
     } else {
 
-      if (item.bundleId === '') {
+      if (item.iosId === '') {
         alert('Application details not available.');
         return;
       }

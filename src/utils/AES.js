@@ -11,16 +11,13 @@ const iv = 'e675f725e675f725';
 export async function encryptData(inputString) {
   try {
 
-    let encryptedText = Buffer(inputString, 'base64');//Buffer.from(text, "base64");
-    let decipher = crypto.createCipheriv(algorithm, crypto.pbkdf2Sync(password, salt, 65536, 256 / 8, 'sha1'), iv);
-    decipher.setAutoPadding(true);
-    let decrypted = decipher.update(encryptedText);
-    let decryptedText = Buffer.concat([decrypted, decipher.final()]);
-
-    return decryptedText.toString();
+    let cipher = crypto.createCipheriv(algorithm, crypto.pbkdf2Sync(password, salt, 65536, 256 / 8, 'sha1'), iv);
+    let encrypted = cipher.update(inputString);
+    let encryptedText = Buffer.concat([encrypted, cipher.final()]);
+    return encryptedText.toString('base64');
 
   } catch (e) {
-    console.log('decryptData error', JSON.stringify(e.message));
+    console.log('encryptData error', JSON.stringify(e.message));
     return null;
   }
 }
