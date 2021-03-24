@@ -12,7 +12,9 @@ import {
   ScrollView,
   Keyboard,
   Platform,
-  Linking
+  Linking,
+  processColor,
+  NativeModules
 } from 'react-native';
 import { DrawerActions } from 'react-navigation-drawer';
 import { WebView } from 'react-native-webview';
@@ -20,22 +22,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
-// import { CachedImage } from 'react-native-cached-image';
-import { getConfiguration , setConfiguration} from '../../utils/configuration';
-import { authorize, refresh, revoke, prefetchConfiguration } from 'react-native-app-auth';
 
-// const config = {
-//   issuer: 'https://accounts.bharti-axalife.com/oidc/logout?' + "id_token_hint=" + getConfiguration('token'),
-//   //clientId: 'Bj4ppdGozkaf4fOTeYameOExlfIa',
-//   clientId: '7Io_iFf5oiq3P2KjUqXbStKmKpYa',
-//   redirectUrl: 'com.bhartiaxa.virtualoffice://oauth',
-//   // scopes: ['openid'],
-//   // serviceConfiguration: {
-//   //   authorizationEndpoint: 'https://accounts.bharti-axalife.com/oauth2/authorize',
-//   //   tokenEndpoint: 'https://accounts.bharti-axalife.com/oauth2/token',
-//   //  // revocationEndpoint: 'https://demo.identityserver.io/connect/revoke'Bj
-//   // }
-// };
+import { getConfiguration , setConfiguration,unsetConfiguration} from '../../utils/configuration';
+import { authorize, refresh, revoke, prefetchConfiguration } from 'react-native-app-auth';
+var Browser = require('react-native-browser');
+
 
 export default class LogoutScreen extends React.Component {
 
@@ -52,43 +43,36 @@ export default class LogoutScreen extends React.Component {
 
   componentDidMount()
   {
-    console.log("gvzhxbvxn",config);
-    //let url = 'https://accounts.bharti-axalife.com/oidc/logout?' + "id_token_hint=" + this.state.accessToken + "&post_logout_redirect_uri" + "com.bhartiaxa.virtualoffice://oauth"
-   // Linking.openURL(url).catch((err) => console.error('An error occurred', err));
-    // if (Platform.OS === 'ios')
-    // {
-    //   this.setState({
-    //     platform:'ios'
-    //   })
-    // }
-    // else
-    // {
-    //   this.setState({
-    //     platform:'android'
-    //   })
-    // }
+    //unsetConfiguration('')
 
-  this.getData()
-
-  }
-  getData = async () => {
-    try {
-      const result = await authorize(config);
-     
-      console.log("zbhvhxbcbn",result)
-
-      //alert('Alert',result.response)
-
-     // this.checkAuthoken(result.accessToken)
-     //setConfiguration('token', result.accessToken);
-     
-     //this.props.navigation.navigate('SideMenu',{accessToken:result.accessToken})
-      
-    } 
-    catch (error) {
-      console.log(error);
+    if (Platform.OS == 'android') {
+      NativeModules.HelloWorldModule.ShowMessage(
+        '',
+        'false',
+        5000,
+      );
+    } else if (Platform.OS == 'ios') {
+      NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
     }
-     };
+  
+    let url = 'https://accounts.bharti-axalife.com/oidc/logout?' + "id_token_hint=" + this.state.accessToken + "&post_logout_redirect_uri" + "com.bhartiaxa.virtualoffice://oauth"
+    Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+
+    // Browser.open(url, {
+    //                 showUrlWhileLoading: false,
+    //                 loadingBarTintColor: processColor('#d64bbd'),
+    //                 navigationButtonsHidden: false,
+    //                 showActionButton: true,
+    //                 showDoneButton: true,
+    //                 doneButtonTitle: 'Done',
+    //                 showPageTitles: true,
+    //                 disableContextualPopupMenu: false,
+    //                 hideWebViewBoundaries: false,
+    //                 buttonTintColor: processColor('#d64bbd')
+    //               });
+    
+  }
+  
 
   goBack()
   {
@@ -105,12 +89,6 @@ export default class LogoutScreen extends React.Component {
 
 
   render() {
-
-  //   const runFirst = `
-  //   ios.isNativeApp = true;
-  //   true; // note: this is required, or you'll sometimes get silent failures
-  // `;
-
     return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
           {/* <View style={styles.headerView}>

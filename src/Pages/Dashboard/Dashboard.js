@@ -9,7 +9,7 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
-import { AppInstalledChecker, CheckPackageInstallation } from 'react-native-check-app-install';
+// import { AppInstalledChecker, CheckPackageInstallation } from 'react-native-check-app-install';
 
 import RNAndroidInstalledApps from 'react-native-android-installed-apps';
 import moment from "moment";
@@ -19,10 +19,12 @@ import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import axios from 'react-native-axios';
 import { Page, Button, ButtonOutline, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
 import { ScrollView } from 'react-native-gesture-handler';
-// import { AppInstalledChecker, CheckPackageInstallation } from 'react-native-check-app-install';
 import AppLink from 'react-native-app-link';
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
+import Clipboard from '@react-native-community/clipboard';
 const { data } = NativeModules;
+
+
 
 const HelloWorld = NativeModules.HelloWorldModule;
 
@@ -36,7 +38,7 @@ const appArray = [
     lastUpdated: 1,
     androidId: 'com.enparadigm.bharthiaxa',
     bundleId: 'com.enparadigm.bharthiaxa',
-    iosId: 'id1518565564'
+    iosId: 'm-sell/id1518565564'
   },
   {
     icon: require('../../../assets/i-EARN.png'),
@@ -71,16 +73,6 @@ const appArray = [
   }, {
     icon: require('../../../assets/i-RECRUIT.png'),
     appName: 'i-Recruit',
-    versionCode: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    androidId: 'com.re.bharthiaxa',
-    bundleId: 'com.re.bharthiaxa',
-    iosId: 'id1518565564'
-  }, {
-    icon: require('../../../assets/i-SERVICE.png'),
-    appName: 'i-Service',
     versionCode: 0,
     isInstalled: false,
     isLatest: false,
@@ -215,20 +207,6 @@ export default class Dashboard extends React.Component {
       this.getAppsData();
     }
 
-
-    // RNAndroidInstalledApps.getApps().then(apps => {
-    //   console.log('apps', JSON.stringify(apps));
-    //   // if (apps) {
-
-    //   //   apps.map(app => {
-
-    //   //   });
-
-    //   // }
-    // }).catch(error => {
-    //   alert(error);
-    // });
-
   }
 
   openDrawerClick() {
@@ -250,14 +228,42 @@ export default class Dashboard extends React.Component {
   gotomcustomer = () => {
     console.log("sdfbsn", getConfiguration('salesflag'));
     if (getConfiguration('salesflag')) {
-      this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken })
+      this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken, screen: 'customer' })
     }
     else {
       alert('Available only for Agents')
     }
+  }
 
 
+  // gotomcustomer = () => {
+  //   console.log("sdfbsn", getConfiguration('salesflag'));
+  //   if (getConfiguration('salesflag')) {
+  //     this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken })
+  //   }
+  //   else {
+  //     alert('Available only for Agents')
+  //   }
 
+  // }
+
+  gotoVymo() {
+    IntentLauncher.startAppByPackageName('com.getvymo.android')
+      .then((result) => {
+        console.log('startAppByPackageName started');
+      })
+      .catch((error) => console.warn('startAppByPackageName: could not open', error));
+  }
+
+  copyToClipboard() {
+    Clipboard.setString(getConfiguration('encryptedToken', ''))
+  }
+
+  closePopUp = () => {
+    this.setState({
+      clickOnApp: false,
+      checkinstallstatus: true
+    })
   }
 
   gotoMSell() {
@@ -295,47 +301,46 @@ export default class Dashboard extends React.Component {
       }
 
       );
-
-
-
-    // To check by app name:
-    // AppInstalledChecker
-    // .isAppInstalled('M-Sell')
-    // .then((isInstalled) => {
-    //     // isInstalled is true if the app is installed or false if not
-    //     alert(isInstalled)
-
-    //     this.setState({
-    //       checkinstallstatus:isInstalled
-    //     })
-
-    // });
-
-    //To check using URL (works on iOS and Android):
-    // AppInstalledChecker
-    // .checkURLScheme('M-Sell') // omit the :// suffix
-    // .then((isInstalled) => {
-    //     // isInstalled is true if the app is installed or false if not
-
-    //     console.log("App not found",isInstalled);
-
-    //     alert(isInstalled)
-
-    //     this.setState({
-    //       checkinstallstatus:isInstalled
-    //     })
-
-    //     //alert('App installed')
-    // })
-
-    // To check using package name (Android only):
-    // AppInstalledChecker
-    // .isAppInstalledAndroid('com.enparadigm.bharthiaxa')
-    // .then((isInstalled) => {
-    //     // isInstalled is true if the app is installed or false if not
-
-    // });
   }
+
+
+  // To check by app name:
+  // AppInstalledChecker
+  // .isAppInstalled('M-Sell')
+  // .then((isInstalled) => {
+  //     // isInstalled is true if the app is installed or false if not
+  //     alert(isInstalled)
+
+  //     this.setState({
+  //       checkinstallstatus:isInstalled
+  //     })
+
+  // });
+
+  //To check using URL (works on iOS and Android):
+  // AppInstalledChecker
+  // .checkURLScheme('M-Sell') // omit the :// suffix
+  // .then((isInstalled) => {
+  //     // isInstalled is true if the app is installed or false if not
+
+  //     console.log("App not found",isInstalled);
+
+  //     alert(isInstalled)
+
+  //     this.setState({
+  //       checkinstallstatus:isInstalled
+  //     })
+
+  //     //alert('App installed')
+  // })
+
+  // To check using package name (Android only):
+  // AppInstalledChecker
+  // .isAppInstalledAndroid('com.enparadigm.bharthiaxa')
+  // .then((isInstalled) => {
+  //     // isInstalled is true if the app is installed or false if not
+
+  // });
 
   installApp = () => {
     // https://play.google.com/store/apps/details?id=com.enparadigm.bharthiaxa&hl=en&gl=US
@@ -428,7 +433,6 @@ export default class Dashboard extends React.Component {
         }
 
       })
-
       .catch(function (error) {
 
         console.log("cvzgvxbhvb", error);
@@ -469,7 +473,6 @@ export default class Dashboard extends React.Component {
 
 
   }
-
   showAlert = () => {
     alert('Comming Soon')
   }
@@ -499,17 +502,26 @@ export default class Dashboard extends React.Component {
 
   }
 
-
   closeVersionPopup = () => {
     this.setState({ showVersionPopup: false });
+  }
+
+  onInstallUpdatePress = (item) => {
+
+    if (Platform.OS == 'android') {
+      Linking.openURL("http://play.google.com/store/apps/details?id=" + item.androidId);
+    } else {
+      Linking.openURL("https://apps.apple.com/us/app/" + item.iosId);
+    }
+
   }
 
   renderItem = ({ item }) => {
 
     return (
       <View style={{
-        backgroundColor: 'rgba(30,77,155,0.06)',
-        borderColor: 'grey',
+        backgroundColor: 'white',
+        borderColor: 'green',
         borderRadius: 10,
         elevation: 1,
         margin: 10,
@@ -526,8 +538,8 @@ export default class Dashboard extends React.Component {
         </View>
         <View style={{ width: 1, backgroundColor: 'grey', height: '90%' }} />
         <View style={{ flex: 4, alignItems: 'center', paddingLeft: 30, paddingRight: 30 }}>
-          {!item.isInstalled && <ButtonOutline textColor='rgb(30,77,155)' borderColor='green' title='Install' />}
-          {item.isInstalled && !item.isLatest && <ButtonOutline textColor='rgb(30,77,155)' borderColor='yellow' title='Update' />}
+          {!item.isInstalled && <ButtonOutline onPress={() => this.onInstallUpdatePress(item)} textColor='rgb(30,77,155)' borderColor='green' title='Install' />}
+          {item.isInstalled && !item.isLatest && <ButtonOutline onPress={() => this.onInstallUpdatePress(item)} textColor='rgb(30,77,155)' borderColor='yellow' title='Update' />}
           {item.isInstalled && item.isLatest && <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'rgb(30,77,155)', textAlign: 'center' }}>{'Installed'}</Text>}
           {item.isInstalled && <Text style={{ fontSize: 12, color: 'rgb(30,77,155)', textAlign: 'center' }}>{'Last Updated on ' + item.lastUpdated}</Text>}
         </View>
@@ -540,7 +552,7 @@ export default class Dashboard extends React.Component {
   renderVersionPopup() {
 
     return (
-      <View style={styles.overlayView}>
+      <View style={[styles.overlayView, { alignItems: 'stretch' }]}>
 
         <View style={styles.appStatusContainer}>
 
@@ -562,26 +574,7 @@ export default class Dashboard extends React.Component {
           />
 
         </View>
-        {/* 
-        <TouchableOpacity
-          style={styles.crossContainer}
-          onPress={() => this.closePopUp()}>
-          <Image resizeMode="contain" style={styles.crossButton}
-            source={require('../../../assets/close.png')} />
-        </TouchableOpacity>
-        <View style={styles.appStatuscontainer}>
 
-          <View style={{ width: '100%', height: '10%', backgroundColor: 'transparent', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={[styles.appName, { marginLeft: 10 }]}> M-Sell </Text>
-            <TouchableOpacity
-              style={styles.btnInstall}
-              onPress={() => this.installApp()}>
-              <Text style={[styles.installText, { textAlign: 'center' }]}> Install </Text>
-
-            </TouchableOpacity>
-          </View>
-        </View>
-       */}
       </View>
     )
 
@@ -603,23 +596,25 @@ export default class Dashboard extends React.Component {
             <View style={styles.appcontainer}>
               <View style={styles.appcontainer1}>
                 <TouchableOpacity
-                  style={styles.appBackground}
+                  style={styles.appBackground1}
                   onPress={() => this.showAlert()}>
                   <Image resizeMode="contain" style={styles.appIcon}
                     source={require('../../../assets/vymo.png')} />
                   <Text style={styles.appName}> VYMO </Text>
                 </TouchableOpacity>
-                <Text style={styles.appdppescription}> Manage Leads </Text>
+                <Text style={styles.appdppescription}>Manage</Text>
+                <Text style={styles.appdppescription}>Leads</Text>
               </View>
               <View style={styles.appcontainer1}>
                 <TouchableOpacity
-                  style={styles.appBackground}
+                  style={styles.appBackground1}
                   onPress={() => this.gotoMSell()}>
                   <Image resizeMode="contain" style={styles.appIcon}
                     source={require('../../../assets/m_shell.png')} />
                   <Text style={styles.appName}> M-Sell </Text>
                 </TouchableOpacity>
-                <Text style={styles.appdppescription}> Engage with Customers </Text>
+                <Text style={styles.appdppescription}>Engage with</Text>
+                <Text style={styles.appdppescription}>Customers</Text>
               </View>
             </View>
           </View>
@@ -846,6 +841,8 @@ export default class Dashboard extends React.Component {
 
 }
 
+
+
 const styles = StyleSheet.create({
   imgcontainer: {
     backgroundColor: 'transparent',
@@ -865,13 +862,15 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: 'rgb(30,77,155)',
     fontSize: 15,
+    fontFamily: 'WorkSans-Regular'
   },
   headerTitle1: {
     width: 'auto',
     color: 'rgb(30,77,155)',
     fontSize: 15,
-    fontWeight: 'bold'
+    fontFamily: 'WorkSans-Bold'
   },
+
   appStatuts: {
     flex: 1,
     margin: 10,
@@ -889,7 +888,7 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#f5f5f5',
   },
   headerView: {
     flexDirection: 'row',
@@ -913,7 +912,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     position: 'absolute',
-    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
     opacity: 0.95,
     padding: 25
   },
@@ -926,10 +927,18 @@ const styles = StyleSheet.create({
     borderColor: 'grey',
     padding: 10
   },
+  welcomContainer:
+  {
+    width: '30%',
+    height: '100%',
+
+    marginLeft: '30%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 
   overlayView1: {
-    //flex: 0.8,
-    top: wp('56%'),
+    top: wp('66%'),
     left: 0,
     right: 0,
     bottom: 0,
@@ -972,13 +981,13 @@ const styles = StyleSheet.create({
   tabViewBG: {
     flexDirection: 'row',
     marginHorizontal: 0,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
     height: wp('10.66%'),
     width: '100%',
     marginTop: '5%',
   },
   tab1BG: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'white',
     height: '100%',
     width: '25%',
     justifyContent: 'center',
@@ -988,7 +997,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'transparent',
+    backgroundColor: 'white',
     height: '100%',
     width: '25%'
   },
@@ -996,7 +1005,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'transparent',
+    backgroundColor: 'white',
     height: '100%',
     width: '25%'
   },
@@ -1004,7 +1013,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'transparent',
+    backgroundColor: 'white',
     height: '100%',
     width: '25%'
   },
@@ -1055,62 +1064,50 @@ const styles = StyleSheet.create({
 
   },
 
+
+
   crossContainer: {
     width: '95%',
     height: 50,
+    top: 5,
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
   crossButton: {
-    width: 20,
-    height: 20,
-    resizeMode: 'contain',
+    width: 25,
+    height: 25,
+    top: 10,
     backgroundColor: 'transparent',
-  },
-  welcomContainer:
-  {
-    width: '30%',
-    height: '100%',
-    marginLeft: '30%',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-
-  headerTitle: {
-    color: 'rgb(30,77,155)',
-    fontSize: 15,
-  },
-  headerTitle1: {
-    color: 'rgb(30,77,155)',
-    fontSize: 15,
-    fontWeight: 'bold'
 
   },
-  quickLinksText: {
-    color: 'rgb(30,77,155)',
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    fontSize: 15,
-  },
+
   appName: {
     color: 'rgb(30,77,155)',
     fontWeight: 'bold',
     fontSize: 15,
-    top: 5
-  },
-  installText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 15,
-
-  },
-  appdppescription: {
-    color: 'rgb(30,77,155)',
-    fontSize: 16,
-    textAlign: 'center',
     top: 5,
-
+    fontFamily: 'WorkSans-Bold'
   },
+  appBackground1: {
+    width: wp('25%'),
+    height: wp('25%'),
+    top: 0,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginStart: 10,
+    marginEnd: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#a4a4a4'
+    // shadowColor: "#000000",
+    // shadowOpacity: 0.3,
+    // shadowRadius: 2,
+    // shadowOffset: {
+    // },
+    // elevation: 10
+  },
+
   appBackground: {
     width: wp('25%'),
     height: wp('25%'),
@@ -1125,43 +1122,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 2,
     shadowOffset: {
-      height: 0.5,
-      width: 0,
-
     },
-
-    elevation: 5
+    elevation: 10
   },
-
-  btnInstall: {
-    width: wp('25%'),
-    height: wp('8%'),
-    top: 0,
-    backgroundColor: 'rgb(30,77,155)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginStart: 10,
-    marginEnd: 10,
-    borderRadius: 10,
-    shadowColor: "#000000",
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-    shadowOffset: {
-      height: 0.5,
-      width: 0,
-    },
-
-    elevation: 5
+  quickLinksText: {
+    color: 'rgb(30,77,155)',
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    fontSize: 15,
   },
-
-  quicklinkcontainer: {
-    backgroundColor: 'transparent',
-    width: wp('100%'),
-    flex: 0.1,
-
-    flexDirection: 'row',
-    marginStart: 10,
-    marginEnd: 10,
+  appdppescription: {
+    color: 'rgb(30,77,155)',
+    fontSize: 16,
+    textAlign: 'center',
+    top: 5,
 
   },
   container: {
@@ -1196,24 +1170,7 @@ const styles = StyleSheet.create({
     flex: 0.4,
     borderRadius: 10
   },
-  cmgsooncontainer: {
-    backgroundColor: 'transparent',
-    width: wp('90%'),
-    flex: 0.4,
-    // borderRadius:10
-    justifyContent: 'center',
-    alignItems: 'center'
 
-  },
-  appStatuscontainer: {
-    backgroundColor: 'white',
-    width: wp('90%'),
-    flex: 0.8,
-    // borderRadius:10
-    //justifyContent:'center',
-    //alignItems:'center'
-
-  },
   appcontainer: {
     backgroundColor: 'white',
     width: wp('90%'),
@@ -1230,10 +1187,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'column'
   },
-  welcome: {
-    color: 'black',
-    fontSize: 30,
-    textAlign: 'center',
-  },
+
 
 });

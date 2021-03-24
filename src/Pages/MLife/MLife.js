@@ -61,18 +61,24 @@ export default class MLife extends React.Component  {
   clickiearn = () =>
   {
 
-   
-
     IntentLauncher.startAppByPackageName('com.bhartiaxa.mlife')
     .then((result) => {
       console.log('startAppByPackageName started');
     })
     .catch((error) => console.warn('startAppByPackageName: could not open', error));
 
-  
- 
-    
   }
+
+  gotoRecruit()
+  {
+    IntentLauncher.startAppByPackageName('com.bhartiaxa.mlife')
+    .then((result) => {
+      console.log('startAppByPackageName started');
+    })
+    .catch((error) => console.warn('startAppByPackageName: could not open', error));
+  }
+
+
 
   clickApp = () => 
   {
@@ -92,6 +98,15 @@ showAlert = () =>
 {
   alert('Comming Soon')
 }
+
+gotoService = () =>
+  {
+   
+      this.props.navigation.navigate('MCustomer',{screen:'service'})
+    
+
+
+  }
  
   render() {
       return (
@@ -107,8 +122,8 @@ showAlert = () =>
         </TouchableOpacity>
        
         <View style={styles.welcomContainer}>
-        <Text style={styles.headerTitle}> Welcome to</Text>
-        <Text style={styles.headerTitle1}>M-Life</Text>
+        {/* <Text style={styles.headerTitle}> Welcome to</Text> */}
+        {/* <Text style={styles.headerTitle1}>M-Life</Text> */}
         </View>
         <TouchableOpacity
            style={styles.backTouchable}
@@ -126,10 +141,10 @@ showAlert = () =>
     <View style={styles.imgcontainer}>
    
       
-        <Image resizeMode="contain" style={styles.imgprofile}
-            source = {require('../../../assets/prfl_img.jpg')}/>
-             <Text style={styles.appName}> Welcome Test </Text>
-             <Text style={styles.appName}> Designation, Team </Text>
+        {/* <Image resizeMode="contain" style={styles.imgprofile}
+            source = {require('../../../assets/prfl_img.jpg')}/> */}
+             {/* <Text style={styles.appName}> Welcome Test </Text> */}
+             {/* <Text style={styles.appName}> Designation, Team </Text> */}
         
         
       </View>
@@ -137,7 +152,7 @@ showAlert = () =>
       <View style={styles.container}>
     <TouchableOpacity
            style={styles.appBackground}
-           onPress={() => this.showAlert()}>
+           onPress={() => this.gotoRecruit()}>
              <View style={styles.appiconView}>
                <Image resizeMode="contain" style={styles.appIcon}
             source = {require('../../../assets/i-RECRUIT.png')}/>
@@ -187,7 +202,7 @@ showAlert = () =>
       <View style={styles.container1}>
     <TouchableOpacity
            style={styles.appBackground}
-           onPress={() => this.showAlert()}>
+           onPress={() => this.gotoService()}>
              <View style={styles.appiconView}>
                <Image resizeMode="contain" style={styles.appIcon}
             source = {require('../../../assets/i-SERVICE.png')}/>
@@ -212,7 +227,7 @@ showAlert = () =>
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#f5f5f5',
   },
   headerView:{
     flexDirection:'row',
@@ -237,7 +252,7 @@ const styles = StyleSheet.create({
     bottom:0,
   //marginBottom:10,
     position:'absolute',
-    backgroundColor: 'rgb(234,240,248)',
+    backgroundColor: '#f5f5f5',
    // content: 'center',
    // alignItems:'center',
     

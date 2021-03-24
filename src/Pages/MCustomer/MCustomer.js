@@ -11,7 +11,8 @@ import {
   SafeAreaView,
   ScrollView,
   Keyboard,
-  Platform
+  Platform,
+  processColor
 } from 'react-native';
 import { DrawerActions } from 'react-navigation-drawer';
 import { WebView } from 'react-native-webview';
@@ -21,7 +22,7 @@ import {
 } from 'react-native-responsive-screen';
 // import { CachedImage } from 'react-native-cached-image';
 import { getConfiguration , setConfiguration} from '../../utils/configuration';
-
+var Browser = require('react-native-browser');
 
 // const htmlContent = '<body onload="document.createElement("form").submit.call(document.getElementById("myForm"))">' +
 // '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
@@ -52,7 +53,9 @@ export default class MCustomer extends React.Component {
      this.state = {
       accessToken:getConfiguration('encryptedToken',''),
        //accessToken:getConfiguration('token')
-       platform:''
+       platform:'',
+       isSales:getConfiguration('salesflag',''),
+       comingScreen:this.props.navigation.getParam('screen')
      };
 
    }
@@ -101,27 +104,45 @@ export default class MCustomer extends React.Component {
 
     return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-          <View style={styles.headerView}>
-        <TouchableOpacity
-           style={styles.backTouchable}
-           onPress={() => this.goBack()}>
-        <Image resizeMode="contain" style={styles.leftLogo}
-            source = {require('../../../assets/logo_rht.png')}/>
-             <Text style={[styles.headerTitle1,{marginLeft:5,color:'black'}]}>M-Customer</Text>
-        </TouchableOpacity>
+         
+{this.state.comingScreen == 'service' ?
+ <View style={styles.headerView}>
+ <TouchableOpacity
+    style={styles.backTouchable}
+    onPress={() => this.goBack()}>
+ <Image resizeMode="contain" style={styles.leftLogo}
+     source = {require('../../../assets/logo_rht.png')}/>
+      <Text style={[styles.headerTitle1,{marginLeft:5,color:'black'}]}>i-Service</Text>
+ </TouchableOpacity>
+ <View style={styles.welcomContainer}>
+ <Text style={styles.headerTitle}> Welcome to</Text>
+ <Text style={styles.headerTitle1}>i-Service</Text>
+ </View>
+  </View>
+ :
+ <View style={styles.headerView}>
+ <TouchableOpacity
+    style={styles.backTouchable}
+    onPress={() => this.goBack()}>
+ <Image resizeMode="contain" style={styles.leftLogo}
+     source = {require('../../../assets/logo_rht.png')}/>
+      <Text style={[styles.headerTitle1,{marginLeft:5,color:'black'}]}>M-Customer</Text>
+ </TouchableOpacity>
+ <View style={styles.welcomContainer}>
+ <Text style={styles.headerTitle}> Welcome to</Text>
+ <Text style={styles.headerTitle1}>M-Customer</Text>
+ </View>
+</View>
+}
+       
 
-        <View style={styles.welcomContainer}>
-        <Text style={styles.headerTitle}> Welcome to</Text>
-        <Text style={styles.headerTitle1}>M-Customer</Text>
-        </View>
-
-   </View>
+  
 
 
 
 
  <View style={styles.gridViewBackground}>
-  <View style={{width: '100%', flex: 1, overflow: 'hidden', marginBottom: 100, backgroundColor: 'white'}}>
+  <View style={{width: '100%', flex: 1, overflow: 'hidden',backgroundColor: 'white'}}>
    {/* <WebView
                  source={{uri: 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin', body:createFormData(this.state.accessToken),method:'POST'}}
                  style={{ width: '100%', height: '100%', backgroundColor: 'white' }}
@@ -139,20 +160,37 @@ export default class MCustomer extends React.Component {
                  '</form></body>'}}
 
                /> */}
+               {this.state.comingScreen == 'customer' ?
+               <WebView
+               originWhitelist={['*']}
+               injectedJavaScript={runFirst}
+               source={{ html: '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
+           '<body >' +
+           '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
+           '<input type="hidden" name="source" value="'+this.state.platform+'"/>' +
+          ' <input type="hidden" name="jwtToken" value="'+this.state.accessToken+'"/>' +
+          ' <input type="hidden" type="submit" value="Login"/>' +
+          ' </form>' +
+           '</body>'}}
 
-<WebView
+             />
+             :
+             <WebView
                  originWhitelist={['*']}
                  injectedJavaScript={runFirst}
                  source={{ html: '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
              '<body >' +
-             '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
-             '<input type="hidden" name="source" value="'+this.state.platform+'"/>' +
+             '<form id="myForm" method="POST" action="https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1">' +
+             '<input type="hidden" name=" isSales" value="'+this.state.isSales+'"/>' +
             ' <input type="hidden" name="jwtToken" value="'+this.state.accessToken+'"/>' +
             ' <input type="hidden" type="submit" value="Login"/>' +
             ' </form>' +
              '</body>'}}
 
                />
+              }
+
+
 
   </View>
  </View>
