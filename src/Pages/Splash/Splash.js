@@ -9,7 +9,7 @@ import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { authorize, refresh, revoke, prefetchConfiguration } from 'react-native-app-auth';
 import { Page, Button, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
 import axios from 'react-native-axios';
-
+import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
 
 const config = {
@@ -29,6 +29,9 @@ export default class Splash extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      isLoading: false,
+    }
   }
 
 
@@ -48,7 +51,7 @@ export default class Splash extends React.Component {
 
       this.JWTCheckAgentCode(result.accessToken);
 
-    // this.props.navigation.navigate('SideMenu', { accessToken:result.accessToken })
+     //this.props.navigation.navigate('SideMenu', { accessToken:result.accessToken })
 
     }
     catch (error) {
@@ -58,6 +61,8 @@ export default class Splash extends React.Component {
 
 
   JWTCheckAgentCode = async (token) => {
+
+    this.setState({ isLoading: true });
 
     console.log('JWTTokenValidation');
 
@@ -94,6 +99,7 @@ export default class Splash extends React.Component {
   parseTokenApiData = async (data, accessToken) => {
 
     const result = await decryptData(data.response);
+    this.setState({ isLoading: false });
 
     console.log('jwt result => ', result);
 
@@ -129,6 +135,7 @@ export default class Splash extends React.Component {
 
     return (
       <Page>
+         <Loader visible={this.state.isLoading}/>
         <View style={{
           backgroundColor: 'transparent',
           width: wp('100%'),
