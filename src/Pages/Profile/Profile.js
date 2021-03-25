@@ -13,7 +13,7 @@ import axios from 'react-native-axios';
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { encryptData, decryptData } from '../../utils/AES';
 
-//import { Loader } from '../../../components';
+import { Loader } from '../../../components';
 
 
 export default class ProfileScreen extends React.Component {
@@ -146,16 +146,16 @@ export default class ProfileScreen extends React.Component {
 
     console.log('agent profile result => ', result);
 
-    
+
     this.setState({
-      bcode:result.Emp_Code,
-      Channnel:result.Channnel,
+      bcode: result.Emp_Code,
+      Channnel: result.Channnel,
       Employee: result.Agent_Code,
-      supervisor:result.Supervisor_Name,
+      supervisor: result.Supervisor_Name,
       branch: result.BranchName,
-      region:result.BranchName,
+      region: result.BranchName,
       zone: result.BranchName,
-      mobile:result.Tel3,
+      mobile: result.Tel3,
       email: result.EmailId,
       name: result.Agent_Name,
       designation: result.Designation
@@ -172,14 +172,14 @@ export default class ProfileScreen extends React.Component {
     console.log('employee profile result => ', result);
 
     this.setState({
-      bcode:result.Emp_Code,
-      Channnel:result.Channnel,
+      bcode: result.Emp_Code,
+      Channnel: result.Channnel,
       Employee: result.Agent_Code,
-      supervisor:result.Supervisor_Name,
+      supervisor: result.Supervisor_Name,
       branch: result.BranchName,
-      region:result.BranchName,
+      region: result.BranchName,
       zone: result.BranchName,
-      mobile:result.Tel3,
+      mobile: result.Tel3,
       email: result.EmailId,
       name: result.Agent_Name,
       designation: result.Designation
@@ -211,7 +211,7 @@ export default class ProfileScreen extends React.Component {
           </TouchableOpacity>
         </View>
 
-        {/* <Loader visible={this.state.isLoading}/> */}
+        <Loader visible={this.state.isLoading}/>
 
         <ScrollView style={{ backgroundColor: 'transparent' }}>
 
@@ -605,14 +605,14 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: 'rgb(30,77,155)',
     fontSize: 15,
-    fontFamily:'WorkSans-SemiBold'
+    fontFamily: 'WorkSans-SemiBold'
 
   },
   headerTitle1: {
     width: 'auto',
     color: 'rgb(30,77,155)',
     fontSize: 15,
-    fontFamily:'WorkSans-Bold'
+    fontFamily: 'WorkSans-Bold'
 
   },
   quickLinksText: {
@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginLeft: '13%',
     //textAlign:'center'
-    fontFamily:'WorkSans-SemiBold'
+    fontFamily: 'WorkSans-SemiBold'
 
 
   },
@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 13,
     marginLeft: '10%',
-    fontFamily:'WorkSans-Bold'
+    fontFamily: 'WorkSans-Bold'
   },
   appName: {
     color: 'rgb(30,77,155)',

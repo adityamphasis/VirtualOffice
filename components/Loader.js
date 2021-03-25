@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { Platform, View, StyleSheet, Modal, ActivityIndicator, TouchableOpacity, Text } from 'react-native';
 
 const Loader = ({ visible }) => (
     <Modal transparent visible={visible}>
@@ -15,7 +15,11 @@ const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         left: 0,
-        right: 0
+        right: 0,
+        backgroundColor:'white',
+        alignItems:'center',
+        justifyContent:'center',
+        opacity:0.9
     }
 });
 
