@@ -5,7 +5,7 @@ const ButtonOutline = ({ title, width, textColor, borderColor, onPress }) => (
   <TouchableOpacity
     activeOpacity={0.8}
     onPress={onPress}
-    style={[styles.buttonBox, { width: width ? width : '100%', borderColor: borderColor ? borderColor : 'grey' }]}>
+    style={[styles.buttonBox, { width: width ? width : '100%', borderColor: borderColor ? borderColor : 'grey',borderWidth:1 }]}>
     <Text style={[styles.text, { color: textColor ? textColor : 'black' }]}>{title}</Text>
   </TouchableOpacity>
 );

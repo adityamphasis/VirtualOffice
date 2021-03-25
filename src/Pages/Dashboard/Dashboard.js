@@ -20,7 +20,7 @@ import { Page, Button, ButtonOutline, ButtonContainer, Form, FormLabel, FormValu
 import AppLink from 'react-native-app-link';
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
 import Clipboard from '@react-native-community/clipboard';
-
+import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
 
 const appArray = [
@@ -94,6 +94,7 @@ export default class Dashboard extends React.Component {
     super(props);
 
     this.state = {
+      isLoading: false,
       clickOnApp: false,
       isShownCmgSoon: true,
       checkinstallstatus: true,
@@ -435,9 +436,9 @@ export default class Dashboard extends React.Component {
     return (
       <View style={{
         backgroundColor: 'white',
-        borderColor: 'green',
+        borderColor: '#a4a4a4',
+        borderWidth:1,
         borderRadius: 10,
-        elevation: 1,
         margin: 10,
         padding: 10,
         flexDirection: 'row',
@@ -466,17 +467,17 @@ export default class Dashboard extends React.Component {
   renderVersionPopup() {
 
     return (
-      <View style={[styles.overlayView, { alignItems: 'stretch' }]}>
+      <View style={[styles.overlayAppView, { alignItems: 'stretch' }]}>
 
         <View style={styles.appStatusContainer}>
 
-          <View flexDirection='row'>
+          <View style={{flexDirection:'row',backgroundColor:'transparent',height:'10%',justifyContent:'space-between'}}>
 
             <Text style={styles.appStatuts}>APPS STATUS</Text>
             <TouchableOpacity
-              style={{ alignSelf: 'center' }}
+              style={{height:'100%',backgroundColor:'transparent',width:'20%',justifyContent:'center',alignItems:'center'}}
               onPress={() => this.closeVersionPopup()}>
-              <Image style={[styles.crossButton, { right: 10 }]}
+              <Image style={{width:25,height:25}}
                 source={require('../../../assets/close.png')} />
             </TouchableOpacity>
           </View>
@@ -570,6 +571,8 @@ export default class Dashboard extends React.Component {
 
 
         </View>
+
+        <Loader visible={this.state.isLoading}/>
 
         <View style={styles.container}>
 
@@ -785,7 +788,7 @@ const styles = StyleSheet.create({
   },
 
   appStatuts: {
-    flex: 1,
+  // flex: 1,
     margin: 10,
     color: 'rgb(30,77,155)',
     fontWeight: 'bold',
@@ -831,14 +834,35 @@ const styles = StyleSheet.create({
     opacity: 0.95,
     padding: 25
   },
+  overlayAppView: {
+    flex: 1,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    opacity: 0.95,
+    padding: 25
+  },
 
   appStatusContainer: {
     flex: 1,
     backgroundColor: 'white',
     elevation: 3,
     borderRadius: 15,
-    borderColor: 'grey',
-    padding: 10
+  // borderColor: 'grey',
+    padding: 10,
+    shadowColor: "#000000",
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 0.5,
+      width: 0,
+    },
+    elevation: 10,
   },
   welcomContainer:
   {

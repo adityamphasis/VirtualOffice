@@ -142,7 +142,7 @@ export default class ProfileScreen extends React.Component {
 
     const result = await decryptData(data.response);
 
-    this.setState({ isLoading: true });
+    this.setState({ isLoading: false });
 
     console.log('agent profile result => ', result);
 
@@ -167,7 +167,7 @@ export default class ProfileScreen extends React.Component {
 
     const result = await decryptData(data.response);
 
-    this.setState({ isLoading: true });
+    this.setState({ isLoading: false });
 
     console.log('employee profile result => ', result);
 
