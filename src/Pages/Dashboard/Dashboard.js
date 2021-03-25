@@ -1,7 +1,7 @@
 import {
   StyleSheet, Text, View, TouchableOpacity,
   ImageBackground, Image, StatusBar, Keyboard,
-  Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler
+  Platform, SafeAreaView, Linking, NativeModules, FlatList
 } from 'react-native';
 import React, { PropTypes } from 'react'
 import {
@@ -25,7 +25,17 @@ import { encryptData, decryptData } from '../../utils/AES';
 
 const appArray = [
   {
-    icon: require('../../../assets/i-EARN.png'),
+    icon: require('../../../assets/vymo.png'),
+    appName: 'VYMO',
+    versionCode: 0,
+    isInstalled: false,
+    isLatest: false,
+    lastUpdated: 1,
+    androidId: 'com.getvymo.android',
+    bundleId: 'com.getvymo.android',
+    iosId: ''
+  }, {
+    icon: require('../../../assets/m_shell.png'),
     appName: 'MSell',
     isInstalled: false,
     isLatest: false,
@@ -34,27 +44,6 @@ const appArray = [
     androidId: 'com.enparadigm.bharthiaxa',
     bundleId: 'com.enparadigm.bharthiaxa',
     iosId: 'm-sell/id1518565564'
-  }, {
-    icon: require('../../../assets/i-EARN.png'),
-    appName: 'B.A.S.E Academy',
-    isInstalled: false,
-    isLatest: false,
-    versionCode: 0,
-    lastUpdated: 1,
-    androidId: 'com.chaptervitamins.bhartiaxa',
-    bundleId: 'com.chaptervitamins.bharthiaxa',
-    iosId: ''
-  },
-  {
-    icon: require('../../../assets/i-EARN.png'),
-    appName: 'i-Earn',
-    isInstalled: false,
-    isLatest: false,
-    versionCode: 1,
-    lastUpdated: 1,
-    androidId: 'com.bhartiaxa.mlife',
-    bundleId: 'com.bhartiaxa.mlife',
-    iosId: 'm-life/id1550263609'
   }, {
     icon: require('../../../assets/i-WIN.png'),
     appName: 'i-Win',
@@ -66,15 +55,25 @@ const appArray = [
     bundleId: 'com.xoxoday.compass',
     iosId: 'compass-xoxo/id1504258298'
   }, {
-    icon: require('../../../assets/i-LEARN.png'),
-    appName: 'i-Learn',
-    versionCode: 0,
+    icon: require('../../../assets/i-EARN.png'),
+    appName: 'B.A.S.E Academy',
     isInstalled: false,
     isLatest: false,
+    versionCode: 0,
     lastUpdated: 1,
-    androidId: '',
-    bundleId: '',
+    androidId: 'com.chaptervitamins.bhartiaxa',
+    bundleId: 'com.chaptervitamins.bharthiaxa',
     iosId: ''
+  }, {
+    icon: require('../../../assets/i-EARN.png'),
+    appName: 'i-Earn',
+    isInstalled: false,
+    isLatest: false,
+    versionCode: 1,
+    lastUpdated: 1,
+    androidId: 'com.bhartiaxa.mlife',
+    bundleId: 'com.bhartiaxa.mlife',
+    iosId: 'm-life/id1550263609'
   }, {
     icon: require('../../../assets/i-RECRUIT.png'),
     appName: 'i-Recruit',
@@ -88,6 +87,7 @@ const appArray = [
   }
 ]
 
+
 export default class Dashboard extends React.Component {
 
   constructor(props) {
@@ -98,7 +98,7 @@ export default class Dashboard extends React.Component {
       isShownCmgSoon: true,
       checkinstallstatus: true,
       savedToken: this.props.navigation.getParam('accessToken'),
-      showVersionPopup: true,
+      showVersionPopup: false,
 
       appList: []
     };
@@ -121,18 +121,18 @@ export default class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.versionControlService();
+    // this.CheckJWTToken();
     this.getInstalledAppData();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton.bind(this));
+    this.getVersionControlsApi();
   }
 
   componentWillUnmount() {
 
   }
 
-  handleBackButton(){  
-    BackHandler.exitApp();
-  }
+  handleBackPress = () => {
+    BackHandler.exitApp(); // works best when the goBack is async     return true;   
+  };
 
   getAppsData = async () => {
 
@@ -161,10 +161,9 @@ export default class Dashboard extends React.Component {
       const apps = await RNAndroidInstalledApps.getNonSystemApps();
       if (apps)
         this.installedApps = apps;
-      this.getAppsData();
     } catch (e) {
       console.log('apps Error', JSON.stringify(e));
-      this.getAppsData();
+      // this.getAppsData();
     }
 
   }
@@ -254,39 +253,39 @@ export default class Dashboard extends React.Component {
     Linking.openURL("market://details?id=com.enparadigm.bharthiaxa&hl=en&gl=US");
   }
 
-  // logout = () => {
+  logout = () => {
 
-  //   const savedToken = getConfiguration('token');
+    const savedToken = getConfiguration('token');
 
-  //   let url = "https://accounts.bharti-axalife.com/oidc/logout?"
+    let url = "https://accounts.bharti-axalife.com/oidc/logout?"
 
 
-  //   let finalurl = url + "id_token_hint=" + savedToken + "&post_logout_redirect_uri=com.bhartiaxa.virtualoffice://oauth"
+    let finalurl = url + "id_token_hint=" + savedToken + "&post_logout_redirect_uri=com.bhartiaxa.virtualoffice://oauth"
 
-  //   console.log("gczdhvb", finalurl);
+    console.log("gczdhvb", finalurl);
 
-  //   //console.log("vdgfhhg", decryptData(response.CheckAgentCodeJWTResult,key,salt));
+    //console.log("vdgfhhg", decryptData(response.CheckAgentCodeJWTResult,key,salt));
 
-  //   axios.get(finalurl, {
-  //     "headers": {
-  //       "content-type": "application/json",
-  //     },
-  //   })
-  //     .then(function (response) {
-  //       console.log("vdgf42253465656hhg", response);
-  //       //let decResponse = decryptData("rT/lgzM78o/24AyqFmdOF3/PeVhs6Exj0gXuU6LbWEPyWbe7cbfqZj3YbrmbqV+OQz5deQp4CLj2efcjM/jLyHe2wBSLaS3HVJYT8fj7us/2xOqjJWsDwRwZObUofyUJriGmFXwTtrNolsTW4h4VOWffql3OecJsdELEaSF/I1POKXi2MmEtZKA63glc7MctDg5ApcmpZuKLKKVqxB0YdZ9D6/7/wYDUZJ/MFlLiA23ywwkTdeKnbYeI0kJ0mjFN",'6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a','$!rl@$b!')
-  //       //console.log("vdgfhhg",decResponse);
+    axios.get(finalurl, {
+      "headers": {
+        "content-type": "application/json",
+      },
+    })
+      .then(function (response) {
+        console.log("vdgf42253465656hhg", response);
+        //let decResponse = decryptData("rT/lgzM78o/24AyqFmdOF3/PeVhs6Exj0gXuU6LbWEPyWbe7cbfqZj3YbrmbqV+OQz5deQp4CLj2efcjM/jLyHe2wBSLaS3HVJYT8fj7us/2xOqjJWsDwRwZObUofyUJriGmFXwTtrNolsTW4h4VOWffql3OecJsdELEaSF/I1POKXi2MmEtZKA63glc7MctDg5ApcmpZuKLKKVqxB0YdZ9D6/7/wYDUZJ/MFlLiA23ywwkTdeKnbYeI0kJ0mjFN",'6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a','$!rl@$b!')
+        //console.log("vdgfhhg",decResponse);
 
-  //     })
+      })
 
-  //     .catch(function (error) {
+      .catch(function (error) {
 
-  //       console.log("cvzgvxbhvb", error);
+        console.log("cvzgvxbhvb", error);
 
-  //     });
-  // }
+      });
+  }
 
-  /*CheckJWTToken() {
+  CheckJWTToken() {
 
     let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTService/Service1.svc/WE_CheckAgentCodeJWT"
 
@@ -328,35 +327,70 @@ export default class Dashboard extends React.Component {
       });
 
 
-  }*/
+  }
 
   parseVersionApiData = async (data) => {
+
+    console.log(JSON.stringify(data));
 
     const result = await decryptData(data.response);
 
     console.log('result => ', result);
+    let tempList = [];
+    if (result instanceof Array) {
+      result.map(item => {
+
+        let index = this.installedApps.findIndex(x => x.packageName === item.PackageName);
+        let iconIndex = appArray.findIndex(x => x.androidId === item.PackageName);
+
+        const iObj = {
+          icon: iconIndex != -1 ? appArray[iconIndex].icon : '',// require('../../../assets/m_shell.png'),
+          appName: item.AppName,
+          versionCode: item.CurrentVersion,
+          androidId: item.PackageName,
+          bundleId: item.PackageName,
+          lastUpdated: index != -1 ? moment(this.installedApps[index].lastUpdateTime).format("DD/MM/YYYY") : '',
+          isInstalled: index != -1 ? true : false,
+          isLatest: (index != -1 && item.MandatoryVersion == this.installedApps[index].versionCode + '') ? true : false
+        }
+
+        tempList.push(iObj);
+
+      });
+    } else {
+
+      let index = this.installedApps.findIndex(x => x.packageName === result.PackageName);
+      let iconIndex = appArray.findIndex(x => x.androidId === item.PackageName);
+
+      const iObj = {
+        icon: iconIndex != -1 ? appArray[iconIndex].icon : '',// require('../../../assets/m_shell.png'),
+        appName: result.AppName,
+        versionCode: result.CurrentVersion,
+        androidId: result.PackageName,
+        bundleId: result.PackageName,
+        lastUpdated: index != -1 ? moment(this.installedApps[index].lastUpdateTime).format("DD/MM/YYYY") : '',
+        isInstalled: index != -1 ? true : false,
+        isLatest: (index != -1 && result.MandatoryVersion == this.installedApps[index].versionCode + '') ? true : false
+      }
+
+      tempList.push(iObj);
+    }
+
+    if (tempList.length > 0)
+      this.setState({ showVersionPopup: true, appList: tempList });
 
   }
 
-  versionControlService = async () => {
+  getVersionControlsApi = async () => {
 
     let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestService/Service1.svc/GetVersionControlDetails"
 
-   // const param = 'bIUNut6Ks+Z1mTyaFx9dI+N9nxOrxQPSNsOkASCTDquWxiWumx6e8gKAn7YrNcikIxHS9Z9LEYjMDOxwHivKFw==';
-
-      let params = {
-        "Platform":"Android",
-        "PartnerKey":"VC18APP02SER"
-      }
-
-      const encryptedParams = await encryptData(JSON.stringify(params));
-
-      console.log('encryptedParams', encryptedParams);
+    const param = 'bIUNut6Ks+Z1mTyaFx9dI+N9nxOrxQPSNsOkASCTDquWxiWumx6e8gKAn7YrNcikIxHS9Z9LEYjMDOxwHivKFw==';
 
     // const param = await encryptData();
 
     let encParams = {
-      "request": encryptedParams
+      "request": param
     };
 
     axios.post(url, encParams, {
@@ -415,6 +449,11 @@ export default class Dashboard extends React.Component {
       if (item.androidId === '') {
         alert('Application details not available.');
         return;
+      }
+
+      if (item.androidId === 'com.enparadigm.bharthiaxa') {
+        Linking.openURL("https://slack-files.com/T85QWDR0V-F01SA1Z4C3U-69b095adf7");
+        return
       }
 
       Linking.openURL("http://play.google.com/store/apps/details?id=" + item.androidId);
