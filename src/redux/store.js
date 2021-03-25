@@ -1,6 +1,6 @@
 
 //import { createStore, combineReducers, applyMiddleware } from 'redux';
-import TokenReducer from '../modules/CheckJwtToken';
+//import TokenReducer from '../modules/CheckJwtToken';
 //  import RegisterReducer from '../modules/Register';
 //  import AuthSocialReducer from '../modules/AuthSocial';
 //  import AuthPasswordReducer from '../modules/AuthPassword';
@@ -68,7 +68,7 @@ const enhancers = [
 
 
 const rootReducer = combineReducers({
-  TokenReducer,
+ // TokenReducer,
 //   RegisterReducer,
 //    AuthSocialReducer,
 //    AuthPasswordReducer,

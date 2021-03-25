@@ -46,7 +46,9 @@ export default class Splash extends React.Component {
 
       setConfiguration('token', result.accessToken);
 
-      this.JWTTokenValidation(result.accessToken);
+      this.JWTCheckAgentCode(result.accessToken);
+
+    // this.props.navigation.navigate('SideMenu', { accessToken:result.accessToken })
 
     }
     catch (error) {
@@ -55,11 +57,11 @@ export default class Splash extends React.Component {
   };
 
 
-  JWTTokenValidation = async (token) => {
+  JWTCheckAgentCode = async (token) => {
 
     console.log('JWTTokenValidation');
 
-    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTService/Service1.svc/ValidateJWT"
+    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTService/Service1.svc/CheckAgentCodeJWT"
 
     let params = {
       'DecodeJWT': token,
@@ -94,6 +96,29 @@ export default class Splash extends React.Component {
     const result = await decryptData(data.response);
 
     console.log('jwt result => ', result);
+
+    var sales = result.IsSalesAgent;
+    var etoken = result.EncodedJWT;
+    var agentToken = result.AgentCode;
+    var employeeCode = result.EmployeeCode
+
+    console.log("gafsvfhvb", sales);
+
+    setConfiguration('salesflag', sales)
+    setConfiguration('encryptedToken', etoken)
+    setConfiguration('Agent', agentToken)
+    setConfiguration('Employee', employeeCode)
+
+    if (Platform.OS == 'android') {
+      NativeModules.HelloWorldModule.ShowMessage(
+        etoken,
+        'false',
+        5000,
+      );
+    } else if (Platform.OS == 'ios') {
+      NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
+    }
+
 
     this.props.navigation.navigate('SideMenu', { accessToken: accessToken })
 

@@ -13,7 +13,7 @@ import axios from 'react-native-axios';
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { encryptData, decryptData } from '../../utils/AES';
 
-import { Loader } from '../../../components';
+//import { Loader } from '../../../components';
 
 
 export default class ProfileScreen extends React.Component {
@@ -24,17 +24,17 @@ export default class ProfileScreen extends React.Component {
     this.state = {
       isLoading: false,
       clickOnApp: false,
-      Channnel: 'DSF',
-      bcode: '9953',
-      Employee: '6354',
-      supervisor: 'SANDEEP PADHIAR',
-      branch: 'DELHI - PITAMPURA',
-      region: 'Delhi',
-      zone: 'South Delhi',
-      mobile: '09971022722',
-      email: 'rajneesh.yadav@bharti-axalife.com',
-      name: 'RAJNEESH YADAV',
-      designation: 'RO'
+      Channnel: '',
+      bcode: '',
+      Employee: '',
+      supervisor: '',
+      branch: '',
+      region: '',
+      zone: '',
+      mobile: '',
+      email: '',
+      name: '',
+      designation: ''
     };
 
   }
@@ -75,7 +75,7 @@ export default class ProfileScreen extends React.Component {
     let url = "https://online.bharti-axalife.com/MiscServices/DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted"
 
     const params = {
-      'Agent_Code': '9953',
+      'Agent_Code': getConfiguration('Employee'),
       'PartnerKey': 'POIN06EM11'
     }
 
@@ -111,7 +111,7 @@ export default class ProfileScreen extends React.Component {
     let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails"
 
     const params = {
-      'Agent_Code': '9953',
+      'Agent_Code': getConfiguration('Employee'),
       'PartnerKey': 'POIN06EM11'
     }
 
@@ -146,6 +146,21 @@ export default class ProfileScreen extends React.Component {
 
     console.log('agent profile result => ', result);
 
+    
+    this.setState({
+      bcode:result.Emp_Code,
+      Channnel:result.Channnel,
+      Employee: result.Agent_Code,
+      supervisor:result.Supervisor_Name,
+      branch: result.BranchName,
+      region:result.BranchName,
+      zone: result.BranchName,
+      mobile:result.Tel3,
+      email: result.EmailId,
+      name: result.Agent_Name,
+      designation: result.Designation
+    })
+
   }
 
   parseEmployeeApiData = async (data) => {
@@ -155,6 +170,20 @@ export default class ProfileScreen extends React.Component {
     this.setState({ isLoading: true });
 
     console.log('employee profile result => ', result);
+
+    this.setState({
+      bcode:result.Emp_Code,
+      Channnel:result.Channnel,
+      Employee: result.Agent_Code,
+      supervisor:result.Supervisor_Name,
+      branch: result.BranchName,
+      region:result.BranchName,
+      zone: result.BranchName,
+      mobile:result.Tel3,
+      email: result.EmailId,
+      name: result.Agent_Name,
+      designation: result.Designation
+    })
 
   }
 
@@ -182,7 +211,7 @@ export default class ProfileScreen extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <Loader visible={this.state.isLoading}/>
+        {/* <Loader visible={this.state.isLoading}/> */}
 
         <ScrollView style={{ backgroundColor: 'transparent' }}>
 
@@ -191,8 +220,8 @@ export default class ProfileScreen extends React.Component {
             <Image resizeMode="contain" style={styles.imgprofile}
               source={require('../../../assets/prfl_img.jpg')} />
             <View style={styles.prfltitleContainer}>
-              <Text style={styles.headerTitle}> {this.state.name}</Text>
-              <Text style={styles.headerTitle1}> Designation,{this.state.designation} </Text>
+              <Text style={styles.headerTitle}>{this.state.name}</Text>
+              <Text style={styles.headerTitle1}>Designation,{this.state.designation} </Text>
             </View>
 
 
@@ -576,13 +605,14 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: 'rgb(30,77,155)',
     fontSize: 15,
+    fontFamily:'WorkSans-SemiBold'
 
   },
   headerTitle1: {
     width: 'auto',
     color: 'rgb(30,77,155)',
     fontSize: 15,
-    fontWeight: 'bold'
+    fontFamily:'WorkSans-Bold'
 
   },
   quickLinksText: {
@@ -591,6 +621,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginLeft: '13%',
     //textAlign:'center'
+    fontFamily:'WorkSans-SemiBold'
 
 
   },
@@ -600,9 +631,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 13,
     marginLeft: '10%',
-
-
-
+    fontFamily:'WorkSans-Bold'
   },
   appName: {
     color: 'rgb(30,77,155)',

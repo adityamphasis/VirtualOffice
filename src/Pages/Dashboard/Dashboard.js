@@ -1,7 +1,7 @@
 import {
   StyleSheet, Text, View, TouchableOpacity,
   ImageBackground, Image, StatusBar, Keyboard,
-  Platform, SafeAreaView, Linking, NativeModules, FlatList
+  Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler
 } from 'react-native';
 import React, { PropTypes } from 'react'
 import {
@@ -121,17 +121,18 @@ export default class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.CheckJWTToken();
-    // this.getInstalledAppData();
+    this.versionControlService();
+    this.getInstalledAppData();
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton.bind(this));
   }
 
   componentWillUnmount() {
 
   }
 
-  handleBackPress = () => {
-    BackHandler.exitApp(); // works best when the goBack is async     return true;   
-  };
+  handleBackButton(){  
+    BackHandler.exitApp();
+  }
 
   getAppsData = async () => {
 
@@ -253,39 +254,39 @@ export default class Dashboard extends React.Component {
     Linking.openURL("market://details?id=com.enparadigm.bharthiaxa&hl=en&gl=US");
   }
 
-  logout = () => {
+  // logout = () => {
 
-    const savedToken = getConfiguration('token');
+  //   const savedToken = getConfiguration('token');
 
-    let url = "https://accounts.bharti-axalife.com/oidc/logout?"
+  //   let url = "https://accounts.bharti-axalife.com/oidc/logout?"
 
 
-    let finalurl = url + "id_token_hint=" + savedToken + "&post_logout_redirect_uri=com.bhartiaxa.virtualoffice://oauth"
+  //   let finalurl = url + "id_token_hint=" + savedToken + "&post_logout_redirect_uri=com.bhartiaxa.virtualoffice://oauth"
 
-    console.log("gczdhvb", finalurl);
+  //   console.log("gczdhvb", finalurl);
 
-    //console.log("vdgfhhg", decryptData(response.CheckAgentCodeJWTResult,key,salt));
+  //   //console.log("vdgfhhg", decryptData(response.CheckAgentCodeJWTResult,key,salt));
 
-    axios.get(finalurl, {
-      "headers": {
-        "content-type": "application/json",
-      },
-    })
-      .then(function (response) {
-        console.log("vdgf42253465656hhg", response);
-        //let decResponse = decryptData("rT/lgzM78o/24AyqFmdOF3/PeVhs6Exj0gXuU6LbWEPyWbe7cbfqZj3YbrmbqV+OQz5deQp4CLj2efcjM/jLyHe2wBSLaS3HVJYT8fj7us/2xOqjJWsDwRwZObUofyUJriGmFXwTtrNolsTW4h4VOWffql3OecJsdELEaSF/I1POKXi2MmEtZKA63glc7MctDg5ApcmpZuKLKKVqxB0YdZ9D6/7/wYDUZJ/MFlLiA23ywwkTdeKnbYeI0kJ0mjFN",'6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a','$!rl@$b!')
-        //console.log("vdgfhhg",decResponse);
+  //   axios.get(finalurl, {
+  //     "headers": {
+  //       "content-type": "application/json",
+  //     },
+  //   })
+  //     .then(function (response) {
+  //       console.log("vdgf42253465656hhg", response);
+  //       //let decResponse = decryptData("rT/lgzM78o/24AyqFmdOF3/PeVhs6Exj0gXuU6LbWEPyWbe7cbfqZj3YbrmbqV+OQz5deQp4CLj2efcjM/jLyHe2wBSLaS3HVJYT8fj7us/2xOqjJWsDwRwZObUofyUJriGmFXwTtrNolsTW4h4VOWffql3OecJsdELEaSF/I1POKXi2MmEtZKA63glc7MctDg5ApcmpZuKLKKVqxB0YdZ9D6/7/wYDUZJ/MFlLiA23ywwkTdeKnbYeI0kJ0mjFN",'6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a','$!rl@$b!')
+  //       //console.log("vdgfhhg",decResponse);
 
-      })
+  //     })
 
-      .catch(function (error) {
+  //     .catch(function (error) {
 
-        console.log("cvzgvxbhvb", error);
+  //       console.log("cvzgvxbhvb", error);
 
-      });
-  }
+  //     });
+  // }
 
-  CheckJWTToken() {
+  /*CheckJWTToken() {
 
     let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTService/Service1.svc/WE_CheckAgentCodeJWT"
 
@@ -327,7 +328,7 @@ export default class Dashboard extends React.Component {
       });
 
 
-  }
+  }*/
 
   parseVersionApiData = async (data) => {
 
@@ -341,12 +342,21 @@ export default class Dashboard extends React.Component {
 
     let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestService/Service1.svc/GetVersionControlDetails"
 
-    const param = 'bIUNut6Ks+Z1mTyaFx9dI+N9nxOrxQPSNsOkASCTDquWxiWumx6e8gKAn7YrNcikIxHS9Z9LEYjMDOxwHivKFw==';
+   // const param = 'bIUNut6Ks+Z1mTyaFx9dI+N9nxOrxQPSNsOkASCTDquWxiWumx6e8gKAn7YrNcikIxHS9Z9LEYjMDOxwHivKFw==';
+
+      let params = {
+        "Platform":"Android",
+        "PartnerKey":"VC18APP02SER"
+      }
+
+      const encryptedParams = await encryptData(JSON.stringify(params));
+
+      console.log('encryptedParams', encryptedParams);
 
     // const param = await encryptData();
 
     let encParams = {
-      "request": param
+      "request": encryptedParams
     };
 
     axios.post(url, encParams, {

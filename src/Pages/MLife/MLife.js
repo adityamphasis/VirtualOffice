@@ -6,8 +6,8 @@ import {
 } from 'react-native-responsive-screen';
 import { DrawerActions } from 'react-navigation-drawer';
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
- 
- import { Page, Button, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
+import { getConfiguration , setConfiguration} from '../../utils/configuration';
+import { Page, Button, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
@@ -101,8 +101,14 @@ showAlert = () =>
 
 gotoService = () =>
   {
+
+    if (getConfiguration('salesflag')) {
+      this.props.navigation.navigate('MCustomer', {screen: 'service' })
+    } else {
+      alert('Available only for Agents')
+    }
    
-      this.props.navigation.navigate('MCustomer',{screen:'service'})
+     // this.props.navigation.navigate('MCustomer',{screen:'service'})
     
 
 
@@ -411,6 +417,7 @@ const styles = StyleSheet.create({
       alignSelf:'center',
       marginTop:10,
       fontSize:15,
+      fontFamily:'WorkSans-Bold'
       
     
      },
@@ -424,6 +431,7 @@ const styles = StyleSheet.create({
       color: 'rgb(30,77,155)',
       fontSize:12,
       textAlign:'center',
+      fontFamily:'WorkSans-Regular'
      
      },
      appBackground:{
