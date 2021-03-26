@@ -51,7 +51,7 @@ export default class Splash extends React.Component {
 
       this.JWTCheckAgentCode(result.accessToken);
 
-     //this.props.navigation.navigate('SideMenu', { accessToken:result.accessToken })
+    // this.props.navigation.navigate('SideMenu', { accessToken:result.accessToken })
 
     }
     catch (error) {

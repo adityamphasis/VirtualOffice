@@ -25,7 +25,7 @@ import { encryptData, decryptData } from '../../utils/AES';
 
 const appArray = [
   {
-    icon: require('../../../assets/i-EARN.png'),
+    icon: require('../../../assets/m_shell.png'),
     appName: 'MSell',
     isInstalled: false,
     isLatest: false,
@@ -34,9 +34,21 @@ const appArray = [
     androidId: 'com.enparadigm.bharthiaxa',
     bundleId: 'com.enparadigm.bharthiaxa',
     iosId: 'm-sell/id1518565564'
-  }, {
-    icon: require('../../../assets/i-EARN.png'),
-    appName: 'B.A.S.E Academy',
+  },
+  {
+    icon: require('../../../assets/vymo.png'),
+    appName: 'Vymo',
+    isInstalled: false,
+    isLatest: false,
+    versionCode: 0,
+    lastUpdated: 1,
+    androidId: 'com.getvymo.android',
+    bundleId: 'com.getvymo.android',
+    iosId: ''
+  },
+   {
+    icon: require('../../../assets/i-LEARN.png'),
+    appName: 'i-Learn',
     isInstalled: false,
     isLatest: false,
     versionCode: 0,
@@ -65,17 +77,7 @@ const appArray = [
     androidId: 'com.xoxoday.compass',
     bundleId: 'com.xoxoday.compass',
     iosId: 'compass-xoxo/id1504258298'
-  }, {
-    icon: require('../../../assets/i-LEARN.png'),
-    appName: 'i-Learn',
-    versionCode: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    androidId: '',
-    bundleId: '',
-    iosId: ''
-  }, {
+  },{
     icon: require('../../../assets/i-RECRUIT.png'),
     appName: 'i-Recruit',
     versionCode: 0,
@@ -131,8 +133,30 @@ export default class Dashboard extends React.Component {
 
   }
 
-  handleBackButton(){  
-    BackHandler.exitApp();
+  handleBackButton = () => {
+    Alert.alert(  
+      'Alert',  
+      'Are you sure to exit the app',  
+      [  
+          {  
+              text: 'Cancel',  
+              onPress: () => console.log('Cancel Pressed'),  
+              style: 'cancel',  
+          },  
+          {text: 'OK', onPress: () => this.exitApp()},  
+      ]  
+  );  
+   
+  }
+
+  exitApp()
+  {
+    if (this.props.navigation.isFocused()) {
+      BackHandler.exitApp();
+      return true;
+    } else {
+      return false;
+    } 
   }
 
   getAppsData = async () => {
@@ -203,6 +227,9 @@ export default class Dashboard extends React.Component {
   }
 
   copyToClipboard() {
+
+    console.log("copy to clipboard",getConfiguration('encryptedToken', ''));
+
     Clipboard.setString(getConfiguration('encryptedToken', ''))
   }
 
@@ -377,7 +404,7 @@ export default class Dashboard extends React.Component {
   }
 
   showAlert = () => {
-    alert('Comming Soon')
+    alert('Coming Soon')
   }
 
   rederHeader = () => {
@@ -385,7 +412,8 @@ export default class Dashboard extends React.Component {
     return (
       <View style={[styles.headerView, { elevation: this.state.showVersionPopup ? 0 : 10 }]}>
         <TouchableOpacity
-          style={styles.backTouchable}>
+          style={styles.backTouchable}
+          onPress={() => this.copyToClipboard()}>
           <Image resizeMode="contain" style={styles.leftLogo}
             source={require('../../../assets/logo_rht.png')} />
         </TouchableOpacity>
@@ -434,16 +462,18 @@ export default class Dashboard extends React.Component {
   renderItem = ({ item }) => {
 
     return (
-      <View style={{
-        backgroundColor: 'white',
+      <ImageBackground style={{
+       // backgroundColor:'red',
         borderColor: '#a4a4a4',
         borderWidth:1,
         borderRadius: 10,
         margin: 10,
         padding: 10,
         flexDirection: 'row',
-        alignItems: 'center'
-      }}>
+        alignItems: 'center',
+        overflow:'hidden'
+        
+      }} source={require('../../../assets/grad.png')}>
 
         <View style={{ flex: 2.5, alignItems: 'center' }}>
           <Image style={[{ height: 40, width: 40, margin: 10 }]}
@@ -459,7 +489,7 @@ export default class Dashboard extends React.Component {
           {item.isInstalled && <Text style={{ fontSize: 12, color: 'rgb(30,77,155)', textAlign: 'center' }}>{'Last Updated on ' + item.lastUpdated}</Text>}
         </View>
 
-      </View>
+      </ImageBackground>
     )
 
   }
@@ -512,7 +542,7 @@ export default class Dashboard extends React.Component {
               <View style={styles.appcontainer1}>
                 <TouchableOpacity
                   style={styles.appBackground1}
-                  onPress={() => this.showAlert()}>
+                  onPress={() => this.gotoVymo()}>
                   <Image resizeMode="contain" style={styles.appIcon}
                     source={require('../../../assets/vymo.png')} />
                   <Text style={styles.appName}> VYMO </Text>

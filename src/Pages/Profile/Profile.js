@@ -24,7 +24,7 @@ export default class ProfileScreen extends React.Component {
     this.state = {
       isLoading: false,
       clickOnApp: false,
-      Channnel: '',
+      Channnel: '--',
       bcode: '',
       Employee: '',
       supervisor: '',
@@ -111,7 +111,7 @@ export default class ProfileScreen extends React.Component {
     let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails"
 
     const params = {
-      'Agent_Code': getConfiguration('Employee'),
+      'Agent_Code': getConfiguration('Agent'),
       'PartnerKey': 'POIN06EM11'
     }
 
@@ -149,7 +149,7 @@ export default class ProfileScreen extends React.Component {
 
     this.setState({
       bcode: result.Emp_Code,
-      Channnel: result.Channnel,
+      Channnel: result.Channel,
       Employee: result.Agent_Code,
       supervisor: result.Supervisor_Name,
       branch: result.BranchName,

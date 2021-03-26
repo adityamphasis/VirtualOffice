@@ -9,11 +9,7 @@ import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
 import { getConfiguration , setConfiguration} from '../../utils/configuration';
 import { Page, Button, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
 import { ScrollView } from 'react-native-gesture-handler';
-
-
-
-
-  
+import axios from 'react-native-axios';
 
 
 export default class MLife extends React.Component  {
@@ -41,9 +37,6 @@ export default class MLife extends React.Component  {
    
 }
 
-//  componentWillMount(){
- 
-//   }
 
   openDrawerClick() {
     this.props.navigation.navigate('SideMenu');
@@ -71,7 +64,7 @@ export default class MLife extends React.Component  {
 
   gotoRecruit()
   {
-    IntentLauncher.startAppByPackageName('com.bhartiaxa.mlife')
+    IntentLauncher.startAppByPackageName('com.bhartiaxa.recruit')
     .then((result) => {
       console.log('startAppByPackageName started');
     })
@@ -96,7 +89,7 @@ export default class MLife extends React.Component  {
  
 showAlert = () =>
 {
-  alert('Comming Soon')
+  alert('Coming Soon')
 }
 
 gotoService = () =>
@@ -111,6 +104,12 @@ gotoService = () =>
      // this.props.navigation.navigate('MCustomer',{screen:'service'})
     
 
+
+  }
+
+
+  ApiWin()
+  {
 
   }
  
