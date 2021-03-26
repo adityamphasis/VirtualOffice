@@ -92,6 +92,8 @@ export default class Splash extends React.Component {
 
     }).catch(error => {
       console.log("cvzgvxbhvb", error);
+      this.setState({ isLoading: false });
+
     });
 
   }
