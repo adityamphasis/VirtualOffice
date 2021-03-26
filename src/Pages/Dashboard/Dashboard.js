@@ -260,81 +260,81 @@ export default class Dashboard extends React.Component {
     Linking.openURL("market://details?id=com.enparadigm.bharthiaxa&hl=en&gl=US");
   }
 
-  logout = () => {
+  // logout = () => {
 
-    const savedToken = getConfiguration('token');
+  //   const savedToken = getConfiguration('token');
 
-    let url = "https://accounts.bharti-axalife.com/oidc/logout?"
-
-
-    let finalurl = url + "id_token_hint=" + savedToken + "&post_logout_redirect_uri=com.bhartiaxa.virtualoffice://oauth"
-
-    console.log("gczdhvb", finalurl);
-
-    //console.log("vdgfhhg", decryptData(response.CheckAgentCodeJWTResult,key,salt));
-
-    axios.get(finalurl, {
-      "headers": {
-        "content-type": "application/json",
-      },
-    })
-      .then(function (response) {
-        console.log("vdgf42253465656hhg", response);
-        //let decResponse = decryptData("rT/lgzM78o/24AyqFmdOF3/PeVhs6Exj0gXuU6LbWEPyWbe7cbfqZj3YbrmbqV+OQz5deQp4CLj2efcjM/jLyHe2wBSLaS3HVJYT8fj7us/2xOqjJWsDwRwZObUofyUJriGmFXwTtrNolsTW4h4VOWffql3OecJsdELEaSF/I1POKXi2MmEtZKA63glc7MctDg5ApcmpZuKLKKVqxB0YdZ9D6/7/wYDUZJ/MFlLiA23ywwkTdeKnbYeI0kJ0mjFN",'6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a','$!rl@$b!')
-        //console.log("vdgfhhg",decResponse);
-
-      })
-
-      .catch(function (error) {
-
-        console.log("cvzgvxbhvb", error);
-
-      });
-  }
-
-  CheckJWTToken = () => {
-
-    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTService/Service1.svc/WE_CheckAgentCodeJWT"
-
-    let params = {
-      "DecodeJWT": this.state.savedToken,
-      "PartnerKey": "JWT12SER02"
-    };
-
-    axios.post(url, params, {
-      "headers": {
-        "content-type": "application/json",
-      },
-    })
-      .then(function (response) {
-        console.log("vdgf42253465656hhg", response.data);
-
-        var sales = response.data.IsSalesAgent;
-        var etoken = response.data.EncodedJWT
-        console.log("gafsvfhvb", sales);
-
-        setConfiguration('salesflag', sales)
-        setConfiguration('encryptedToken', etoken)
-
-        if (Platform.OS == 'android') {
-          NativeModules.HelloWorldModule.ShowMessage(
-            etoken,
-            'false',
-            5000,
-          );
-        } else if (Platform.OS == 'ios') {
-          NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
-        }
-
-      })
-      .catch(function (error) {
-
-        console.log("cvzgvxbhvb", error);
-
-      });
+  //   let url = "https://accounts.bharti-axalife.com/oidc/logout?"
 
 
-  }
+  //   let finalurl = url + "id_token_hint=" + savedToken + "&post_logout_redirect_uri=com.bhartiaxa.virtualoffice://oauth"
+
+  //   console.log("gczdhvb", finalurl);
+
+  //   //console.log("vdgfhhg", decryptData(response.CheckAgentCodeJWTResult,key,salt));
+
+  //   axios.get(finalurl, {
+  //     "headers": {
+  //       "content-type": "application/json",
+  //     },
+  //   })
+  //     .then(function (response) {
+  //       console.log("vdgf42253465656hhg", response);
+  //       //let decResponse = decryptData("rT/lgzM78o/24AyqFmdOF3/PeVhs6Exj0gXuU6LbWEPyWbe7cbfqZj3YbrmbqV+OQz5deQp4CLj2efcjM/jLyHe2wBSLaS3HVJYT8fj7us/2xOqjJWsDwRwZObUofyUJriGmFXwTtrNolsTW4h4VOWffql3OecJsdELEaSF/I1POKXi2MmEtZKA63glc7MctDg5ApcmpZuKLKKVqxB0YdZ9D6/7/wYDUZJ/MFlLiA23ywwkTdeKnbYeI0kJ0mjFN",'6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a','$!rl@$b!')
+  //       //console.log("vdgfhhg",decResponse);
+
+  //     })
+
+  //     .catch(function (error) {
+
+  //       console.log("cvzgvxbhvb", error);
+
+  //     });
+  // }
+
+  // CheckJWTToken = () => {
+
+  //   let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTService/Service1.svc/WE_CheckAgentCodeJWT"
+
+  //   let params = {
+  //     "DecodeJWT": this.state.savedToken,
+  //     "PartnerKey": "JWT12SER02"
+  //   };
+
+  //   axios.post(url, params, {
+  //     "headers": {
+  //       "content-type": "application/json",
+  //     },
+  //   })
+  //     .then(function (response) {
+  //       console.log("vdgf42253465656hhg", response.data);
+
+  //       var sales = response.data.IsSalesAgent;
+  //       var etoken = response.data.EncodedJWT
+  //       console.log("gafsvfhvb", sales);
+
+  //       setConfiguration('salesflag', sales)
+  //       setConfiguration('encryptedToken', etoken)
+
+  //       if (Platform.OS == 'android') {
+  //         NativeModules.HelloWorldModule.ShowMessage(
+  //           etoken,
+  //           'false',
+  //           5000,
+  //         );
+  //       } else if (Platform.OS == 'ios') {
+  //         NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
+  //       }
+
+  //     })
+  //     .catch(function (error) {
+
+  //       console.log("cvzgvxbhvb", error);
+
+  //     });
+
+
+  // }
 
   parseVersionApiData = async (data) => {
 

@@ -10,7 +10,8 @@ import { getConfiguration , setConfiguration} from '../../utils/configuration';
 import { Page, Button, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'react-native-axios';
-
+import { Loader } from '../../../components';
+import { encryptData, decryptData } from '../../utils/AES';
 
 export default class MLife extends React.Component  {
        constructor(props) {
@@ -108,8 +109,49 @@ gotoService = () =>
   }
 
 
-  ApiWin()
+  ApiWin = async() =>
   {
+    let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/login"
+
+    let params = {
+      'jwtToken': getConfiguration('encryptedToken',''),
+      'PartnerKey': 'JWT12SER02'
+    }
+
+    const encryptedParams = await encryptData(JSON.stringify(params));
+
+    console.log('encryptedParams', encryptedParams);
+
+    let encParams = {
+      "request": encryptedParams//"wZ41JrpUFxYN657xEboMROidcqi+SuudbDsP9Co2zeTjD6u1YHmdD5IYFReAL4vHAmty0BZVSxyiprqQbcNjZhS0ybG6D1HCTz7tU1CpN/ownifuNlThzFDgG9EHnXcUt5V4F76t4qcoBI6jkyKb37zgt5zRMWg51nECtBXVoYgYV35mYYCPNz8UK+JIjQRdB5trVjZblvfCj1ru4++DxGzr7KF3BY6KVnTAhuObg45O4fjdDQFsAtnG86IG9fMC9MEc+v8bNy1M3al+QmBfmRvYaavleXjbzJNpAS+bVLF0wZgD8SnaqfUFXwJxlgvoy7D7DpscCWonWZMQdKvZO66I/XQXt1fa5rHhfKy38qzki/g8o/GraaRRKjnq6xXxth5KKhG3ZM32PbMEvbYGvhPCSK0ZUb16Y60pdA98eK8qmpSlgm93XvisN/TDojkWRBq9MJKlczwOGocsWY8ih5VPKirjXGUaEEje8GmLKRmQ49OJtQYJUHuujDlblxSMHhHylyaiYUaI4wuhVQPGrqTrbw/2w9wRH/w3SQlcErsXNUOvcMWgPYiQwoQBl7kuhbTdhoEfFY95FNh1n7QQOtViCUIzhorCHKdNLTzbjuNYeiPWFtWl4G17tBz6EwxA"
+    };
+
+    axios.post(url, encParams, {
+      "headers": {
+        "content-type": "application/json",
+      },
+    }).then(response => {
+
+      console.log("iwin encrypted response => ", JSON.stringify(response));
+      this.parseiWinApiData(response);
+
+    }).catch(error => {
+      console.log("cvzgvxbhvb", error);
+    });
+
+  }
+
+
+  parseiWinApiData = async (data) => {
+
+    const result = await decryptData(data.response);
+    this.setState({ isLoading: false });
+
+    console.log('iWIn result => ', result);
+
+    
+
+   // this.props.navigation.navigate('SideMenu', { accessToken: accessToken })
 
   }
  
@@ -192,7 +234,7 @@ gotoService = () =>
         </TouchableOpacity>
         <TouchableOpacity
            style={styles.appBackground}
-           onPress={() => this.showAlert()}>
+           onPress={() => this.ApiWin()}>
              <View style={styles.appiconView}>
                <Image resizeMode="contain" style={styles.appIcon}
             source = {require('../../../assets/i-WIN.png')}/>
