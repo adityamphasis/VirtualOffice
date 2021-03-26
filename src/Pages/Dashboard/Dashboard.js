@@ -361,6 +361,8 @@ export default class Dashboard extends React.Component {
 
       const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
 
+      console.log('installedApps', JSON.stringify(installedApps));
+
       let tempList = [];
 
       this.versionApiData.map(item => {
@@ -371,12 +373,12 @@ export default class Dashboard extends React.Component {
         const iObj = {
           icon: iconIndex != -1 ? appArray[iconIndex].icon : '',// require('../../../assets/m_shell.png'),
           appName: item.AppName,
-          versionCode: item.CurrentVersion,
+          versionCode: item.MandatoryVersion,
           androidId: item.PackageName,
           bundleId: item.PackageName,
           lastUpdated: index != -1 ? moment(installedApps[index].lastUpdateTime).format("DD/MM/YYYY") : '',
           isInstalled: index != -1 ? true : false,
-          isLatest: (index != -1 && item.MandatoryVersion == installedApps[index].versionCode + '') ? true : false
+          isLatest: (index != -1 && item.MandatoryVersion == installedApps[index].versionName + '') ? true : false
         }
 
         tempList.push(iObj);
