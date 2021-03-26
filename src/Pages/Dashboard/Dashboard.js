@@ -81,8 +81,8 @@ const appArray = [
     isInstalled: false,
     isLatest: false,
     lastUpdated: 1,
-    androidId: '',
-    bundleId: '',
+    androidId: 'com.bhartiaxa.recruit',
+    bundleId: 'com.bhartiaxa.recruit',
     iosId: ''
   }
 ]
@@ -104,7 +104,6 @@ export default class Dashboard extends React.Component {
       appList: []
     };
 
-    this.installedApps = [];
   }
 
 
@@ -114,17 +113,17 @@ export default class Dashboard extends React.Component {
       console.log("ghfbbbnbbn", datares);
       alert("app installed")
 
-    })
-      .catch((err) => {
-        // handle error
-        alert(err)
-      });
+    }).catch((err) => {
+      // handle error
+      alert(err)
+    });
   }
 
   componentDidMount() {
-    // this.CheckJWTToken();
-    this.getInstalledAppData();
     this.getVersionControlsApi();
+
+
+
   }
 
   componentWillUnmount() {
@@ -134,40 +133,6 @@ export default class Dashboard extends React.Component {
   handleBackPress = () => {
     BackHandler.exitApp(); // works best when the goBack is async     return true;   
   };
-
-  getAppsData = async () => {
-
-    const tempList = [];
-    appArray.map(app => {
-      console.log(JSON.stringify(app.androidId));
-      let index = this.installedApps.findIndex(x => x.packageName === app.androidId);
-
-      if (index != -1) {
-        app.isInstalled = true;
-        app.lastUpdated = moment(this.installedApps[index].lastUpdateTime).format("DD/MM/YYYY");
-        if (app.versionCode === this.installedApps[index].versionCode)
-          app.isLatest = true;
-        tempList.push(app);
-      } else
-        tempList.push(app);
-    });
-
-
-    this.setState({ appList: tempList });
-
-  }
-
-  getInstalledAppData = async () => {
-    try {
-      const apps = await RNAndroidInstalledApps.getNonSystemApps();
-      if (apps)
-        this.installedApps = apps;
-    } catch (e) {
-      console.log('apps Error', JSON.stringify(e));
-      // this.getAppsData();
-    }
-
-  }
 
   openDrawerClick() {
     this.props.navigation.dispatch(DrawerActions.openDrawer());
@@ -332,16 +297,34 @@ export default class Dashboard extends React.Component {
 
   parseVersionApiData = async (data) => {
 
-    console.log(JSON.stringify(data));
-
     const result = await decryptData(data.response);
 
+    this.setState({ isLoading: false });
     console.log('result => ', result);
-    let tempList = [];
-    if (result instanceof Array) {
-      result.map(item => {
 
-        let index = this.installedApps.findIndex(x => x.packageName === item.PackageName);
+    this.versionApiData = result.AppDetails ? result.AppDetails : [];
+
+    this.versionControlPopupLogin();
+
+  }
+
+  versionControlPopupLogin = async () => {
+
+    if (this.state.isLoading)
+      return;
+
+    if (!this.versionApiData)
+      return;
+
+    try {
+
+      const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
+
+      let tempList = [];
+
+      this.versionApiData.map(item => {
+
+        let index = installedApps.findIndex(x => x.packageName === item.PackageName);
         let iconIndex = appArray.findIndex(x => x.androidId === item.PackageName);
 
         const iObj = {
@@ -350,48 +333,47 @@ export default class Dashboard extends React.Component {
           versionCode: item.CurrentVersion,
           androidId: item.PackageName,
           bundleId: item.PackageName,
-          lastUpdated: index != -1 ? moment(this.installedApps[index].lastUpdateTime).format("DD/MM/YYYY") : '',
+          lastUpdated: index != -1 ? moment(installedApps[index].lastUpdateTime).format("DD/MM/YYYY") : '',
           isInstalled: index != -1 ? true : false,
-          isLatest: (index != -1 && item.MandatoryVersion == this.installedApps[index].versionCode + '') ? true : false
+          isLatest: (index != -1 && item.MandatoryVersion == installedApps[index].versionCode + '') ? true : false
         }
 
         tempList.push(iObj);
 
       });
-    } else {
 
-      let index = this.installedApps.findIndex(x => x.packageName === result.PackageName);
-      let iconIndex = appArray.findIndex(x => x.androidId === item.PackageName);
+      if (tempList.length > 0)
+        this.setState({ showVersionPopup: true, appList: tempList });
 
-      const iObj = {
-        icon: iconIndex != -1 ? appArray[iconIndex].icon : '',// require('../../../assets/m_shell.png'),
-        appName: result.AppName,
-        versionCode: result.CurrentVersion,
-        androidId: result.PackageName,
-        bundleId: result.PackageName,
-        lastUpdated: index != -1 ? moment(this.installedApps[index].lastUpdateTime).format("DD/MM/YYYY") : '',
-        isInstalled: index != -1 ? true : false,
-        isLatest: (index != -1 && result.MandatoryVersion == this.installedApps[index].versionCode + '') ? true : false
-      }
-
-      tempList.push(iObj);
+    } catch (error) {
+      console.log('error', JSON.stringify(error));
     }
 
-    if (tempList.length > 0)
-      this.setState({ showVersionPopup: true, appList: tempList });
 
   }
 
   getVersionControlsApi = async () => {
 
+
+    console.log("getVersionControlsApi");
+
+    this.setState({ isLoading: true });
+
     let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestService/Service1.svc/GetVersionControlDetails"
 
-    const param = 'bIUNut6Ks+Z1mTyaFx9dI+N9nxOrxQPSNsOkASCTDquWxiWumx6e8gKAn7YrNcikIxHS9Z9LEYjMDOxwHivKFw==';
+    // const param = 'bIUNut6Ks+Z1mTyaFx9dI+N9nxOrxQPSNsOkASCTDquWxiWumx6e8gKAn7YrNcikIxHS9Z9LEYjMDOxwHivKFw==';
 
-    // const param = await encryptData();
+    let params = {
+      'Platform': Platform.OS === 'android' ? 'Android' : 'Ios',
+      'PartnerKey': 'VC18APP02SER'
+    }
+
+    const encryptedParam = await encryptData(JSON.stringify(params));
+
+    console.log('version ecrypted data: ', encryptedParam);
 
     let encParams = {
-      "request": param
+      "request": encryptedParam
     };
 
     axios.post(url, encParams, {
@@ -454,7 +436,12 @@ export default class Dashboard extends React.Component {
 
       if (item.androidId === 'com.enparadigm.bharthiaxa') {
         Linking.openURL("https://slack-files.com/T85QWDR0V-F01SA1Z4C3U-69b095adf7");
-        return
+        return;
+      }
+
+      if (item.androidId === 'com.bhartiaxa.recruit') {
+        Linking.openURL("https://we.tl/t-F0IemaPQsd");
+        return;
       }
 
       Linking.openURL("http://play.google.com/store/apps/details?id=" + item.androidId);
@@ -476,7 +463,7 @@ export default class Dashboard extends React.Component {
       <View style={{
         backgroundColor: 'white',
         borderColor: '#a4a4a4',
-        borderWidth:1,
+        borderWidth: 1,
         borderRadius: 10,
         margin: 10,
         padding: 10,
@@ -510,13 +497,13 @@ export default class Dashboard extends React.Component {
 
         <View style={styles.appStatusContainer}>
 
-          <View style={{flexDirection:'row',backgroundColor:'transparent',height:'10%',justifyContent:'space-between'}}>
+          <View style={{ flexDirection: 'row', backgroundColor: 'transparent', height: '10%', justifyContent: 'space-between' }}>
 
             <Text style={styles.appStatuts}>APPS STATUS</Text>
             <TouchableOpacity
-              style={{height:'100%',backgroundColor:'transparent',width:'20%',justifyContent:'center',alignItems:'center'}}
+              style={{ width: '20%', justifyContent: 'center', alignItems: 'center' }}
               onPress={() => this.closeVersionPopup()}>
-              <Image style={{width:25,height:25}}
+              <Image style={{ width: 25, height: 25 }}
                 source={require('../../../assets/close.png')} />
             </TouchableOpacity>
           </View>
@@ -611,7 +598,7 @@ export default class Dashboard extends React.Component {
 
         </View>
 
-        <Loader visible={this.state.isLoading}/>
+        <Loader visible={this.state.isLoading} />
 
         <View style={styles.container}>
 
@@ -827,7 +814,7 @@ const styles = StyleSheet.create({
   },
 
   appStatuts: {
-  // flex: 1,
+    // flex: 1,
     margin: 10,
     color: 'rgb(30,77,155)',
     fontWeight: 'bold',
@@ -892,7 +879,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     elevation: 3,
     borderRadius: 15,
-  // borderColor: 'grey',
+    // borderColor: 'grey',
     padding: 10,
     shadowColor: "#000000",
     shadowOpacity: 0.3,
