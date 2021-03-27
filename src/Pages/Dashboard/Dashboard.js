@@ -120,7 +120,8 @@ export default class Dashboard extends React.Component {
       checkinstallstatus: true,
       savedToken: this.props.navigation.getParam('accessToken'),
       showVersionPopup: false,
-
+      AgentName:getConfiguration('AgentName',''),
+      AgentMobile:getConfiguration('MobileNumber',''),
       appList: []
     };
 
@@ -638,7 +639,7 @@ export default class Dashboard extends React.Component {
           <Image resizeMode="contain" style={styles.imgprofile}
             source={require('../../../assets/arw.png')} />
           <View style={styles.prfltitleContainer}>
-            <Text style={styles.headerTitle1}>Hi Sumit Stephen</Text>
+            <Text style={styles.headerTitle1}>Hi {this.state.AgentName}</Text>
             <Text style={styles.headerTitle}>What would you like to do now ?</Text>
           </View>
 

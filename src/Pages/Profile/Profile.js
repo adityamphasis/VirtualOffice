@@ -24,7 +24,7 @@ export default class ProfileScreen extends React.Component {
     this.state = {
       isLoading: false,
       clickOnApp: false,
-      Channnel: '--',
+      Channel: '--',
       bcode: '',
       Employee: '',
       supervisor: '',
@@ -148,17 +148,17 @@ export default class ProfileScreen extends React.Component {
 
 
     this.setState({
-      bcode: result.Emp_Code,
-      Channnel: result.Channel,
-      Employee: result.Agent_Code,
-      supervisor: result.Supervisor_Name,
-      branch: result.BranchName,
-      region: result.BranchName,
-      zone: result.BranchName,
-      mobile: result.Tel3,
-      email: result.EmailId,
-      name: result.Agent_Name,
-      designation: result.Designation
+      bcode: result.Emp_Code?result.Emp_Code:'NA',
+      Channel: result.Channel?result.Channel:'NA',
+      Employee: result.Agent_Code?result.Agent_Code:'NA',
+      supervisor: result.Supervisor_Name?result.Supervisor_Name:'NA',
+      branch: result.BranchName?result.BranchName:'NA',
+      region: result.BranchName?result.BranchName:'NA',
+      zone: result.BranchName?result.BranchName:'NA',
+      mobile: result.Tel3?result.Tel3:'NA',
+      email: result.EmailId?result.EmailId:'NA',
+      name: result.Agent_Name?result.Agent_Name:'NA',
+      designation: result.Designation?result.Designation:'NA'
     })
 
   }
@@ -172,17 +172,17 @@ export default class ProfileScreen extends React.Component {
     console.log('employee profile result => ', result);
 
     this.setState({
-      bcode: result.Emp_Code,
-      Channnel: result.Channnel,
-      Employee: result.Agent_Code,
-      supervisor: result.Supervisor_Name,
-      branch: result.BranchName,
-      region: result.BranchName,
-      zone: result.BranchName,
-      mobile: result.Tel3,
-      email: result.EmailId,
-      name: result.Agent_Name,
-      designation: result.Designation
+      bcode: result.Emp_Code?result.Emp_Code:'NA',
+      Channel: result.Channel?result.Channel:'NA',
+      Employee: result.Agent_Code?result.Agent_Code:'NA',
+      supervisor: result.Supervisor_Name?result.Supervisor_Name:'NA',
+      branch: result.BranchName?result.BranchName:'NA',
+      region: result.BranchName?result.BranchName:'NA',
+      zone: result.BranchName?result.BranchName:'NA',
+      mobile: result.Tel3?result.Tel3:'NA',
+      email: result.EmailId?result.EmailId:'NA',
+      name: result.Agent_Name?result.Agent_Name:'NA',
+      designation: result.Designation?result.Designation:'NA'
     })
 
   }
@@ -234,13 +234,13 @@ export default class ProfileScreen extends React.Component {
                 <Image resizeMode="contain" style={styles.stngLogo}
                   source={require('../../../assets/Channel.png')} />
 
-                <Text style={styles.dataText}> Channnel </Text>
+                <Text style={styles.dataText}> Channel </Text>
 
               </View>
               <View style={{ width: wp('50%'), backgroundColor: 'transparent', height: '100%', flexDirection: 'row', alignItems: 'center' }}>
 
 
-                <Text style={[styles.quickLinksText]}>{this.state.Channnel} </Text>
+                <Text style={[styles.quickLinksText]}>{this.state.Channel} </Text>
 
               </View>
 

@@ -78,10 +78,11 @@ class DrawerContent extends Component {
             <View style={{ height: 'auto', alignItems: 'center', justifyContent: 'center', marginHorizontal: 10, overflow: "hidden", backgroundColor: 'transparent', marginTop: '5%' }}>
               <Text style={{
                 color: 'rgb(30,77,155)', textAlign: 'center', fontSize: 16, height: 20,
-              }}>Roshan-Kewlani</Text>
+              }}>{getConfiguration('AgentName','')}
+              </Text>
               <Text style={{
                 color: 'rgb(30,77,155)', textAlign: 'center', fontSize: 16, height: 20,
-              }}>BAN-DAB-202334</Text>
+              }}>Code- {getConfiguration('salesflag')?getConfiguration('Agent'):getConfiguration('Employee')}</Text>
             </View>
 
           </View>

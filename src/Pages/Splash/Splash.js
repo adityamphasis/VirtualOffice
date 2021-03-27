@@ -109,6 +109,8 @@ export default class Splash extends React.Component {
     var etoken = result.EncodedJWT;
     var agentToken = result.AgentCode;
     var employeeCode = result.EmployeeCode
+    var agentName = result.AgentName;
+    var mobileNumber = result.Mobile
 
     console.log("gafsvfhvb", sales);
 
@@ -116,6 +118,8 @@ export default class Splash extends React.Component {
     setConfiguration('encryptedToken', etoken)
     setConfiguration('Agent', agentToken)
     setConfiguration('Employee', employeeCode)
+    setConfiguration('AgentName', agentName)
+    setConfiguration('MobileNumber', mobileNumber)
 
     if (Platform.OS == 'android') {
       NativeModules.HelloWorldModule.ShowMessage(

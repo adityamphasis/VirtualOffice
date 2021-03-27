@@ -11,7 +11,8 @@ import { Page, Button, ButtonContainer, Form, FormLabel, FormValue, Heading } fr
 import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'react-native-axios';
 import { Loader } from '../../../components';
-import { encryptData, decryptData, decryptIWInData } from '../../utils/AES';
+import { encryptData, decryptData } from '../../utils/AES';
+// import { try } from 'bluebird';
 
 export default class MLife extends React.Component {
 
@@ -147,6 +148,7 @@ export default class MLife extends React.Component {
     }).catch(error => {
       console.log("cvzgvxbhvb", error);
       this.setState({ isLoading: false });
+      alert('No User found')
 
     });
 
@@ -154,6 +156,8 @@ export default class MLife extends React.Component {
 
 
   parseiWinApiData = async (data) => {
+    
+    try {
 
     const result = await decryptData(data.response);
     this.setState({ isLoading: false });
@@ -161,7 +165,22 @@ export default class MLife extends React.Component {
     console.log('iWIn result => ', result.data.deepLink);
 
     const url = result.data.deepLink
-    Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+
+    if (url.includes("https"))
+     {
+     
+     Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+    } 
+    else
+     {
+      alert('No User found')
+    }
+      
+    } catch (error) {
+      alert('No user found');
+    }
+    
+   
 
     // this.props.navigation.navigate('SideMenu', { accessToken: accessToken })
 
