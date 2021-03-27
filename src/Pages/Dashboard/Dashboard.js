@@ -1,7 +1,7 @@
 import {
   StyleSheet, Text, View, TouchableOpacity,
   ImageBackground, Image, StatusBar, Keyboard,
-  Platform, SafeAreaView, Linking, NativeModules, FlatList
+  Platform, SafeAreaView, Linking, NativeModules, FlatList,BackHandler,Alert
 } from 'react-native';
 import React, { PropTypes } from 'react'
 import {
@@ -141,36 +141,37 @@ export default class Dashboard extends React.Component {
 
   componentDidMount() {
     this.getVersionControlsApi();
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+
   }
 
   handleBackButton = () => {
-    Alert.alert(
-      'Alert',
-      'Are you sure to exit the app',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        { text: 'OK', onPress: () => this.exitApp() },
-      ]
-    );
+  
 
-  }
-
-  exitApp() {
     if (this.props.navigation.isFocused()) {
-      BackHandler.exitApp();
+      Alert.alert(
+        'Alert',
+        'Are you sure want to exit the app',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: 'OK', onPress: () =>  BackHandler.exitApp()},
+        ]
+      );
+      // BackHandler.exitApp();
       return true;
     } else {
       return false;
     }
+
   }
 
-  handleBackPress = () => {
-    BackHandler.exitApp(); // works best when the goBack is async     return true;   
-  };
+  
+
+ 
 
   openDrawerClick = () => {
     this.props.navigation.dispatch(DrawerActions.openDrawer());

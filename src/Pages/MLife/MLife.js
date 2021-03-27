@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image, StatusBar, Keyboard, Platform, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image,Linking, StatusBar, Keyboard, Platform, SafeAreaView } from 'react-native';
 import React, { PropTypes } from 'react'
 import {
   widthPercentageToDP as wp,
@@ -20,7 +20,7 @@ export default class MLife extends React.Component {
     super(props);
     this.state = {
       clickOnApp: false,
-
+      isLoading: false,
     };
 
     const { navigation } = props;
@@ -103,10 +103,21 @@ export default class MLife extends React.Component {
 
   }
 
+  gotoiWIn()
+  {
+    if (getConfiguration('salesflag')) {
+      this.ApiWin()
+    } else {
+      alert('Available only for Agents')
+    }
+
+  }
+
 
   ApiWin = async () => {
 
     console.log('ApiWin');
+    this.setState({ isLoading: true });
 
     let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/login"
 
@@ -115,6 +126,7 @@ export default class MLife extends React.Component {
       'PartnerKey': 'JWT12SER02'
     }
 
+   
     const encryptedParams = await encryptData(JSON.stringify(params));
 
     console.log('encryptedParams', encryptedParams);
@@ -146,9 +158,10 @@ export default class MLife extends React.Component {
     const result = await decryptData(data.response);
     this.setState({ isLoading: false });
 
-    console.log('iWIn result => ', result);
+    console.log('iWIn result => ', result.data.deepLink);
 
-
+    const url = result.data.deepLink
+    Linking.openURL(url).catch((err) => console.error('An error occurred', err));
 
     // this.props.navigation.navigate('SideMenu', { accessToken: accessToken })
 
@@ -195,6 +208,8 @@ export default class MLife extends React.Component {
 
           </View>
 
+          <Loader visible={this.state.isLoading} />
+
           <View style={styles.container}>
             <TouchableOpacity
               style={styles.appBackground}
@@ -233,7 +248,7 @@ export default class MLife extends React.Component {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.appBackground}
-              onPress={() => this.ApiWin()}>
+              onPress={() => this.gotoiWIn()}>
               <View style={styles.appiconView}>
                 <Image resizeMode="contain" style={styles.appIcon}
                   source={require('../../../assets/i-WIN.png')} />
