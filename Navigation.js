@@ -35,35 +35,30 @@ const DrawerNav = createDrawerNavigator({
 
 
 }, {
-    contentComponent: DrawerContent,
-    overlayColor: 'rgba(0, 0, 0, 0.7)',
-    drawerPosition: "right",
-    drawerWidth: "60%",
+  contentComponent: DrawerContent,
+  overlayColor: 'rgba(0, 0, 0, 0.7)',
+  drawerPosition: "right",
+  drawerWidth: "60%",
 
-    contentOptions: {
-      tintColor: '#a6a5ab'
-    }
-  },
+  contentOptions: {
+    tintColor: '#a6a5ab'
+  }
+},
 
 );
 
 
 
 const MainStack = createStackNavigator({
-
-
-   Splash,
-   SideMenu: {
+  Splash,
+  SideMenu: {
     screen: DrawerNav,
   },
-   MLife,
-   MCustomer,
-
-
-
+  MLife,
+  MCustomer,
 }, {
-    headerMode: 'none'
-  })
+  headerMode: 'none'
+})
 
 
 export default createAppContainer(MainStack);

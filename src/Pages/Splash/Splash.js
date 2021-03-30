@@ -18,6 +18,7 @@ const config = {
   clientId: '7Io_iFf5oiq3P2KjUqXbStKmKpYa',
   redirectUrl: 'com.bhartiaxa.virtualoffice://oauth',
   scopes: ['openid'],
+  additionalParameters: { display: 'popup' },
   serviceConfiguration: {
     authorizationEndpoint: 'https://accounts.bharti-axalife.com/oauth2/authorize',
     tokenEndpoint: 'https://accounts.bharti-axalife.com/oauth2/token',
@@ -25,38 +26,56 @@ const config = {
   }
 };
 
+
 export default class Splash extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false,
+      isLoading: false
     }
+    this.authChecking = false;
+
   }
 
 
   componentDidMount() {
     this.getData();
+    // this.focusListener = this.props.navigation.addListener("didFocus", () => {
+    //   if (!this.authChecking)
+    //     this.getData();
+    // });
   }
+  
+  // componentWillUnmount() {
+  //   this.focusListener.remove();
+  // }
 
 
   getData = async () => {
 
+    this.authChecking = true;
+
     try {
       const result = await authorize(config);
 
-      console.log("accessToken", result.accessToken)
+      this.authChecking = false;
+
+      console.log("accessToken", result.accessToken);
+      console.log("accessTokenExpirationDate", result.accessTokenExpirationDate);
 
       setConfiguration('token', result.accessToken);
 
       this.JWTCheckAgentCode(result.accessToken);
 
-    // this.props.navigation.navigate('SideMenu', { accessToken:result.accessToken })
+      // this.props.navigation.navigate('SideMenu', { accessToken:result.accessToken })
 
     }
     catch (error) {
+      this.authChecking = false;
       console.log(error);
     }
+
   };
 
 
@@ -132,7 +151,7 @@ export default class Splash extends React.Component {
     }
 
 
-    this.props.navigation.navigate('SideMenu', { accessToken: accessToken })
+    this.props.navigation.replace('SideMenu', { accessToken: accessToken })
 
   }
 
@@ -141,7 +160,7 @@ export default class Splash extends React.Component {
 
     return (
       <Page>
-         <Loader visible={this.state.isLoading}/>
+        <Loader visible={this.state.isLoading} />
         <View style={{
           backgroundColor: 'transparent',
           width: wp('100%'),

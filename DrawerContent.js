@@ -1,62 +1,63 @@
 import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import axios from 'react-native-axios';
-import { getConfiguration, setConfiguration } from './src/utils/configuration';
+import { getConfiguration, setConfiguration, clearAll } from './src/utils/configuration';
 import { DrawerActions } from 'react-navigation';
-
-
-//https://accounts.bharti-axalife.com/oidc/logout
-
-// const mapStateToProps = state => ({
-//    isBusyGetProfile: state.GetProfileReducer.isBusy,
-//    responseGetProfile: state.GetProfileReducer
-
-
-// });
 
 
 class DrawerContent extends Component {
 
-
-
+  constructor(props) {
+    super(props)
+  }
 
   navigateToScreen = (route) => (
     () => {
       this.props.navigation.closeDrawer()
       this.props.navigation.navigate(route);
-
     })
 
+  logout = async () => {
+
+    this.props.navigation.closeDrawer()
+    
+    const accessToken = getConfiguration('token');
+
+    let url = 'https://accounts.bharti-axalife.com/oidc/logout?' + "id_token_hint="
+      + accessToken + "&post_logout_redirect_uri=" + "com.bhartiaxa.virtualoffice://oauth"
+
+    console.log('Logout url=>', url);
+
+    Linking.openURL(url)
+      .then(() => {
+        console.log('Logout succeess');
+        clearAll();
+        this.props.navigation.replace('Splash');
+      })
+      .catch((err) => console.error('An error occurred', err));
+
+
+    return;
+
+  }
 
   navigateToScreen = (route) => (
     () => {
       if (route == 'Splash') {
         console.log('reset here');
         //setConfiguration('user_id', '');
-
         try {
           // AsyncStorage.setItem('user_id', '')
         } catch (e) {
           // saving error
         }
-
-
-
       }
       const navigateAction = NavigationActions.navigate({
         routeName: route
       });
       this.props.navigation.dispatch(navigateAction);
     })
-
-  constructor(props) {
-    super(props)
-  }
-
-
-
-
 
   render() {
     return (
@@ -78,28 +79,22 @@ class DrawerContent extends Component {
             <View style={{ height: 'auto', alignItems: 'center', justifyContent: 'center', marginHorizontal: 10, overflow: "hidden", backgroundColor: 'transparent', marginTop: '5%' }}>
               <Text style={{
                 color: 'rgb(30,77,155)', textAlign: 'center', fontSize: 16, height: 20,
-              }}>{getConfiguration('AgentName','')}
+              }}>{getConfiguration('AgentName', '')}
               </Text>
               <Text style={{
                 color: 'rgb(30,77,155)', textAlign: 'center', fontSize: 16, height: 20,
-              }}>Code- {getConfiguration('salesflag')?getConfiguration('Agent'):getConfiguration('Employee')}</Text>
+              }}>Code- {getConfiguration('salesflag') ? getConfiguration('Agent') : getConfiguration('Employee')}</Text>
             </View>
 
           </View>
-
-
-
 
         </View>
         <View style={{ width: '100%', height: 1, backgroundColor: 'gray', marginTop: '10%' }}>
         </View>
 
-
         <View style={{ width: '100%', height: '100%', backgroundColor: '#d3d3d3' }}>
 
-
-
-          <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('HomeScreen')} >
+          <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('DashboardScreen')} >
             <Image resizeMode="contain" style={styles.tileIcon}
               source={require('./assets/home.png')}
             />
@@ -128,9 +123,7 @@ class DrawerContent extends Component {
           <View style={styles.divider}>
           </View>
 
-
-
-          <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('LogoutScreen')} >
+          <TouchableOpacity style={styles.tile} onPress={() => this.logout()} >
             <Image resizeMode="contain" style={styles.tileIcon}
               source={require('./assets/logout.png')}
             />
@@ -207,15 +200,15 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     width: '100%',
     backgroundColor: 'transparent',
-    bottom:0,
-  
+    bottom: 0,
+
   },
   bottomImage:
   {
     position: 'absolute',
     width: '100%',
     height: '30%',
-   
+
   },
   tile: {
     height: '10%',

@@ -1,4 +1,4 @@
-import {Map} from 'immutable';
+import { Map } from 'immutable';
 
 let configuration = Map();
 
@@ -8,6 +8,10 @@ export function setConfiguration(name, value) {
 
 export function setAll(properties) {
   configuration = configuration.merge(properties);
+}
+
+export function clearAll() {
+  configuration = configuration.removeAll();
 }
 
 export function unsetConfiguration(name) {

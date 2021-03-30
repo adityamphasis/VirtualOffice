@@ -1,7 +1,7 @@
 import {
   StyleSheet, Text, View, TouchableOpacity,
   ImageBackground, Image, StatusBar, Keyboard,
-  Platform, SafeAreaView, Linking, NativeModules, FlatList,BackHandler,Alert
+  Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
 } from 'react-native';
 import React, { PropTypes } from 'react'
 import {
@@ -85,16 +85,6 @@ const appArray = [
     bundleId: 'com.bhartiaxa.mlife',
     iosId: 'm-life/id1550263609'
   }, {
-    icon: require('../../../assets/i-WIN.png'),
-    appName: 'i-Win',
-    versionCode: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    androidId: 'com.xoxoday.compass',
-    bundleId: 'com.xoxoday.compass',
-    iosId: 'compass-xoxo/id1504258298'
-  }, {
     icon: require('../../../assets/i-RECRUIT.png'),
     appName: 'i-Recruit',
     versionCode: 0,
@@ -120,10 +110,12 @@ export default class Dashboard extends React.Component {
       checkinstallstatus: true,
       savedToken: this.props.navigation.getParam('accessToken'),
       showVersionPopup: false,
-      AgentName:getConfiguration('AgentName',''),
-      AgentMobile:getConfiguration('MobileNumber',''),
+      AgentName: getConfiguration('AgentName', ''),
+      AgentMobile: getConfiguration('MobileNumber', ''),
       appList: []
     };
+
+    this.isCheckedPopup = false;
 
   }
 
@@ -143,11 +135,18 @@ export default class Dashboard extends React.Component {
   componentDidMount() {
     this.getVersionControlsApi();
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    this.focusListener = this.props.navigation.addListener("didFocus", () => {
+      if (this.isCheckedPopup)
+        this.versionControlPopupLogin();
+    });
+  }
 
+  componentWillUnmount() {
+    this.focusListener.remove();
   }
 
   handleBackButton = () => {
-  
+
 
     if (this.props.navigation.isFocused()) {
       Alert.alert(
@@ -159,7 +158,7 @@ export default class Dashboard extends React.Component {
             onPress: () => console.log('Cancel Pressed'),
             style: 'cancel',
           },
-          { text: 'OK', onPress: () =>  BackHandler.exitApp()},
+          { text: 'OK', onPress: () => BackHandler.exitApp() },
         ]
       );
       // BackHandler.exitApp();
@@ -169,10 +168,6 @@ export default class Dashboard extends React.Component {
     }
 
   }
-
-  
-
- 
 
   openDrawerClick = () => {
     this.props.navigation.dispatch(DrawerActions.openDrawer());
@@ -363,7 +358,7 @@ export default class Dashboard extends React.Component {
 
       const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
 
-      console.log('installedApps', JSON.stringify(installedApps));
+      // console.log('installedApps', JSON.stringify(installedApps));
 
       let tempList = [];
 
@@ -380,7 +375,8 @@ export default class Dashboard extends React.Component {
           bundleId: item.PackageName,
           lastUpdated: index != -1 ? moment(installedApps[index].lastUpdateTime).format("DD/MM/YYYY") : '',
           isInstalled: index != -1 ? true : false,
-          isLatest: (index != -1 && item.MandatoryVersion == installedApps[index].versionName + '') ? true : false
+          isLatest: (index != -1 && item.MandatoryVersion == installedApps[index].versionName + '') ? true : false,
+          AppDownloadLink: item.AppDownloadLink ? item.AppDownloadLink : ''
         }
 
         tempList.push(iObj);
@@ -389,6 +385,8 @@ export default class Dashboard extends React.Component {
 
       if (tempList.length > 0)
         this.setState({ showVersionPopup: true, appList: tempList });
+
+      this.isCheckedPopup = false;
 
     } catch (error) {
       console.log('error', JSON.stringify(error));
@@ -475,28 +473,22 @@ export default class Dashboard extends React.Component {
 
     if (Platform.OS == 'android') {
 
-      if (item.androidId === '') {
+      if (item.AppDownloadLink === '') {
         alert('Application details not available.');
         return;
       }
 
-      if (item.androidId === 'com.enparadigm.bharthiaxa') {
-        Linking.openURL("https://slack-files.com/T85QWDR0V-F01SA1Z4C3U-69b095adf7");
-        return;
-      }
+      this.isCheckedPopup = true;
+      Linking.openURL(item.AppDownloadLink);
 
-      if (item.androidId === 'com.bhartiaxa.recruit') {
-        Linking.openURL("https://we.tl/t-F0IemaPQsd");
-        return;
-      }
-
-      Linking.openURL("http://play.google.com/store/apps/details?id=" + item.androidId);
     } else {
 
       if (item.iosId === '') {
         alert('Application details not available.');
         return;
       }
+
+      this.isCheckedPopup = true;
 
       Linking.openURL("https://apps.apple.com/us/app/" + item.iosId);
     }
@@ -523,7 +515,7 @@ export default class Dashboard extends React.Component {
           <Image style={[{ height: 40, width: 40, margin: 10 }]}
             resizeMode='contain'
             source={item.icon} />
-          <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'rgb(30,77,155)' }}>{item.appName}</Text>
+          <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'rgb(30,77,155)', textAlign: 'center' }}>{item.appName}</Text>
         </View>
         <View style={{ width: 1, backgroundColor: 'grey', height: '90%' }} />
         <View style={{ flex: 4, alignItems: 'center', paddingLeft: 30, paddingRight: 30 }}>
