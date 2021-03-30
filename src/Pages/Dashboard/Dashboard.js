@@ -949,7 +949,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(234,240,248)',
     justifyContent: 'center',
     alignItems: 'center',
-    opacity: 0.9
+    opacity: 0.8
 
 
   },

@@ -148,9 +148,9 @@ export default class ProfileScreen extends React.Component {
 
 
     this.setState({
-      bcode: result.Emp_Code?result.Emp_Code:'NA',
+      bcode: result.Emp_Code?result.Agent_Code:'NA',
       Channel: result.Channel?result.Channel:'NA',
-      Employee: result.Agent_Code?result.Agent_Code:'NA',
+      Employee: result.Agent_Code?result.Emp_Code:'NA',
       supervisor: result.Supervisor_Name?result.Supervisor_Name:'NA',
       branch: result.BranchName?result.BranchName:'NA',
       region: result.BranchName?result.BranchName:'NA',
@@ -585,7 +585,7 @@ const styles = StyleSheet.create({
   },
   prfltitleContainer:
   {
-    width: '40%',
+    width: '80%',
     height: 60,
     top: 5,
     marginLeft: '2%',
