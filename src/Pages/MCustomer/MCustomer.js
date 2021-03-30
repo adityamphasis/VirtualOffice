@@ -102,6 +102,8 @@ export default class MCustomer extends React.Component {
     true; // note: this is required, or you'll sometimes get silent failures
   `;
 
+  console.log("ghcbvxjnb",this.state.isSales);
+
     return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
          
@@ -181,7 +183,7 @@ export default class MCustomer extends React.Component {
                  source={{ html: '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
              '<body >' +
              '<form id="myForm" method="POST" action="https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1">' +
-             '<input type="hidden" name=" isSales" value="'+this.state.isSales+'"/>' +
+             '<input type="hidden" name="isSales" value="'+this.state.isSales+'"/>' +
             ' <input type="hidden" name="jwtToken" value="'+this.state.accessToken+'"/>' +
             ' <input type="hidden" type="submit" value="Login"/>' +
             ' </form>' +
