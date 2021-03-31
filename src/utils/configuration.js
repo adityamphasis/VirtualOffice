@@ -14,6 +14,10 @@ export function clearAll() {
   configuration = configuration.removeAll();
 }
 
+export function deleteAll(){
+  configuration = configuration.deleteAll();
+}
+
 export function unsetConfiguration(name) {
   configuration = configuration.delete(name);
 }

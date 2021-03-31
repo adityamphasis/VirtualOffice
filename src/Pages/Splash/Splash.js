@@ -18,11 +18,14 @@ const config = {
   clientId: '7Io_iFf5oiq3P2KjUqXbStKmKpYa',
   redirectUrl: 'com.bhartiaxa.virtualoffice://oauth',
   scopes: ['openid'],
-  additionalParameters: { display: 'popup' },
+  additionalParameters: {
+    prompt: 'login',
+    display: 'popup'
+  },
   serviceConfiguration: {
     authorizationEndpoint: 'https://accounts.bharti-axalife.com/oauth2/authorize',
     tokenEndpoint: 'https://accounts.bharti-axalife.com/oauth2/token',
-    // revocationEndpoint: 'https://demo.identityserver.io/connect/revoke'Bj
+    // revocationEndpoint: 'https://demo.identityserver.io/connect/revoke'
   }
 };
 
@@ -46,7 +49,7 @@ export default class Splash extends React.Component {
     //     this.getData();
     // });
   }
-  
+
   // componentWillUnmount() {
   //   this.focusListener.remove();
   // }
@@ -54,21 +57,31 @@ export default class Splash extends React.Component {
 
   getData = async () => {
 
+    try {
+      const accessToken = getConfiguration('token');
+      console.log('already logged in:', accessToken);
+      if (accessToken && accessToken != '') {
+        this.props.navigation.replace('SideMenu', { accessToken: accessToken });
+        return
+      }
+    } catch (error) {
+
+    }
+
     this.authChecking = true;
 
     try {
       const result = await authorize(config);
 
+      console.log('token result=>', JSON.stringify(result));
+
       this.authChecking = false;
 
-      console.log("accessToken", result.accessToken);
-      console.log("accessTokenExpirationDate", result.accessTokenExpirationDate);
-
       setConfiguration('token', result.accessToken);
+      setConfiguration('idToken', result.idToken);
+      setConfiguration('refreshToken', result.refreshToken);
 
       this.JWTCheckAgentCode(result.accessToken);
-
-      // this.props.navigation.navigate('SideMenu', { accessToken:result.accessToken })
 
     }
     catch (error) {
@@ -151,7 +164,7 @@ export default class Splash extends React.Component {
     }
 
 
-    this.props.navigation.replace('SideMenu', { accessToken: accessToken })
+    this.props.navigation.replace('SideMenu', { accessToken: accessToken });
 
   }
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
 import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import axios from 'react-native-axios';
-import { getConfiguration, setConfiguration, clearAll } from './src/utils/configuration';
+import { getConfiguration, setConfiguration, clearAll, deleteAll } from './src/utils/configuration';
 import { DrawerActions } from 'react-navigation';
 
 
@@ -20,23 +20,21 @@ class DrawerContent extends Component {
 
   logout = async () => {
 
-    this.props.navigation.closeDrawer()
+    this.props.navigation.closeDrawer();
+
+    setConfiguration('token', '');
     
-    const accessToken = getConfiguration('token');
+    setConfiguration('salesflag', '')
+    setConfiguration('encryptedToken', '')
+    setConfiguration('Agent', '')
+    setConfiguration('Employee', '')
+    setConfiguration('AgentName', '')
+    setConfiguration('MobileNumber', '')
 
-    let url = 'https://accounts.bharti-axalife.com/oidc/logout?' + "id_token_hint="
-      + accessToken + "&post_logout_redirect_uri=" + "com.bhartiaxa.virtualoffice://oauth"
+    clearAll();
+    deleteAll();
 
-    console.log('Logout url=>', url);
-
-    Linking.openURL(url)
-      .then(() => {
-        console.log('Logout succeess');
-        clearAll();
-        this.props.navigation.replace('Splash');
-      })
-      .catch((err) => console.error('An error occurred', err));
-
+    this.props.navigation.replace('Splash');
 
     return;
 

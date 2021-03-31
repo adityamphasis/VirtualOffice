@@ -1,25 +1,21 @@
 import React from 'react';
-import {
-  createAppContainer,
-
-} from "react-navigation";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
 
 
-import {
-  createStackNavigator
-} from "react-navigation-stack";
+import { createStackNavigator } from "react-navigation-stack";
 
-import {
-  createDrawerNavigator
-} from "react-navigation-drawer";
+import { createDrawerNavigator } from "react-navigation-drawer";
 
 import Splash from './src/Pages/Splash'
+
+import DrawerContent from './DrawerContent'
 import Dashboard from './src/Pages/Dashboard'
 import Profile from './src/Pages/Profile'
 import MLife from './src/Pages/MLife'
 import MCustomer from './src/Pages/MCustomer'
-import Logout from './src/Pages/Logout'
-import DrawerContent from './DrawerContent'
+
+import Logout from './src/Pages/Logout';
+
 
 const DrawerNav = createDrawerNavigator({
 
@@ -32,7 +28,6 @@ const DrawerNav = createDrawerNavigator({
   LogoutScreen: {
     screen: Logout
   },
-
 
 }, {
   contentComponent: DrawerContent,
@@ -48,6 +43,19 @@ const DrawerNav = createDrawerNavigator({
 );
 
 
+// createSwitchNavigator({
+//   AuthLoading:AuthLoading,
+//   App:AppStack,
+//   Auth:AuthStack
+//   },{
+//   initialRouteName:'AuthLoading'
+//   }))
+
+// const SplashStack = createStackNavigator({
+//   Splash
+// }, {
+//   headerMode: 'none'
+// })
 
 const MainStack = createStackNavigator({
   Splash,
