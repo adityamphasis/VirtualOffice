@@ -796,19 +796,19 @@ export default class Dashboard extends React.Component {
             style={styles.appBackground}
             onPress={() => this.clickApp()}>
 
-            <Text style={styles.quickLinksText}> Create a Lead </Text>
+            <Text style={styles.quickLinksText}>Create a Lead</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.appBackground}
             onPress={() => this.clickApp()}>
 
-            <Text style={styles.quickLinksText}> Onboard Customer </Text>
+            <Text style={styles.quickLinksText}>Onboard Customer</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.appBackground}
             onPress={() => this.clickApp()}>
 
-            <Text style={styles.quickLinksText}> Track application status </Text>
+            <Text style={styles.quickLinksText}>Track application status</Text>
           </TouchableOpacity>
 
         </View>
@@ -852,6 +852,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'WorkSans-Bold'
   },
+  cmgsooncontainer: {
+    backgroundColor: 'transparent',
+         width:  wp('90%'),
+         flex:0.4,
+        // borderRadius:10
+        justifyContent:'center',
+       alignItems:'center'
+
+},
 
   appStatuts: {
     // flex: 1,
@@ -1054,6 +1063,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     backgroundColor: 'transparent',
+    alignSelf:'center'
   },
   backTouchable: {
     width: 60,
@@ -1130,8 +1140,8 @@ const styles = StyleSheet.create({
   },
   quickLinksText: {
     color: 'rgb(30,77,155)',
-    fontWeight: 'bold',
-    alignSelf: 'center',
+    fontFamily: 'WorkSans-Semibold',
+    textAlign: 'center',
     fontSize: 15,
   },
   appdppescription: {

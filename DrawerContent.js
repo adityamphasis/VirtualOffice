@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, Linking } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, Linking, NativeModules, Platform } from 'react-native';
 import axios from 'react-native-axios';
 import { getConfiguration, setConfiguration, clearAll, deleteAll } from './src/utils/configuration';
 import { DrawerActions } from 'react-navigation';
@@ -23,7 +23,7 @@ class DrawerContent extends Component {
     this.props.navigation.closeDrawer();
 
     setConfiguration('token', '');
-    
+
     setConfiguration('salesflag', '')
     setConfiguration('encryptedToken', '')
     setConfiguration('Agent', '')
@@ -33,6 +33,11 @@ class DrawerContent extends Component {
 
     clearAll();
     deleteAll();
+
+    if (Platform.OS == 'android')
+      NativeModules.HelloWorldModule.ShowMessage('', 'false', 5000);
+    else if (Platform.OS == 'ios')
+      NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
 
     this.props.navigation.replace('Splash');
 

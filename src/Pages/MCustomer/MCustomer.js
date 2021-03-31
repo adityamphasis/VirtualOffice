@@ -102,7 +102,7 @@ export default class MCustomer extends React.Component {
     true; // note: this is required, or you'll sometimes get silent failures
   `;
 
-  console.log("ghcbvxjnb",this.state.isSales);
+  console.log("ghcbvxjnb",this.state.accessToken);
 
     return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -165,6 +165,7 @@ export default class MCustomer extends React.Component {
                {this.state.comingScreen == 'customer' ?
                <WebView
                originWhitelist={['*']}
+               cacheEnabled={false}
                injectedJavaScript={runFirst}
                source={{ html: '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
            '<body >' +

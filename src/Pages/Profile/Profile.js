@@ -148,9 +148,9 @@ export default class ProfileScreen extends React.Component {
 
 
     this.setState({
-      bcode: result.Emp_Code?result.Agent_Code:'NA',
+      bcode: result.Emp_Code?result.Emp_Code:'NA',
       Channel: result.Channel?result.Channel:'NA',
-      Employee: result.Agent_Code?result.Emp_Code:'NA',
+      Employee: result.Agent_Code?result.Agent_Code:'NA',
       supervisor: result.Supervisor_Name?result.Supervisor_Name:'NA',
       branch: result.BranchName?result.BranchName:'NA',
       region: result.BranchName?result.BranchName:'NA',
@@ -221,7 +221,7 @@ export default class ProfileScreen extends React.Component {
               source={require('../../../assets/prfl_img.jpg')} />
             <View style={styles.prfltitleContainer}>
               <Text style={styles.headerTitle}>{this.state.name}</Text>
-              <Text style={styles.headerTitle1}>Designation,{this.state.designation} </Text>
+              <Text style={styles.headerTitle1}>{this.state.designation} </Text>
             </View>
 
 
