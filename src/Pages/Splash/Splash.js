@@ -143,7 +143,7 @@ export default class Splash extends React.Component {
     if (Platform.OS == 'android') {
       NativeModules.HelloWorldModule.ShowMessage(
         etoken,
-        'false',
+        sales+'',
         5000,
       );
     } else if (Platform.OS == 'ios') {
