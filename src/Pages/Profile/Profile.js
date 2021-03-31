@@ -148,9 +148,9 @@ export default class ProfileScreen extends React.Component {
 
 
     this.setState({
-      bcode: result.Emp_Code?result.Emp_Code:'NA',
+      bcode: result.Agent_Code?result.Agent_Code:'NA',
       Channel: result.Channel?result.Channel:'NA',
-      Employee: result.Agent_Code?result.Agent_Code:'NA',
+      Employee: result.Emp_Code?result.Emp_Code:'NA',
       supervisor: result.Supervisor_Name?result.Supervisor_Name:'NA',
       branch: result.BranchName?result.BranchName:'NA',
       region: result.BranchName?result.BranchName:'NA',
@@ -262,7 +262,7 @@ export default class ProfileScreen extends React.Component {
               <View style={{ width: wp('50%'), backgroundColor: 'transparent', height: '100%', flexDirection: 'row', alignItems: 'center' }}>
 
 
-                <Text style={[styles.quickLinksText]}>{this.state.bcode} </Text>
+                <Text style={[styles.quickLinksText]}>{getConfiguration('Agent') == '0' ? 'NA' : getConfiguration('Agent')} </Text>
 
               </View>
 
@@ -277,13 +277,13 @@ export default class ProfileScreen extends React.Component {
                 <Image resizeMode="contain" style={styles.stngLogo}
                   source={require('../../../assets/Employee.png')} />
 
-                <Text style={styles.dataText}> Employee </Text>
+                <Text style={styles.dataText}>Employee</Text>
 
               </View>
               <View style={{ width: wp('50%'), backgroundColor: 'transparent', height: '100%', flexDirection: 'row', alignItems: 'center' }}>
 
 
-                <Text style={[styles.quickLinksText]}>{this.state.Employee} </Text>
+                <Text style={[styles.quickLinksText]}>{getConfiguration('Employee') == '' ? 'NA' : getConfiguration('Employee') }</Text>
 
               </View>
 
