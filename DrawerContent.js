@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, Linking, NativeModules, Platform } from 'react-native';
+import {
+  Text, View, StyleSheet, Image, TouchableOpacity,
+  ScrollView, Linking, NativeModules, Platform, Alert
+} from 'react-native';
 import axios from 'react-native-axios';
 import { getConfiguration, setConfiguration, clearAll, deleteAll } from './src/utils/configuration';
 import { DrawerActions } from 'react-navigation';
@@ -18,9 +21,27 @@ class DrawerContent extends Component {
       this.props.navigation.navigate(route);
     })
 
-  logout = async () => {
+  askForPopup = () => {
 
     this.props.navigation.closeDrawer();
+
+    Alert.alert(
+      'Logout!',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'OK', onPress: () => this.logout() },
+      ]
+    );
+
+
+  }
+
+  logout = async () => {
 
     setConfiguration('token', '');
 
@@ -39,28 +60,28 @@ class DrawerContent extends Component {
     else if (Platform.OS == 'ios')
       NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
 
-    this.props.navigation.replace('Splash');
+    this.props.navigation.navigate('SplashScreen');
 
     return;
 
   }
 
-  navigateToScreen = (route) => (
-    () => {
-      if (route == 'Splash') {
-        console.log('reset here');
-        //setConfiguration('user_id', '');
-        try {
-          // AsyncStorage.setItem('user_id', '')
-        } catch (e) {
-          // saving error
-        }
-      }
-      const navigateAction = NavigationActions.navigate({
-        routeName: route
-      });
-      this.props.navigation.dispatch(navigateAction);
-    })
+  // navigateToScreen = (route) => (
+  //   () => {
+  //     if (route == 'Splash') {
+  //       console.log('reset here');
+  //       //setConfiguration('user_id', '');
+  //       try {
+  //         // AsyncStorage.setItem('user_id', '')
+  //       } catch (e) {
+  //         // saving error
+  //       }
+  //     }
+  //     const navigateAction = NavigationActions.navigate({
+  //       routeName: route
+  //     });
+  //     this.props.navigation.dispatch(navigateAction);
+  //   })
 
   render() {
     return (
@@ -126,7 +147,7 @@ class DrawerContent extends Component {
           <View style={styles.divider}>
           </View>
 
-          <TouchableOpacity style={styles.tile} onPress={() => this.logout()} >
+          <TouchableOpacity style={styles.tile} onPress={() => this.askForPopup()} >
             <Image resizeMode="contain" style={styles.tileIcon}
               source={require('./assets/logout.png')}
             />

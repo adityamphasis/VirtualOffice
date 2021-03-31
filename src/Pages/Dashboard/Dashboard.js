@@ -23,6 +23,8 @@ import Clipboard from '@react-native-community/clipboard';
 import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
 
+
+
 const appArray = [
   {
     icon: require('../../../assets/vymo.png'),
@@ -47,16 +49,6 @@ const appArray = [
   }, {
     icon: require('../../../assets/i-WIN.png'),
     appName: 'i-Win',
-    versionCode: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    androidId: 'com.xoxoday.compass',
-    bundleId: 'com.xoxoday.compass',
-    iosId: 'compass-xoxo/id1504258298'
-  }, {
-    icon: require('../../../assets/i-EARN.png'),
-    appName: 'B.A.S.E Academy',
     versionCode: 0,
     isInstalled: false,
     isLatest: false,
@@ -150,8 +142,8 @@ export default class Dashboard extends React.Component {
 
     if (this.props.navigation.isFocused()) {
       Alert.alert(
-        'Alert',
-        'Are you sure want to exit the app',
+        'Exit!',
+        'Are you sure you want to exit the app?',
         [
           {
             text: 'Cancel',
@@ -854,13 +846,13 @@ const styles = StyleSheet.create({
   },
   cmgsooncontainer: {
     backgroundColor: 'transparent',
-         width:  wp('90%'),
-         flex:0.4,
-        // borderRadius:10
-        justifyContent:'center',
-       alignItems:'center'
+    width: wp('90%'),
+    flex: 0.4,
+    // borderRadius:10
+    justifyContent: 'center',
+    alignItems: 'center'
 
-},
+  },
 
   appStatuts: {
     // flex: 1,
@@ -1063,7 +1055,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     backgroundColor: 'transparent',
-    alignSelf:'center'
+    alignSelf: 'center'
   },
   backTouchable: {
     width: 60,

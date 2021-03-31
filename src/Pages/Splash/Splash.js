@@ -61,7 +61,8 @@ export default class Splash extends React.Component {
       const accessToken = getConfiguration('token');
       console.log('already logged in:', accessToken);
       if (accessToken && accessToken != '') {
-        this.props.navigation.replace('SideMenu', { accessToken: accessToken });
+        // this.props.navigation.replace('SideMenu', { accessToken: accessToken });
+        this.props.navigation.navigate('MainScreen', { accessToken: accessToken });
         return
       }
     } catch (error) {
@@ -144,7 +145,7 @@ export default class Splash extends React.Component {
     var agentName = result.AgentName;
     var mobileNumber = result.Mobile
 
-    console.log("gafsvfhvb", sales);
+    // console.log("gafsvfhvb", sales);
 
     setConfiguration('salesflag', sales)
     setConfiguration('encryptedToken', etoken)
@@ -156,15 +157,14 @@ export default class Splash extends React.Component {
     if (Platform.OS == 'android') {
       NativeModules.HelloWorldModule.ShowMessage(
         etoken,
-        sales+'',
+        sales + '',
         5000,
       );
     } else if (Platform.OS == 'ios') {
       NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
     }
 
-
-    this.props.navigation.replace('SideMenu', { accessToken: accessToken });
+    this.props.navigation.navigate('MainScreen', { accessToken: accessToken });
 
   }
 

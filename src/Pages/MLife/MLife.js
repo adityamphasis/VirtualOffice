@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image,Linking, StatusBar, Keyboard, Platform, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image, Linking, StatusBar, Keyboard, Platform, SafeAreaView } from 'react-native';
 import React, { PropTypes } from 'react'
 import {
   widthPercentageToDP as wp,
@@ -24,29 +24,17 @@ export default class MLife extends React.Component {
       isLoading: false,
     };
 
-    const { navigation } = props;
-
-
   }
-
-
-  componentDidMount() {
-
-
-  }
-
-  componentWillUnmount() {
-
-
-
-  }
-
 
   openDrawerClick() {
-    this.props.navigation.navigate('SideMenu');
+
+    console.log('openDrawerClick');
+
+    this.props.navigation.dispatch(DrawerActions.openDrawer());
   }
 
   clickiLearn = () => {
+
     IntentLauncher.startAppByPackageName('com.chaptervitamins.bharatiaxa')
       .then((result) => {
         console.log('startAppByPackageName started');
@@ -98,14 +86,9 @@ export default class MLife extends React.Component {
       alert('Available only for Agents')
     }
 
-    // this.props.navigation.navigate('MCustomer',{screen:'service'})
-
-
-
   }
 
-  gotoiWIn()
-  {
+  gotoiWIn() {
     if (getConfiguration('salesflag')) {
       this.ApiWin()
     } else {
@@ -127,7 +110,7 @@ export default class MLife extends React.Component {
       'PartnerKey': 'JWT12SER02'
     }
 
-   
+
     const encryptedParams = await encryptData(JSON.stringify(params));
 
     console.log('encryptedParams', encryptedParams);
@@ -156,31 +139,29 @@ export default class MLife extends React.Component {
 
 
   parseiWinApiData = async (data) => {
-    
+
     try {
 
-    const result = await decryptData(data.response);
-    this.setState({ isLoading: false });
+      const result = await decryptData(data.response);
+      this.setState({ isLoading: false });
 
-    console.log('iWIn result => ', result.data.deepLink);
+      console.log('iWIn result => ', result.data.deepLink);
 
-    const url = result.data.deepLink
+      const url = result.data.deepLink
 
-    if (url.includes("https"))
-     {
-     
-     Linking.openURL(url).catch((err) => console.error('An error occurred', err));
-    } 
-    else
-     {
-      alert('No User found')
-    }
-      
+      if (url.includes("https")) {
+
+        Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+      }
+      else {
+        alert('No User found')
+      }
+
     } catch (error) {
       alert('No user found');
     }
-    
-   
+
+
 
     // this.props.navigation.navigate('SideMenu', { accessToken: accessToken })
 
@@ -199,10 +180,10 @@ export default class MLife extends React.Component {
             <Text style={[styles.headerTitle1, { marginLeft: 5, color: 'black' }]}>M-Life</Text>
           </TouchableOpacity>
 
-          <View style={styles.welcomContainer}>
-            {/* <Text style={styles.headerTitle}> Welcome to</Text> */}
-            {/* <Text style={styles.headerTitle1}>M-Life</Text> */}
-          </View>
+          {/* <View style={styles.welcomContainer}>
+            <Text style={styles.headerTitle}> Welcome to</Text>
+            <Text style={styles.headerTitle1}>M-Life</Text>
+          </View> */}
           <TouchableOpacity
             style={styles.backTouchable}
             onPress={() => this.openDrawerClick()}>
@@ -216,16 +197,16 @@ export default class MLife extends React.Component {
         <ScrollView style={styles.mainContainer}>
 
 
-          <View style={styles.imgcontainer}>
+          {/* <View style={styles.imgcontainer}> */}
 
 
-            {/* <Image resizeMode="contain" style={styles.imgprofile}
+          {/* <Image resizeMode="contain" style={styles.imgprofile}
             source = {require('../../../assets/prfl_img.jpg')}/> */}
-            {/* <Text style={styles.appName}> Welcome Test </Text> */}
-            {/* <Text style={styles.appName}> Designation, Team </Text> */}
+          {/* <Text style={styles.appName}> Welcome Test </Text> */}
+          {/* <Text style={styles.appName}> Designation, Team </Text> */}
 
 
-          </View>
+          {/* </View> */}
 
           <Loader visible={this.state.isLoading} />
 
@@ -248,7 +229,7 @@ export default class MLife extends React.Component {
                   source={require('../../../assets/i-LEARN.png')} />
               </View>
               <Text style={styles.quickLinksText}> i-LEARN </Text>
-              <Text style={styles.appdppescription}> For learning and Development </Text>
+              <Text style={styles.appdppescription}>For learning and Development</Text>
             </TouchableOpacity>
 
 
@@ -263,7 +244,7 @@ export default class MLife extends React.Component {
                   source={require('../../../assets/i-EARN.png')} />
               </View>
               <Text style={styles.quickLinksText}> i-EARN </Text>
-              <Text style={styles.appdppescription}> For income and career planning</Text>
+              <Text style={styles.appdppescription}>For income and career planning</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.appBackground}
@@ -273,11 +254,10 @@ export default class MLife extends React.Component {
                   source={require('../../../assets/i-WIN.png')} />
               </View>
               <Text style={styles.quickLinksText}> i-WIN </Text>
-              <Text style={styles.appdppescription}> For reward and recognition </Text>
+              <Text style={styles.appdppescription}>For reward and recognition</Text>
             </TouchableOpacity>
 
           </View>
-
 
           <View style={styles.container1}>
             <TouchableOpacity
@@ -288,7 +268,7 @@ export default class MLife extends React.Component {
                   source={require('../../../assets/i-SERVICE.png')} />
               </View>
               <Text style={styles.quickLinksText}> i-SERVICE </Text>
-              <Text style={styles.appdppescription}> For self and customer service </Text>
+              <Text style={styles.appdppescription}>For self and customer service</Text>
             </TouchableOpacity>
 
           </View>
@@ -331,12 +311,10 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     //marginBottom:10,
-    position: 'absolute',
-    backgroundColor: '#f5f5f5',
+    // position: 'absolute',
+    backgroundColor: '#f7f7f7',
     // content: 'center',
-    // alignItems:'center',
-
-
+    // justifyContent:'center',
   },
   rupeeContainer: {
     flexDirection: 'row',
@@ -468,7 +446,6 @@ const styles = StyleSheet.create({
   {
     width: '30%',
     height: '100%',
-
     marginLeft: '30%',
     justifyContent: 'center',
     alignItems: 'center'
@@ -512,6 +489,7 @@ const styles = StyleSheet.create({
     width: wp('45%'),
     height: wp('25%'),
     top: 0,
+    padding:5,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
