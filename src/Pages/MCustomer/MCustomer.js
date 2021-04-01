@@ -86,18 +86,18 @@ export default class MCustomer extends React.Component {
     //   '</body>')
     // );
 
-//     window.open('data:text/html;charset=utf-8,' +
-//     encodeURIComponent( // Escape for URL formatting
-//       '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
-//       '<body >' +
-//       '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
-//       '<input type="hidden" name="source" value="'+this.state.platform+'"/>' +
-//      ' <input type="hidden" name="jwtToken" value="'+this.state.accessToken+'"/>' +
-//      ' <input type="hidden" type="submit" value="Login"/>' +
-//      ' </form>' +
-//       '</body>'
-//     )
-// );
+    //     window.open('data:text/html;charset=utf-8,' +
+    //     encodeURIComponent( // Escape for URL formatting
+    //       '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
+    //       '<body >' +
+    //       '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
+    //       '<input type="hidden" name="source" value="'+this.state.platform+'"/>' +
+    //      ' <input type="hidden" name="jwtToken" value="'+this.state.accessToken+'"/>' +
+    //      ' <input type="hidden" type="submit" value="Login"/>' +
+    //      ' </form>' +
+    //       '</body>'
+    //     )
+    // );
 
   }
 
@@ -133,16 +133,18 @@ export default class MCustomer extends React.Component {
   shouldStartLoadWithRequest = (req) => {
     // open the link in native browser
     // Linking.openURL(req.url);
-  
+
     // returning false prevents WebView to navigate to new URL
     return false;
   };
 
   render() {
 
-    const runFirst = `ios.isNativeApp = true; true; // note: this is required, or you'll sometimes get silent failures`;
+    // const runFirst = `ios.isNativeApp = true; true; // note: this is required, or you'll sometimes get silent failures`;
 
     // let jsCode = `!function(){var e=function(e,n,t){if(n=n.replace(/^on/g,""),"addEventListener"in window)e.addEventListener(n,t,!1);else if("attachEvent"in window)e.attachEvent("on"+n,t);else{var o=e["on"+n];e["on"+n]=o?function(e){o(e),t(e)}:t}return e},n=document.querySelectorAll("a[href]");if(n)for(var t in n)n.hasOwnProperty(t)&&e(n[t],"onclick",function(e){new RegExp("^https?://"+location.host,"gi").test(this.href)||(e.preventDefault(),window.postMessage(JSON.stringify({external_url_open:this.href})))})}();`
+
+    const localScript = '';
 
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -199,66 +201,85 @@ export default class MCustomer extends React.Component {
                /> */}
 
             {
-              // this.state.comingScreen == 'customer' ?
-              <WebView
-                originWhitelist={['*']}
-                cacheEnabled={false}
-                // onShouldStartLoadWithRequest={this.shouldStartLoadWithRequest}
-                onError={console.error.bind(console, 'error')}
-                injectedJavaScript={runFirst}
-                // onMessage={this.onMessage.bind(this)}
-                javaScriptEnabled={true}
-                source={{
-                  html: '<script type="text/javascript"> ' +
-                    'window.onload=function(){' +
-                    'document.forms["myForm"].submit();' +
-                    // 'for(var els = document.getElementsByTagName(\'a\'), i = els.length; i--;){' +
-                    // 'var href = els[i].href;' +
-                    // 'els[i].href = \'javascript:void(0);\';' +
-                    // 'els[i].onclick = (function(el, href){' +
-                    // 'return function(){' +
-                    // 'window.location.href = href;' +
-                    // '};' +
-                    // '})(els[i], href);' +
-                    // '}' +
-                    // 'document.querySelectorAll(\'a\')].map((el) => {el.target = "_self"});' +
-                    // 'document.documentElement.addEventListener(\'click\', function (event) {' +
-                    // 'if(event.ctrlKey){event.preventDefault()}' +
-                    // '});' +
+              this.state.comingScreen == 'customer' ?
+                <WebView
+                  originWhitelist={['*']}
+                  cacheEnabled={false}
+                  setSupportMultipleWindows={false}
+                  saveFormDataDisabled={true}
+                  allowsBackForwardNavigationGestures={true}
+                  // onShouldStartLoadWithRequest={this.shouldStartLoadWithRequest}
+                  onError={console.error.bind(console, 'error')}
+                  // injectedJavaScript={runFirst}
+                  incognito={true}
+                  cacheMode={'LOAD_NO_CACHE'}
+                  // onMessage={this.onMessage.bind(this)}
+                  javaScriptEnabled={true}
+                  source={{
+                    html: '<script type="text/javascript"> ' +
+                      'window.onload=function(){' +
+                      'document.forms["myForm"].submit();' +
+                      // 'for(var els = document.getElementsByTagName(\'a\'), i = els.length; i--;){' +
+                      // 'var href = els[i].href;' +
+                      // 'els[i].href = \'javascript:void(0);\';' +
+                      // 'els[i].onclick = (function(el, href){' +
+                      // 'return function(){' +
+                      // 'window.location.href = href;' +
+                      // '};' +
+                      // '})(els[i], href);' +
+                      // '}' +
+                      // 'document.querySelectorAll(\'a\')].map((el) => {el.target = "_self"});' +
+                      // 'document.documentElement.addEventListener(\'click\', function (event) {' +
+                      // 'if(event.ctrlKey){event.preventDefault()}' +
+                      // '});' +
 
-                    '[...document.querySelectorAll(\'a\')].map((el) => {' +
-                    'el.target = "_self"' +
-                    '});' +
+                      // '[...document.querySelectorAll(\'a\')].map((el) => {' +
+                      // 'el.target = "_self"' +
+                      // '});' +
 
-                    '}</script>' +
-                    '<body>' +
-                    '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
-                    '<input type="hidden" name="source" value="' + this.state.platform + '"/>' +
-                    '<input type="hidden" name="jwtToken" value="' + this.state.accessToken + '"/>' +
-                    '<input type="hidden" type="submit" value="Login"/>' +
-                    '</form>' +
-                    '</body>'
-                }}
-              />
-              // :
-              // <WebView
-              //   originWhitelist={['*']}
-              //   injectedJavaScript={runFirst}
-              //   source={{
-              //     html: '<script type="text/javascript"> ' +
-              //       'window.onload=function(){' +
-              //       'document.forms["myForm"].submit();' +
-              //       // 'document.querySelectorAll("a")].map((el) => {el.target = "_self"});' +
-              //       '}</script>' +
-              //       '<body >' +
-              //       '<form id="myForm" method="POST" action="https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1">' +
-              //       '<input type="hidden" name="isSales" value="' + this.state.isSales + '"/>' +
-              //       ' <input type="hidden" name="jwtToken" value="' + this.state.accessToken + '"/>' +
-              //       ' <input type="hidden" type="submit" value="Login"/>' +
-              //       ' </form>' +
-              //       '</body>'
-              //   }}
-              // />
+                      '}</script>' +
+                      '<body>' +
+                      '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
+                      '<input type="hidden" name="source" value="' + this.state.platform + '"/>' +
+                      '<input type="hidden" name="jwtToken" value="' + this.state.accessToken + '"/>' +
+                      '<input type="hidden" type="submit" value="Login"/>' +
+                      '</form>' +
+                      '</body>'
+                  }}
+                />
+                :
+                <WebView
+                  originWhitelist={['*']}
+                  cacheEnabled={false}
+                  setSupportMultipleWindows={false}
+                  saveFormDataDisabled={true}
+                  allowsBackForwardNavigationGestures={true}
+                  // onShouldStartLoadWithRequest={this.shouldStartLoadWithRequest}
+                  onError={console.error.bind(console, 'error')}
+                  // injectedJavaScript={runFirst}
+                  incognito={true}
+                  cacheMode={'LOAD_NO_CACHE'}
+                  // onMessage={this.onMessage.bind(this)}
+                  javaScriptEnabled={true}
+                  source={{
+                    html: '<script type="text/javascript"> ' +
+                      'window.onload=function(){' +
+                      'document.forms["myForm"].submit();' +
+
+                      // '[...document.querySelectorAll(\'a\')].map((el) => {' +
+                      // 'el.target = "_self"' +
+                      // '});' +
+
+                      '}</script>' +
+                      '<body >' +
+                      '<form id="myForm" method="POST" action="https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1">' +
+                      '<input type="hidden" name="isSales" value="' + this.state.isSales + '"/>' +
+                      '<input type="hidden" name="jwtToken" value="' + this.state.accessToken + '"/>' +
+                      '<input type="hidden" type="submit" value="Login"/>' +
+                      '</form>' +
+                      '</body>'
+                  }}
+                />
             }
 
           </View>
