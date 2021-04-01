@@ -71,7 +71,7 @@ export default class Splash extends React.Component {
     setConfiguration('AgentName', await getStorage('AgentName'));
     setConfiguration('MobileNumber', await getStorage('MobileNumber'));
 
-    this.getData();
+    this.checkForBioAndProceed();
 
 
     // this.getData();
