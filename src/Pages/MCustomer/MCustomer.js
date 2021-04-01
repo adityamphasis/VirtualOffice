@@ -86,11 +86,28 @@ export default class MCustomer extends React.Component {
     this.props.navigation.navigate('SendMessage');
   }
 
+  onMessage(e) {
 
+    console.log('onMessage');
+
+    // retrieve event data
+    var data = e.nativeEvent.data;
+    // maybe parse stringified JSON
+    try {
+      data = JSON.parse(data)
+    } catch (e) { }
+
+    // check if this message concerns us
+    if ('object' == typeof data && data.external_url_open) {
+      // proceed with URL open request
+    }
+  }
 
   render() {
 
     const runFirst = `ios.isNativeApp = true; true; // note: this is required, or you'll sometimes get silent failures`;
+
+    let jsCode = `!function(){var e=function(e,n,t){if(n=n.replace(/^on/g,""),"addEventListener"in window)e.addEventListener(n,t,!1);else if("attachEvent"in window)e.attachEvent("on"+n,t);else{var o=e["on"+n];e["on"+n]=o?function(e){o(e),t(e)}:t}return e},n=document.querySelectorAll("a[href]");if(n)for(var t in n)n.hasOwnProperty(t)&&e(n[t],"onclick",function(e){new RegExp("^https?://"+location.host,"gi").test(this.href)||(e.preventDefault(),window.postMessage(JSON.stringify({external_url_open:this.href})))})}();`
 
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -146,38 +163,66 @@ export default class MCustomer extends React.Component {
 
                /> */}
 
-            {this.state.comingScreen == 'customer' ?
+            {
+              // this.state.comingScreen == 'customer' ?
               <WebView
                 originWhitelist={['*']}
                 cacheEnabled={false}
-                injectedJavaScript={runFirst}
+                onError={console.error.bind(console, 'error')}
+                injectedJavaScript={jsCode}
+                onMessage={this.onMessage.bind(this)}
+                javaScriptEnabled={true}
                 source={{
-                  html: '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
-                    '<body >' +
+                  html: '<script type="text/javascript"> ' +
+                    'window.onload=function(){' +
+                    'document.forms["myForm"].submit();' +
+                    'for(var els = document.getElementsByTagName(\'a\'), i = els.length; i--;){' +
+                    'var href = els[i].href;' +
+                    'els[i].href = \'javascript:void(0);\';' +
+                    'els[i].onclick = (function(el, href){' +
+                    'return function(){' +
+                    'window.location.href = href;' +
+                    '};' +
+                    '})(els[i], href);' +
+                    '}' +
+                    // 'document.querySelectorAll(\'a\')].map((el) => {el.target = "_self"});' +
+                    // 'document.documentElement.addEventListener(\'click\', function (event) {' +
+                    // 'if(event.ctrlKey){event.preventDefault()}' +
+                    // '});' +
+
+                    // '[...document.querySelectorAll(\'a\')].map((el) => {' +
+                    // 'el.target = "_self"' +
+                    // '});' +
+
+                    '}</script>' +
+                    '<body>' +
                     '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
                     '<input type="hidden" name="source" value="' + this.state.platform + '"/>' +
-                    ' <input type="hidden" name="jwtToken" value="' + this.state.accessToken + '"/>' +
-                    ' <input type="hidden" type="submit" value="Login"/>' +
-                    ' </form>' +
-                    '</body>'
-                }}
-
-              />
-              :
-              <WebView
-                originWhitelist={['*']}
-                injectedJavaScript={runFirst}
-                source={{
-                  html: '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
-                    '<body >' +
-                    '<form id="myForm" method="POST" action="https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1">' +
-                    '<input type="hidden" name="isSales" value="' + this.state.isSales + '"/>' +
-                    ' <input type="hidden" name="jwtToken" value="' + this.state.accessToken + '"/>' +
-                    ' <input type="hidden" type="submit" value="Login"/>' +
-                    ' </form>' +
+                    '<input type="hidden" name="jwtToken" value="' + this.state.accessToken + '"/>' +
+                    '<input type="hidden" type="submit" value="Login"/>' +
+                    '</form>' +
                     '</body>'
                 }}
               />
+              // :
+              // <WebView
+              //   originWhitelist={['*']}
+              //   injectedJavaScript={runFirst}
+              //   source={{
+              //     html: '<script type="text/javascript"> ' +
+              //       'window.onload=function(){' +
+              //       'document.forms["myForm"].submit();' +
+              //       // 'document.querySelectorAll("a")].map((el) => {el.target = "_self"});' +
+              //       '}</script>' +
+              //       '<body >' +
+              //       '<form id="myForm" method="POST" action="https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1">' +
+              //       '<input type="hidden" name="isSales" value="' + this.state.isSales + '"/>' +
+              //       ' <input type="hidden" name="jwtToken" value="' + this.state.accessToken + '"/>' +
+              //       ' <input type="hidden" type="submit" value="Login"/>' +
+              //       ' </form>' +
+              //       '</body>'
+              //   }}
+              // />
             }
 
           </View>
