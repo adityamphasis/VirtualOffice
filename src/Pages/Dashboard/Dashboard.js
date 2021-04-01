@@ -143,7 +143,7 @@ export default class Dashboard extends React.Component {
     if (this.props.navigation.isFocused()) {
       Alert.alert(
         'Exit!',
-        'Are you sure you want to exit the app?',
+        'Are you sure you want to exit the app ?',
         [
           {
             text: 'Cancel',

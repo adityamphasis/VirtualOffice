@@ -12,7 +12,9 @@ import {
   ScrollView,
   Keyboard,
   Platform,
-  processColor
+  processColor,
+  window,
+  Linking
 } from 'react-native';
 import { DrawerActions } from 'react-navigation-drawer';
 import { WebView } from 'react-native-webview';
@@ -77,6 +79,31 @@ export default class MCustomer extends React.Component {
         platform:'android'
       })
     }
+
+    // Linking.openURL('data:text/html;charset=utf-8,' +
+    // encodeURIComponent( // Escape for URL formatting
+    //   '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
+    //   '<body >' +
+    //   '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
+    //   '<input type="hidden" name="source" value="'+this.state.platform+'"/>' +
+    //  ' <input type="hidden" name="jwtToken" value="'+this.state.accessToken+'"/>' +
+    //  ' <input type="hidden" type="submit" value="Login"/>' +
+    //  ' </form>' +
+    //   '</body>')
+    // );
+
+    window.open('data:text/html;charset=utf-8,' +
+    encodeURIComponent( // Escape for URL formatting
+      '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
+      '<body >' +
+      '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
+      '<input type="hidden" name="source" value="'+this.state.platform+'"/>' +
+     ' <input type="hidden" name="jwtToken" value="'+this.state.accessToken+'"/>' +
+     ' <input type="hidden" type="submit" value="Login"/>' +
+     ' </form>' +
+      '</body>'
+    )
+);
 
   }
 
@@ -162,7 +189,7 @@ export default class MCustomer extends React.Component {
                  '</form></body>'}}
 
                /> */}
-               {this.state.comingScreen == 'customer' ?
+               {/* {this.state.comingScreen == 'customer' ?
                <WebView
                originWhitelist={['*']}
                cacheEnabled={false}
@@ -191,7 +218,7 @@ export default class MCustomer extends React.Component {
              '</body>'}}
 
                />
-              }
+              } */}
 
 
 
