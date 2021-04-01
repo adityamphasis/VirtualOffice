@@ -1,16 +1,25 @@
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image, StatusBar, Keyboard, Platform, NativeModules, BackHandler } from 'react-native';
+import {
+  StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image,
+  StatusBar, Keyboard, Platform, NativeModules, BackHandler, Alert
+} from 'react-native';
 import React, { PropTypes } from 'react'
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
-import { getConfiguration, setConfiguration } from '../../utils/configuration';
+import { getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
+import { getStorage, setStorage } from '../../utils/authentication';
+
 import { authorize, refresh, revoke, prefetchConfiguration } from 'react-native-app-auth';
 import { Page, Button, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
 import axios from 'react-native-axios';
 import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
+
+// import ReactNativeBiometrics from 'react-native-biometrics'
+import FingerprintScanner from 'react-native-fingerprint-scanner';
+
 
 const config = {
   issuer: 'https://accounts.bharti-axalife.com',
@@ -42,18 +51,67 @@ export default class Splash extends React.Component {
   }
 
 
-  componentDidMount() {
+  componentDidMount = async () => {
+
+    // this.checkForBioAndProceed();
+
+    const bioEnable = await getStorage('isBioEnabled');
+    if (bioEnable)
+      setConfiguration('isBioEnabled', bioEnable);
+    else
+      unsetConfiguration('isBioEnabled');
+
+    setConfiguration('token', await getStorage('token'));
+    setConfiguration('idToken', await getStorage('idToken'));
+    setConfiguration('refreshToken', await getStorage('refreshToken'));
+    setConfiguration('salesflag', await getStorage('salesflag') === 'true' ? true : false);
+    setConfiguration('encryptedToken', await getStorage('encryptedToken'));
+    setConfiguration('Agent', await getStorage('Agent'));
+    setConfiguration('Employee', await getStorage('Employee'));
+    setConfiguration('AgentName', await getStorage('AgentName'));
+    setConfiguration('MobileNumber', await getStorage('MobileNumber'));
+
     this.getData();
+
+
+    // this.getData();
     // this.focusListener = this.props.navigation.addListener("didFocus", () => {
     //   if (!this.authChecking)
     //     this.getData();
     // });
+
   }
 
-  // componentWillUnmount() {
-  //   this.focusListener.remove();
-  // }
+  componentWillUnmount() {
+    FingerprintScanner.release();
+  }
 
+  checkForBioAndProceed = () => {
+
+    try {
+      const isBioEnabled = getConfiguration('isBioEnabled');
+      if (isBioEnabled && isBioEnabled === 'enable') {
+        this.onBioAuthenticate();
+        return;
+      }
+    } catch (error) {
+    }
+
+    this.getData();
+
+  }
+
+  onBioAuthenticate = () => {
+
+    FingerprintScanner
+      .authenticate({ title: 'Log in with Biometrics' })
+      .then(async () => {
+        setConfiguration('isBioEnabled', 'enable');
+        await setStorage('isBioEnabled', 'enable');
+        this.getData();
+      });
+
+  }
 
   getData = async () => {
 
@@ -77,6 +135,10 @@ export default class Splash extends React.Component {
       console.log('token result=>', JSON.stringify(result));
 
       this.authChecking = false;
+
+      await setStorage('token', result.accessToken);
+      await setStorage('idToken', result.idToken);
+      await setStorage('refreshToken', result.refreshToken);
 
       setConfiguration('token', result.accessToken);
       setConfiguration('idToken', result.idToken);
@@ -147,12 +209,19 @@ export default class Splash extends React.Component {
 
     // console.log("gafsvfhvb", sales);
 
-    setConfiguration('salesflag', sales)
-    setConfiguration('encryptedToken', etoken)
-    setConfiguration('Agent', agentToken)
-    setConfiguration('Employee', employeeCode)
-    setConfiguration('AgentName', agentName)
-    setConfiguration('MobileNumber', mobileNumber)
+    await setStorage('salesflag', sales + '');
+    await setStorage('encryptedToken', etoken + '');
+    await setStorage('Agent', agentToken + '');
+    await setStorage('Employee', employeeCode + '');
+    await setStorage('AgentName', agentName + '');
+    await setStorage('MobileNumber', mobileNumber + '');
+
+    setConfiguration('salesflag', sales);
+    setConfiguration('encryptedToken', etoken);
+    setConfiguration('Agent', agentToken);
+    setConfiguration('Employee', employeeCode);
+    setConfiguration('AgentName', agentName);
+    setConfiguration('MobileNumber', mobileNumber);
 
     if (Platform.OS == 'android') {
       NativeModules.HelloWorldModule.ShowMessage(
@@ -164,7 +233,38 @@ export default class Splash extends React.Component {
       NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
     }
 
-    this.props.navigation.navigate('MainScreen', { accessToken: accessToken });
+    this.askForSettingBio(accessToken);
+
+  }
+
+  askForSettingBio = (accessToken) => {
+
+    FingerprintScanner
+      .isSensorAvailable()
+      .then(biometryType => {
+        console.log('Available');
+
+        Alert.alert(
+          'Biometric Seutup!',
+          'Do you want to setup biometric for authentication?',
+          [
+            {
+              text: 'YES',
+              onPress: () => {
+                this.onBioAuthenticate();
+              },
+              // style: 'cancel',
+            },
+            {
+              text: 'NO', onPress: async () => {
+                setConfiguration('isBioEnabled', 'disable');
+                await setStorage('isBioEnabled', 'disable');
+                this.props.navigation.navigate('MainScreen', { accessToken: accessToken });
+              }
+            },
+          ]
+        );
+      }).catch(error => this.props.navigation.navigate('MainScreen', { accessToken: accessToken }));
 
   }
 

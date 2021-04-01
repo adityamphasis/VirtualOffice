@@ -14,7 +14,7 @@ export function clearAll() {
   configuration = configuration.removeAll();
 }
 
-export function deleteAll(){
+export function deleteAll() {
   configuration = configuration.deleteAll();
 }
 

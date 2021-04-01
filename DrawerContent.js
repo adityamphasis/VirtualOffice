@@ -5,7 +5,8 @@ import {
   ScrollView, Linking, NativeModules, Platform, Alert
 } from 'react-native';
 import axios from 'react-native-axios';
-import { getConfiguration, setConfiguration, clearAll, deleteAll } from './src/utils/configuration';
+import { getConfiguration, setConfiguration, unsetConfiguration } from './src/utils/configuration';
+import { clearStorage } from './src/utils/authentication';
 import { DrawerActions } from 'react-navigation';
 
 
@@ -43,17 +44,15 @@ class DrawerContent extends Component {
 
   logout = async () => {
 
-    setConfiguration('token', '');
+    unsetConfiguration('token');
+    unsetConfiguration('salesflag');
+    unsetConfiguration('encryptedToken');
+    unsetConfiguration('Agent');
+    unsetConfiguration('Employee');
+    unsetConfiguration('AgentName');
+    unsetConfiguration('MobileNumber');
 
-    setConfiguration('salesflag', '')
-    setConfiguration('encryptedToken', '')
-    setConfiguration('Agent', '')
-    setConfiguration('Employee', '')
-    setConfiguration('AgentName', '')
-    setConfiguration('MobileNumber', '')
-
-    clearAll();
-    deleteAll();
+    await clearStorage();
 
     if (Platform.OS == 'android')
       NativeModules.HelloWorldModule.ShowMessage('', 'false', 5000);
