@@ -22,30 +22,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
-// import { CachedImage } from 'react-native-cached-image';
+
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
-// var Browser = require('react-native-browser');
-
-// const htmlContent = '<body onload="document.createElement("form").submit.call(document.getElementById("myForm"))">' +
-// '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
-// '<input type="hidden" name="source" value="surce"/>' +
-// '<input type="hidden" name="jwtToken" value="eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMzk0OTAiLCJhdXQiOiJBUFBMSUNBVElPTl9VU0VSIiwiYXVkIjoiV09uMF9LUzhLQm84SHozWFkxZWtjdG5fUXRzYSIsIm5iZiI6IjE2MTMxMjQ4MzQiLCJhenAiOiJXT24wX0tTOEtCbzhIejNYWTFla2N0bl9RdHNhIiwic2NvcGUiOiJvcGVuaWQiLCJpc3MiOiJodHRwczovL2FjY291bnRzLmJoYXJ0aS1heGFsaWZlLmNvbTo0NDMvb2F1dGgyL3Rva2VuIiwiZXhwIjoxNjEzMzkxMjY4LCJpYXQiOiIxNjEzMTI0ODM0IiwianRpIjoiZjdkNjAyNjMtZTljMS00ZjlkLWIzYzEtN2EzNTMzZTQ2Njg2In0"/>' +
-// '<input type="submit" value="Login"/>' +
-// '</form>' +
-// '</body>';
-
-
-
-const createFormData = (token) => {
-  const data = new FormData();
-
-  data.append("jwtToken", token);
-  data.append('source', 'android')
-
-  console.log(data);
-
-  return JSON.stringify(data);
-};
+import { Loader } from '../../../components';
 
 
 export default class MCustomer extends React.Component {
@@ -54,15 +33,13 @@ export default class MCustomer extends React.Component {
     super(props);
     this.state = {
       accessToken: getConfiguration('encryptedToken', ''),
-      //accessToken:getConfiguration('token')
       platform: '',
       isSales: getConfiguration('salesflag', ''),
-      comingScreen: this.props.navigation.getParam('screen')
+      comingScreen: this.props.navigation.getParam('screen'),
+      isLoading: true
     };
 
   }
-
-
 
   componentDidMount() {
 
@@ -74,82 +51,20 @@ export default class MCustomer extends React.Component {
       })
     }
 
-    // Linking.openURL('data:text/html;charset=utf-8,' +
-    // encodeURIComponent( // Escape for URL formatting
-    //   '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
-    //   '<body >' +
-    //   '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
-    //   '<input type="hidden" name="source" value="'+this.state.platform+'"/>' +
-    //  ' <input type="hidden" name="jwtToken" value="'+this.state.accessToken+'"/>' +
-    //  ' <input type="hidden" type="submit" value="Login"/>' +
-    //  ' </form>' +
-    //   '</body>')
-    // );
-
-    //     window.open('data:text/html;charset=utf-8,' +
-    //     encodeURIComponent( // Escape for URL formatting
-    //       '<script type="text/javascript"> window.onload=function(){document.forms["myForm"].submit();}</script>' +
-    //       '<body >' +
-    //       '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
-    //       '<input type="hidden" name="source" value="'+this.state.platform+'"/>' +
-    //      ' <input type="hidden" name="jwtToken" value="'+this.state.accessToken+'"/>' +
-    //      ' <input type="hidden" type="submit" value="Login"/>' +
-    //      ' </form>' +
-    //       '</body>'
-    //     )
-    // );
-
   }
 
   goBack() {
     this.props.navigation.goBack();
   }
 
-  openDrawerClick() {
-    this.props.navigation.dispatch(DrawerActions.openDrawer());
-  }
-
-  sendMessage() {
-    this.props.navigation.navigate('SendMessage');
-  }
-
-  onMessage(e) {
-
-    console.log('onMessage');
-
-    // retrieve event data
-    var data = e.nativeEvent.data;
-    // maybe parse stringified JSON
-    try {
-      data = JSON.parse(data)
-    } catch (e) { }
-
-    // check if this message concerns us
-    if ('object' == typeof data && data.external_url_open) {
-      // proceed with URL open request
-    }
-  }
-
-  shouldStartLoadWithRequest = (req) => {
-    // open the link in native browser
-    // Linking.openURL(req.url);
-
-    // returning false prevents WebView to navigate to new URL
-    return false;
-  };
-
   render() {
-
-    // const runFirst = `ios.isNativeApp = true; true; // note: this is required, or you'll sometimes get silent failures`;
-
-    // let jsCode = `!function(){var e=function(e,n,t){if(n=n.replace(/^on/g,""),"addEventListener"in window)e.addEventListener(n,t,!1);else if("attachEvent"in window)e.attachEvent("on"+n,t);else{var o=e["on"+n];e["on"+n]=o?function(e){o(e),t(e)}:t}return e},n=document.querySelectorAll("a[href]");if(n)for(var t in n)n.hasOwnProperty(t)&&e(n[t],"onclick",function(e){new RegExp("^https?://"+location.host,"gi").test(this.href)||(e.preventDefault(),window.postMessage(JSON.stringify({external_url_open:this.href})))})}();`
-
-    const localScript = '';
 
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 
-        {this.state.comingScreen == 'service' ?
+        <Loader visible={this.state.isLoading} />
+
+        {/* {this.state.comingScreen == 'service' ?
           <View style={styles.headerView}>
             <TouchableOpacity
               style={styles.backTouchable}
@@ -163,8 +78,8 @@ export default class MCustomer extends React.Component {
               <Text style={styles.headerTitle1}>i-Service</Text>
             </View>
           </View>
-          :
-          <View style={styles.headerView}>
+          : */}
+          {this.state.comingScreen != 'service' && <View style={styles.headerView}>
             <TouchableOpacity
               style={styles.backTouchable}
               onPress={() => this.goBack()}>
@@ -182,48 +97,30 @@ export default class MCustomer extends React.Component {
         <View style={styles.gridViewBackground}>
           <View style={{ width: '100%', flex: 1, overflow: 'hidden', backgroundColor: 'white' }}>
 
-            {/* <WebView
-                 source={{uri: 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin', body:createFormData(this.state.accessToken),method:'POST'}}
-                 style={{ width: '100%', height: '100%', backgroundColor: 'white' }}
-
-               /> */}
-            {/* <WebView
-                 originWhitelist={['*']}
-                 injectedJavaScript={runFirst}
-                 source={{ html: '<script>adocument.createElement("form").submit.call(document.getElementById("myForm"))</script>' +
-                 '<body onload="document.createElement("form").submit.call(document.getElementById("myForm"))>'+
-                 '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">'+
-                 '<input type="hidden" name="source" value="surce"/>'+
-                 '<input type="hidden" name="jwtToken" value="eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMzk0OTAiLCJhdXQiOiJBUFBMSUNBVElPTl9VU0VSIiwiYXVkIjoiV09uMF9LUzhLQm84SHozWFkxZWtjdG5fUXRzYSIsIm5iZiI6IjE2MTMxMjQ4MzQiLCJhenAiOiJXT24wX0tTOEtCbzhIejNYWTFla2N0bl9RdHNhIiwic2NvcGUiOiJvcGVuaWQiLCJpc3MiOiJodHRwczovL2FjY291bnRzLmJoYXJ0aS1heGFsaWZlLmNvbTo0NDMvb2F1dGgyL3Rva2VuIiwiZXhwIjoxNjEzMzkxMjY4LCJpYXQiOiIxNjEzMTI0ODM0IiwianRpIjoiZjdkNjAyNjMtZTljMS00ZjlkLWIzYzEtN2EzNTMzZTQ2Njg2In0. "/>'+
-                 '<input type="submit" value="Login"/>'+
-                 '</form></body>'}}
-
-               /> */}
-
             {
               this.state.comingScreen == 'customer' ?
                 <WebView
-                ref={(ref) => { this.webview = ref; }}
+                  ref={(ref) => { this.webview = ref; }}
                   originWhitelist={['*']}
-                  // cacheEnabled={false}
+                  cacheEnabled={false}
+                  incognito={true}
+                  cacheMode={'LOAD_NO_CACHE'}
                   // setSupportMultipleWindows={false}
                   // saveFormDataDisabled={true}
                   // allowsBackForwardNavigationGestures={true}
                   // // onShouldStartLoadWithRequest={this.shouldStartLoadWithRequest}
                   // onError={console.error.bind(console, 'error')}
                   // // injectedJavaScript={runFirst}
-                  // incognito={true}
-                  // cacheMode={'LOAD_NO_CACHE'}
                   // // onMessage={this.onMessage.bind(this)}
                   // javaScriptEnabled={true}
-
                   onNavigationStateChange={(event) => {
                     if (event.url.includes('https://uat.bhartiaxa.tk/app?ssoid=')) {
+                      this.setState({ isLoading: false });
                       this.webview.stopLoading();
+                      this.goBack();
                       Linking.openURL(event.url);
                     }
                   }}
-
                   source={{
                     html: '<script type="text/javascript"> ' +
                       'window.onload=function(){' +
@@ -252,6 +149,7 @@ export default class MCustomer extends React.Component {
                   cacheMode={'LOAD_NO_CACHE'}
                   // onMessage={this.onMessage.bind(this)}
                   javaScriptEnabled={true}
+                  onLoadEnd={() => this.setState({ isLoading: false })}
                   source={{
                     html: '<script type="text/javascript"> ' +
                       'window.onload=function(){' +
