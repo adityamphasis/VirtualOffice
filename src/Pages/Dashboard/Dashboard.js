@@ -139,6 +139,7 @@ export default class Dashboard extends React.Component {
 
   handleBackButton = () => {
 
+    this.props.navigation.dispatch(DrawerActions.closeDrawer());
 
     if (this.props.navigation.isFocused()) {
       Alert.alert(
