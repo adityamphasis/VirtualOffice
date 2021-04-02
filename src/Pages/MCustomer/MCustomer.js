@@ -203,40 +203,31 @@ export default class MCustomer extends React.Component {
             {
               this.state.comingScreen == 'customer' ?
                 <WebView
+                ref={(ref) => { this.webview = ref; }}
                   originWhitelist={['*']}
-                  cacheEnabled={false}
-                  setSupportMultipleWindows={false}
-                  saveFormDataDisabled={true}
-                  allowsBackForwardNavigationGestures={true}
-                  // onShouldStartLoadWithRequest={this.shouldStartLoadWithRequest}
-                  onError={console.error.bind(console, 'error')}
-                  // injectedJavaScript={runFirst}
-                  incognito={true}
-                  cacheMode={'LOAD_NO_CACHE'}
-                  // onMessage={this.onMessage.bind(this)}
-                  javaScriptEnabled={true}
+                  // cacheEnabled={false}
+                  // setSupportMultipleWindows={false}
+                  // saveFormDataDisabled={true}
+                  // allowsBackForwardNavigationGestures={true}
+                  // // onShouldStartLoadWithRequest={this.shouldStartLoadWithRequest}
+                  // onError={console.error.bind(console, 'error')}
+                  // // injectedJavaScript={runFirst}
+                  // incognito={true}
+                  // cacheMode={'LOAD_NO_CACHE'}
+                  // // onMessage={this.onMessage.bind(this)}
+                  // javaScriptEnabled={true}
+
+                  onNavigationStateChange={(event) => {
+                    if (event.url.includes('https://uat.bhartiaxa.tk/app?ssoid=')) {
+                      this.webview.stopLoading();
+                      Linking.openURL(event.url);
+                    }
+                  }}
+
                   source={{
                     html: '<script type="text/javascript"> ' +
                       'window.onload=function(){' +
                       'document.forms["myForm"].submit();' +
-                      // 'for(var els = document.getElementsByTagName(\'a\'), i = els.length; i--;){' +
-                      // 'var href = els[i].href;' +
-                      // 'els[i].href = \'javascript:void(0);\';' +
-                      // 'els[i].onclick = (function(el, href){' +
-                      // 'return function(){' +
-                      // 'window.location.href = href;' +
-                      // '};' +
-                      // '})(els[i], href);' +
-                      // '}' +
-                      // 'document.querySelectorAll(\'a\')].map((el) => {el.target = "_self"});' +
-                      // 'document.documentElement.addEventListener(\'click\', function (event) {' +
-                      // 'if(event.ctrlKey){event.preventDefault()}' +
-                      // '});' +
-
-                      // '[...document.querySelectorAll(\'a\')].map((el) => {' +
-                      // 'el.target = "_self"' +
-                      // '});' +
-
                       '}</script>' +
                       '<body>' +
                       '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
@@ -264,13 +255,7 @@ export default class MCustomer extends React.Component {
                   source={{
                     html: '<script type="text/javascript"> ' +
                       'window.onload=function(){' +
-                      'document.forms["myForm"].submit();' +
-
-                      // '[...document.querySelectorAll(\'a\')].map((el) => {' +
-                      // 'el.target = "_self"' +
-                      // '});' +
-
-                      '}</script>' +
+                      'document.forms["myForm"].submit();' + '}</script>' +
                       '<body >' +
                       '<form id="myForm" method="POST" action="https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1">' +
                       '<input type="hidden" name="isSales" value="' + this.state.isSales + '"/>' +
