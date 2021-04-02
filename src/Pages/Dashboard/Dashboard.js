@@ -135,16 +135,26 @@ export default class Dashboard extends React.Component {
 
   componentWillUnmount() {
     this.focusListener.remove();
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   handleBackButton = () => {
 
-    this.props.navigation.dispatch(DrawerActions.closeDrawer());
+    try {
+      const drawerState = getConfiguration('drawerState');
+      console.log('drawerState:', drawerState);
+      if (drawerState && drawerState === 'open') {
+        this.props.navigation.closeDrawer();
+        return true;
+      }
+    } catch (error) {
+
+    }
 
     if (this.props.navigation.isFocused()) {
       Alert.alert(
         'Exit!',
-        'Are you sure you want to exit the app ?',
+        'Are you sure you want to exit the app?',
         [
           {
             text: 'Cancel',
@@ -154,7 +164,6 @@ export default class Dashboard extends React.Component {
           { text: 'OK', onPress: () => BackHandler.exitApp() },
         ]
       );
-      // BackHandler.exitApp();
       return true;
     } else {
       return false;
@@ -163,7 +172,8 @@ export default class Dashboard extends React.Component {
   }
 
   openDrawerClick = () => {
-    this.props.navigation.dispatch(DrawerActions.openDrawer());
+    // this.props.navigation.dispatch(DrawerActions.openDrawer());
+    this.props.navigation.openDrawer();
   }
 
   clickApp = () => {
@@ -351,8 +361,6 @@ export default class Dashboard extends React.Component {
 
       const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
 
-      // console.log('installedApps', JSON.stringify(installedApps));
-
       let tempList = [];
 
       this.versionApiData.map(item => {
@@ -501,8 +509,8 @@ export default class Dashboard extends React.Component {
         flexDirection: 'row',
         alignItems: 'center',
         overflow: 'hidden'
-
-      }} source={require('../../../assets/grad.png')}>
+      }}
+        source={require('../../../assets/grad.png')}>
 
         <View style={{ flex: 2.5, alignItems: 'center' }}>
           <Image style={[{ height: 40, width: 40, margin: 10 }]}

@@ -10,32 +10,36 @@ import React, { Component } from 'react';
 import { Platform, StyleSheet, Text, View, Alert } from 'react-native';
 import Navigation from './Navigation';
 import { API_ROOT } from './env';
-import configureStore from './src/redux/store';
-import { Provider } from 'react-redux';
-import { setConfiguration } from './src/utils/configuration';
-type Props = {};
+// import configureStore from './src/redux/store';
+// import { Provider } from 'react-redux';
+import { setConfiguration, unsetConfiguration } from './src/utils/configuration';
+// type Props = {};
 
 
-export default class App extends Component<Props> {
+export default class App extends Component {
 
 
-  componentDidMount() {
-    setConfiguration('API_ROOT', API_ROOT);
-  }
+  handleNavigationState = (previous, next, action) => {
 
-  componentWillUnmount() {
+    console.log('action.type', action.type);
+
+    if (action.type === 'Navigation/OPEN_DRAWER') {
+      setConfiguration('drawerState', 'open');
+    } else if (action.type === 'Navigation/CLOSE_DRAWER') {
+      unsetConfiguration('drawerState');
+    }
 
   }
 
 
   render() {
-    const store = require('./src/redux/store').default;
+    // const store = require('./src/redux/store').default;
     return (
       <View style={styles.container}>
 
-        <Provider store={store}>
-          <Navigation />
-        </Provider>
+        {/* <Provider store={store}> */}
+        <Navigation onNavigationStateChange={this.handleNavigationState} />
+        {/* </Provider> */}
 
       </View>
     );

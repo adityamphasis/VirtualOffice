@@ -53,8 +53,6 @@ export default class Splash extends React.Component {
 
   componentDidMount = async () => {
 
-    // this.checkForBioAndProceed();
-
     const bioEnable = await getStorage('isBioEnabled');
     if (bioEnable)
       setConfiguration('isBioEnabled', bioEnable);
@@ -110,8 +108,14 @@ export default class Splash extends React.Component {
         setConfiguration('isBioEnabled', 'enable');
         this.getData();
       }).catch((error) => {
-        // this.props.handlePopupDismissed();
-        // AlertIOS.alert(error.message);
+        try {
+          const isBioEnabled = getConfiguration('isBioEnabled');
+          if (isBioEnabled && isBioEnabled === 'enable') {
+            BackHandler.exitApp();
+            return;
+          }
+        } catch (error) {
+        }
         this.getData();
       });
 
@@ -235,6 +239,16 @@ export default class Splash extends React.Component {
       );
     } else if (Platform.OS == 'ios') {
       NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
+    }
+
+    try {
+      const isBioEnabled = getConfiguration('isBioEnabled');
+      if (isBioEnabled && isBioEnabled === 'enable') {
+        this.props.navigation.navigate('MainScreen', { accessToken: accessToken });
+        return;
+      }
+    } catch (error) {
+
     }
 
     this.askForSettingBio(accessToken);

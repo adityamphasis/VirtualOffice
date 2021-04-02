@@ -4,7 +4,7 @@ import { createAppContainer, createSwitchNavigator } from "react-navigation";
 
 import { createStackNavigator } from "react-navigation-stack";
 
-import { createDrawerNavigator } from "react-navigation-drawer";
+import { createDrawerNavigator  } from "react-navigation-drawer";
 
 import Splash from './src/Pages/Splash'
 
@@ -16,11 +16,6 @@ import MCustomer from './src/Pages/MCustomer'
 
 import Logout from './src/Pages/Logout';
 
-const SplashStack = createStackNavigator({
-  Splash
-}, {
-  headerMode: 'none'
-});
 
 const MainStack = createStackNavigator({
   DashboardScreen: { screen: Dashboard },
@@ -44,19 +39,6 @@ const DrawerNav = createDrawerNavigator({
     tintColor: '#a6a5ab'
   }
 });
-
-
-// const MainStack = createStackNavigator({
-//   Splash,
-//   SideMenu: {
-//     screen: DrawerNav,
-//   },
-//   MLife,
-//   MCustomer,
-// }, {
-//   headerMode: 'none'
-// })
-
 
 export default createAppContainer(
   createSwitchNavigator({
