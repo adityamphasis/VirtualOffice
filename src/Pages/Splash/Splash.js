@@ -263,7 +263,7 @@ export default class Splash extends React.Component {
         console.log('Available');
 
         Alert.alert(
-          'Biometric Seutup!',
+          'Biometric Setup!',
           'Do you want to setup biometric for authentication?',
           [
             {

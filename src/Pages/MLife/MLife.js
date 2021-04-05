@@ -26,6 +26,10 @@ export default class MLife extends React.Component {
 
   }
 
+  goBack() {
+    this.props.navigation.goBack();
+  }
+
   openDrawerClick() {
 
     console.log('openDrawerClick');
@@ -174,7 +178,7 @@ export default class MLife extends React.Component {
         <View style={styles.headerView}>
           <TouchableOpacity
             style={styles.backTouchable}
-            onPress={() => this.clickApp()}>
+            onPress={() => this.goBack()}>
             <Image resizeMode="contain" style={styles.leftLogo}
               source={require('../../../assets/logo_rht.png')} />
             <Text style={[styles.headerTitle1, { marginLeft: 5, color: 'black' }]}>M-Life</Text>
