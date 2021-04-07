@@ -23,8 +23,6 @@ import Clipboard from '@react-native-community/clipboard';
 import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
 
-
-
 const appArray = [
   {
     icon: require('../../../assets/vymo.png'),
@@ -129,7 +127,7 @@ export default class Dashboard extends React.Component {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       if (this.isCheckedPopup)
-        this.versionControlPopupLogin();
+        this.versionControlPopupLogic();
     });
   }
 
@@ -345,11 +343,15 @@ export default class Dashboard extends React.Component {
 
     this.versionApiData = result.AppDetails ? result.AppDetails : [];
 
-    this.versionControlPopupLogin();
+    setConfiguration('appsData', this.versionApiData);
+
+    this.props.navigation.navigate('AppVersionDialog');
+
+    // this.versionControlPopupLogic();
 
   }
 
-  versionControlPopupLogin = async () => {
+  versionControlPopupLogic = async () => {
 
     if (this.state.isLoading)
       return;
@@ -611,10 +613,8 @@ export default class Dashboard extends React.Component {
 
         <View style={styles.overlayView1}>
           <View style={styles.cmgsooncontainer}>
-
             <Image resizeMode="contain" style={styles.cmgsoonIcon}
               source={require('../../../assets/coming_soon.png')} />
-
           </View>
         </View>
       )
@@ -635,8 +635,6 @@ export default class Dashboard extends React.Component {
             <Text style={styles.headerTitle1}>Hi {this.state.AgentName}</Text>
             <Text style={styles.headerTitle}>What would you like to do now ?</Text>
           </View>
-
-
         </View>
 
         <Loader visible={this.state.isLoading} />
@@ -692,14 +690,11 @@ export default class Dashboard extends React.Component {
           <View style={{ height: 3, width: '100%', backgroundColor: '#F5F5F5', position: 'absolute', left: 0, bottom: 0 }}>
             <View style={{ height: 3, width: '50%', backgroundColor: 'transparent', position: 'absolute', left: this.state.underLineLeft, bottom: 0 }}>
               <View style={{ height: '100%', width: '25%', backgroundColor: 'rgb(30,77,155)', marginHorizontal: 25 }}>
-
               </View>
             </View>
 
           </View>
-
         </View>
-
 
         <View style={styles.cmgcontainer}>
           <View style={{ width: '100%', flex: 0.3, flexDirection: 'row', backgroundColor: 'transparent', alignItems: 'center' }}>
@@ -712,9 +707,7 @@ export default class Dashboard extends React.Component {
               </View>
               <Image resizeMode="contain" style={styles.stngLogo}
                 source={require('../../../assets/arw.png')} />
-
             </TouchableOpacity>
-
             <TouchableOpacity style={styles.rupeeContainer}  >
               <Image resizeMode="contain" style={styles.stngLogo}
                 source={require('../../../assets/prcnt.png')} />
@@ -724,10 +717,8 @@ export default class Dashboard extends React.Component {
               </View>
               <Image resizeMode="contain" style={styles.stngLogo}
                 source={require('../../../assets/arw.png')} />
-
             </TouchableOpacity>
           </View>
-
           <View style={{ width: '100%', flex: 0.3, flexDirection: 'row', backgroundColor: 'transparent', alignItems: 'center' }}>
             <TouchableOpacity style={styles.rupeeContainer}  >
               <Image resizeMode="contain" style={styles.stngLogo}
@@ -753,10 +744,8 @@ export default class Dashboard extends React.Component {
 
             </TouchableOpacity>
           </View>
-
           <View style={{ width: '100%', height: 1, backgroundColor: 'rgb(30,77,155)' }}>
           </View>
-
           <TouchableOpacity style={{ width: '100%', flexDirection: 'row', backgroundColor: 'transparent', flex: 0.4, alignItems: 'center', justifyContent: 'space-between' }} >
 
             <View style={{ marginHorizontal: 10 }}>
@@ -778,13 +767,8 @@ export default class Dashboard extends React.Component {
               <Text style={styles.quickLinksText}> 02 </Text>
               <Text style={styles.quickLinksText}> Hot leads </Text>
             </View>
-
-
-
-
           </TouchableOpacity>
         </View>
-
 
         <View style={styles.quicklinkcontainer} >
           <Text style={[styles.txttab, { alignSelf: 'center' }]}>Quick links</Text>
@@ -796,26 +780,23 @@ export default class Dashboard extends React.Component {
           <TouchableOpacity
             style={styles.appBackground}
             onPress={() => this.clickApp()}>
-
             <Text style={styles.quickLinksText}>Create a Lead</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.appBackground}
             onPress={() => this.clickApp()}>
-
             <Text style={styles.quickLinksText}>Onboard Customer</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.appBackground}
             onPress={() => this.clickApp()}>
-
             <Text style={styles.quickLinksText}>Track application status</Text>
           </TouchableOpacity>
 
         </View>
 
         {this.renderComingSoonPopup()}
-        {this.state.showVersionPopup && this.renderVersionPopup()}
+        {/* {this.state.showVersionPopup && this.renderVersionPopup()} */}
         {this.renderPopup()}
 
       </SafeAreaView>
@@ -857,10 +838,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     width: wp('90%'),
     flex: 0.4,
-    // borderRadius:10
     justifyContent: 'center',
     alignItems: 'center'
-
   },
 
   appStatuts: {
@@ -951,17 +930,17 @@ const styles = StyleSheet.create({
   },
 
   overlayView1: {
-    top: wp('66%'),
+    // top: wp('60%'),
+    top: '35%',
     left: 0,
     right: 0,
     bottom: 0,
+    flex:0.7,
     position: 'absolute',
     backgroundColor: 'rgb(234,240,248)',
     justifyContent: 'center',
     alignItems: 'center',
     opacity: 0.8
-
-
   },
   overlayView2: {
     //flex: 0.8,
@@ -1184,13 +1163,11 @@ const styles = StyleSheet.create({
     flex: 0.4,
     borderRadius: 10
   },
-
   appcontainer: {
     backgroundColor: 'white',
     width: wp('90%'),
     flex: 0.9,
     marginTop: 10,
-
     flexDirection: 'row'
   },
   appcontainer1: {

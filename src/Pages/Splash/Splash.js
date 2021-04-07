@@ -17,9 +17,7 @@ import axios from 'react-native-axios';
 import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
 
-// import ReactNativeBiometrics from 'react-native-biometrics'
 import FingerprintScanner from 'react-native-fingerprint-scanner';
-
 
 const config = {
   issuer: 'https://accounts.bharti-axalife.com',
@@ -37,7 +35,6 @@ const config = {
     // revocationEndpoint: 'https://demo.identityserver.io/connect/revoke'
   }
 };
-
 
 export default class Splash extends React.Component {
 
@@ -70,13 +67,6 @@ export default class Splash extends React.Component {
     setConfiguration('MobileNumber', await getStorage('MobileNumber'));
 
     this.checkForBioAndProceed();
-
-
-    // this.getData();
-    // this.focusListener = this.props.navigation.addListener("didFocus", () => {
-    //   if (!this.authChecking)
-    //     this.getData();
-    // });
 
   }
 
@@ -162,7 +152,6 @@ export default class Splash extends React.Component {
 
   };
 
-
   JWTCheckAgentCode = async (token) => {
 
     this.setState({ isLoading: true });
@@ -194,7 +183,7 @@ export default class Splash extends React.Component {
       this.parseTokenApiData(response.data, token);
 
     }).catch(error => {
-      console.log("cvzgvxbhvb", error);
+      console.log("jwt error", error);
       this.setState({ isLoading: false });
 
     });

@@ -4,17 +4,17 @@ import { createAppContainer, createSwitchNavigator } from "react-navigation";
 
 import { createStackNavigator } from "react-navigation-stack";
 
-import { createDrawerNavigator  } from "react-navigation-drawer";
+import { createDrawerNavigator } from "react-navigation-drawer";
 
 import Splash from './src/Pages/Splash'
 
-import DrawerContent from './DrawerContent'
-import Dashboard from './src/Pages/Dashboard'
-import Profile from './src/Pages/Profile'
-import MLife from './src/Pages/MLife'
-import MCustomer from './src/Pages/MCustomer'
+import DrawerContent from './DrawerContent';
+import Dashboard from './src/Pages/Dashboard';
+import Profile from './src/Pages/Profile';
+import MLife from './src/Pages/MLife';
+import MCustomer from './src/Pages/MCustomer';
 
-import Logout from './src/Pages/Logout';
+import AppVersionDialog from './src/Pages/VersionDialog';
 
 
 const MainStack = createStackNavigator({
@@ -22,7 +22,7 @@ const MainStack = createStackNavigator({
   ProfileScreen: { screen: Profile },
   MLife: { screen: MLife },
   MCustomer: { screen: MCustomer },
-  LogoutScreen: { screen: Logout }
+  AppVersionDialog: { screen: AppVersionDialog }
 }, {
   headerMode: 'none'
 });
