@@ -2,10 +2,12 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "29.0.2"
+        buildToolsVersion = "28.0.3"
         minSdkVersion = 16
-        compileSdkVersion = 29
-        targetSdkVersion = 29
+        compileSdkVersion = 28
+        targetSdkVersion = 28
+       // androidXAnnotation = "1.1.0"
+       // androidXBrowser = "1.0.0"
     }
     repositories {
         google()

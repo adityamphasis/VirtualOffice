@@ -7,7 +7,7 @@
  */
 
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, Alert } from 'react-native';
+import { Platform, StyleSheet, Text, View, Alert, LogBox } from 'react-native';
 import Navigation from './Navigation';
 import { API_ROOT } from './env';
 // import configureStore from './src/redux/store';
@@ -17,7 +17,11 @@ import { setConfiguration, unsetConfiguration } from './src/utils/configuration'
 
 
 export default class App extends Component {
-
+componentDidMount()
+{
+ // console.disableYellowBox = true
+  LogBox.ignoreAllLogs(true)
+}
 
   handleNavigationState = (previous, next, action) => {
 

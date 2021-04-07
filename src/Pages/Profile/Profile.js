@@ -108,6 +108,7 @@ export default class ProfileScreen extends React.Component {
 
     this.setState({ isLoading: true });
 
+
     let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails"
 
     const params = {

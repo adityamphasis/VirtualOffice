@@ -195,11 +195,27 @@ export default class Dashboard extends React.Component {
   }
 
   gotoVymo = () => {
-    IntentLauncher.startAppByPackageName('com.getvymo.android')
+
+    IntentLauncher.isAppInstalled('com.getvymo.android')
+    .then((result) => {
+      console.log('isAppInstalled yes');
+  
+      IntentLauncher.startAppByPackageName('com.getvymo.android')
       .then((result) => {
         console.log('startAppByPackageName started');
       })
       .catch((error) => console.warn('startAppByPackageName: could not open', error));
+  
+    })
+    .catch((error) => {
+      console.warn('isAppInstalled: no', error)
+  
+      Linking.openURL("https://play.google.com/store/apps/details?id=com.getvymo.android");
+  
+    });
+
+
+  
   }
 
   copyToClipboard = () => {
@@ -217,12 +233,25 @@ export default class Dashboard extends React.Component {
   }
 
   gotoMSell = () => {
+    IntentLauncher.isAppInstalled('com.enparadigm.bharthiaxa')
+  .then((result) => {
+    console.log('isAppInstalled yes');
 
     IntentLauncher.startAppByPackageName('com.enparadigm.bharthiaxa')
-      .then((result) => {
-        console.log('startAppByPackageName started');
-      })
-      .catch((error) => console.warn('startAppByPackageName: could not open', error));
+    .then((result) => {
+      console.log('startAppByPackageName started');
+    })
+    .catch((error) => console.warn('startAppByPackageName: could not open', error));
+
+  })
+  .catch((error) => {
+    console.warn('isAppInstalled: no', error)
+
+    Linking.openURL("https://slack-files.com/T85QWDR0V-F01SA1Z4C3U-69b095adf7");
+
+  });
+
+   
 
   }
 
