@@ -2,6 +2,8 @@ package com.bhartiaxa.virtualoffice;
 
 import android.app.Application;
 import android.content.Context;
+import cx.evermeet.versioninfo.RNVersionInfoPackage;
+
 
 //import com.facebook.react.BuildConfig;
 import com.facebook.react.PackageList;
@@ -30,8 +32,9 @@ public class MainApplication extends Application implements ReactApplication {
 
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+          new RNVersionInfoPackage();
           
-          
+       
         packages.add(new HelloWorldPackage());
           return packages;
         }

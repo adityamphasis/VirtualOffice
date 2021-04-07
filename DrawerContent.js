@@ -8,7 +8,7 @@ import axios from 'react-native-axios';
 import { getConfiguration, setConfiguration, unsetConfiguration } from './src/utils/configuration';
 import { clearStorage } from './src/utils/authentication';
 import { DrawerActions } from 'react-navigation';
-
+import { encryptData, decryptData } from './src/utils/AES';
 
 class DrawerContent extends Component {
 
@@ -44,6 +44,9 @@ class DrawerContent extends Component {
 
   logout = async () => {
 
+    this.LogoutApi();
+   
+
     unsetConfiguration('token');
     unsetConfiguration('salesflag');
     unsetConfiguration('encryptedToken');
@@ -62,6 +65,73 @@ class DrawerContent extends Component {
     this.props.navigation.navigate('SplashScreen');
 
     return;
+
+  }
+
+
+  LogoutApi = async () => {
+
+    console.log('ApiWin');
+   // this.setState({ isLoading: true });
+
+    let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/logout"
+
+    let params = {
+      'jwtToken': getConfiguration('encryptedToken', ''),
+      'PartnerKey': 'JWT12SER02'
+    }
+
+
+    const encryptedParams = await encryptData(JSON.stringify(params));
+
+    console.log('encryptedParams', encryptedParams);
+
+    let encParams = {
+      "request": encryptedParams//"wZ41JrpUFxYN657xEboMROidcqi+SuudbDsP9Co2zeTjD6u1YHmdD5IYFReAL4vHAmty0BZVSxyiprqQbcNjZhS0ybG6D1HCTz7tU1CpN/ownifuNlThzFDgG9EHnXcUt5V4F76t4qcoBI6jkyKb37zgt5zRMWg51nECtBXVoYgYV35mYYCPNz8UK+JIjQRdB5trVjZblvfCj1ru4++DxGzr7KF3BY6KVnTAhuObg45O4fjdDQFsAtnG86IG9fMC9MEc+v8bNy1M3al+QmBfmRvYaavleXjbzJNpAS+bVLF0wZgD8SnaqfUFXwJxlgvoy7D7DpscCWonWZMQdKvZO66I/XQXt1fa5rHhfKy38qzki/g8o/GraaRRKjnq6xXxth5KKhG3ZM32PbMEvbYGvhPCSK0ZUb16Y60pdA98eK8qmpSlgm93XvisN/TDojkWRBq9MJKlczwOGocsWY8ih5VPKirjXGUaEEje8GmLKRmQ49OJtQYJUHuujDlblxSMHhHylyaiYUaI4wuhVQPGrqTrbw/2w9wRH/w3SQlcErsXNUOvcMWgPYiQwoQBl7kuhbTdhoEfFY95FNh1n7QQOtViCUIzhorCHKdNLTzbjuNYeiPWFtWl4G17tBz6EwxA"
+    };
+
+    axios.post(url, encParams, {
+      "headers": {
+        "content-type": "application/json",
+      },
+    }).then(response => {
+
+      console.log("logout encrypted response => ", JSON.stringify(response.data));
+      this.parseLogoutApiData(response.data);
+
+    }).catch(error => {
+      console.log("cvzgvxbhvb", error);
+    
+
+    });
+
+  }
+
+
+  parseLogoutApiData = async (data) => {
+
+    console.log("dxfvgvhb",data.response);
+    try {
+
+      const result = await decryptData(data.response);
+    //  this.setState({ isLoading: false });
+
+      console.log('logout result => ', result.data);
+
+     // const url = result.data.deepLink
+
+      // if (url.includes("https")) {
+
+      //   Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+      // }
+      // else {
+      //   alert('No User found')
+      // }
+
+    } catch (error) {
+      alert('No user found');
+    }
+
 
   }
 

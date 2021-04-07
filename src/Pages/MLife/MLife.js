@@ -39,29 +39,78 @@ export default class MLife extends React.Component {
 
   clickiLearn = () => {
 
+
+    IntentLauncher.isAppInstalled('com.chaptervitamins.bharatiaxa')
+    .then((result) => {
+      console.log('isAppInstalled yes');
+  
+     
     IntentLauncher.startAppByPackageName('com.chaptervitamins.bharatiaxa')
-      .then((result) => {
-        console.log('startAppByPackageName started');
-      })
-      .catch((error) => console.warn('startAppByPackageName: could not open', error));
+    .then((result) => {
+      console.log('startAppByPackageName started');
+    })
+    .catch((error) => console.warn('startAppByPackageName: could not open', error));
+  
+    })
+    .catch((error) => {
+      console.warn('isAppInstalled: no', error)
+  
+      Linking.openURL("https://play.google.com/store/apps/details?id=com.chaptervitamins.bharatiaxa");
+  
+    });
+  
+
   }
 
   clickiearn = () => {
 
+
+    IntentLauncher.isAppInstalled('com.bhartiaxa.mlife')
+    .then((result) => {
+      console.log('isAppInstalled yes');
+  
+     
     IntentLauncher.startAppByPackageName('com.bhartiaxa.mlife')
-      .then((result) => {
-        console.log('startAppByPackageName started');
-      })
-      .catch((error) => console.warn('startAppByPackageName: could not open', error));
+    .then((result) => {
+      console.log('startAppByPackageName started');
+    })
+    .catch((error) => console.warn('startAppByPackageName: could not open', error));
+  
+    })
+    .catch((error) => {
+      console.warn('isAppInstalled: no', error)
+  
+      Linking.openURL("https://play.google.com/store/apps/details?id=com.bhartiaxa.mlife");
+  
+    });
+
+   
 
   }
 
   gotoRecruit() {
+
+
+    IntentLauncher.isAppInstalled('com.bhartiaxa.recruit')
+    .then((result) => {
+      console.log('isAppInstalled yes');
+  
+     
     IntentLauncher.startAppByPackageName('com.bhartiaxa.recruit')
-      .then((result) => {
-        console.log('startAppByPackageName started');
-      })
-      .catch((error) => console.warn('startAppByPackageName: could not open', error));
+    .then((result) => {
+      console.log('startAppByPackageName started');
+    })
+    .catch((error) => console.warn('startAppByPackageName: could not open', error));
+  
+    })
+    .catch((error) => {
+      console.warn('isAppInstalled: no', error)
+  
+      Linking.openURL("https://we.tl/t-F0IemaPQsd");
+  
+    });
+
+    
   }
 
 
