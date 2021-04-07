@@ -54,8 +54,8 @@ const appArray = [
     isLatest: false,
     versionCode: 0,
     lastUpdated: 1,
-    androidId: 'com.chaptervitamins.bhartiaxa',
-    bundleId: 'com.chaptervitamins.bharthiaxa',
+    androidId: 'com.chaptervitamins.bharatiaxa',
+    bundleId: 'com.chaptervitamins.bharathiaxa',
     iosId: ''
   }, {
     icon: require('../../../assets/i-EARN.png'),
@@ -95,11 +95,15 @@ export default class AppVersionDialog extends React.Component {
   }
 
   componentDidMount() {
+
     this.versionControlPopupLogic();
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       if (this.isCheckedPopup)
         this.versionControlPopupLogic();
     });
+
+    console.log('-----------------------App version componentDidMount------------------')
+
   }
 
   componentWillUnmount() {
@@ -117,12 +121,22 @@ export default class AppVersionDialog extends React.Component {
 
       const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
 
+      installedApps.map(item => {
+        console.log('installedApps item', item.packageName +" "+item.appName);
+      });
+
       let tempList = [];
 
       versionApiData.map(item => {
 
+        console.log('versionApiData item', JSON.stringify(item));
+
         let index = installedApps.findIndex(x => x.packageName === item.PackageName);
         let iconIndex = appArray.findIndex(x => x.androidId === item.PackageName);
+
+        if (index != -1) {
+          console.log('pack', installedApps[index].packageName);
+        }
 
         const iObj = {
           icon: iconIndex != -1 ? appArray[iconIndex].icon : '',// require('../../../assets/m_shell.png'),

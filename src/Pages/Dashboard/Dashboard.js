@@ -125,14 +125,14 @@ export default class Dashboard extends React.Component {
   componentDidMount() {
     this.getVersionControlsApi();
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-    this.focusListener = this.props.navigation.addListener("didFocus", () => {
-      if (this.isCheckedPopup)
-        this.versionControlPopupLogic();
-    });
+    // this.focusListener = this.props.navigation.addListener("didFocus", () => {
+    //   if (this.isCheckedPopup)
+    //     this.versionControlPopupLogic();
+    // });
   }
 
   componentWillUnmount() {
-    this.focusListener.remove();
+    // this.focusListener.remove();
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
@@ -194,30 +194,6 @@ export default class Dashboard extends React.Component {
     }
   }
 
-  gotoVymo = () => {
-
-    IntentLauncher.isAppInstalled('com.getvymo.android')
-    .then((result) => {
-      console.log('isAppInstalled yes');
-  
-      IntentLauncher.startAppByPackageName('com.getvymo.android')
-      .then((result) => {
-        console.log('startAppByPackageName started');
-      })
-      .catch((error) => console.warn('startAppByPackageName: could not open', error));
-  
-    })
-    .catch((error) => {
-      console.warn('isAppInstalled: no', error)
-  
-      Linking.openURL("https://play.google.com/store/apps/details?id=com.getvymo.android");
-  
-    });
-
-
-  
-  }
-
   copyToClipboard = () => {
 
     console.log("copy to clipboard", getConfiguration('encryptedToken', ''));
@@ -232,27 +208,50 @@ export default class Dashboard extends React.Component {
     })
   }
 
+  gotoVymo = () => {
+
+    IntentLauncher.startAppByPackageName('com.getvymo.android')
+      .then((result) => {
+        console.log('startAppByPackageName started');
+      }).catch((error) => {
+        console.warn('startAppByPackageName: could not open', error);
+
+        if (this.versionApiData) {
+          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.getvymo.android');
+          console.log('index', index);
+          if (index != -1) {
+            Linking.openURL(this.versionApiData[index].AppDownloadLink);
+            return;
+          }
+        }
+
+        Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
+
+      });
+
+  }
+
   gotoMSell = () => {
-    IntentLauncher.isAppInstalled('com.enparadigm.bharthiaxa')
-  .then((result) => {
-    console.log('isAppInstalled yes');
 
     IntentLauncher.startAppByPackageName('com.enparadigm.bharthiaxa')
-    .then((result) => {
-      console.log('startAppByPackageName started');
-    })
-    .catch((error) => console.warn('startAppByPackageName: could not open', error));
+      .then((result) => {
+        console.log('startAppByPackageName started');
+      })
+      .catch((error) => {
+        console.warn('startAppByPackageName: could not open', error);
 
-  })
-  .catch((error) => {
-    console.warn('isAppInstalled: no', error)
+        if (this.versionApiData) {
+          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.enparadigm.bharthiaxa');
+          console.log('index', index);
+          if (index != -1) {
+            Linking.openURL(this.versionApiData[index].AppDownloadLink);
+            return;
+          }
+        }
 
-    Linking.openURL("https://slack-files.com/T85QWDR0V-F01SA1Z4C3U-69b095adf7");
+        Linking.openURL('https://play.google.com/store/apps/details?id=com.enparadigm.bharthiaxa');
 
-  });
-
-   
-
+      });
   }
 
   closePopUp = () => {
@@ -262,106 +261,10 @@ export default class Dashboard extends React.Component {
     })
   }
 
-  checkAppInstallStatus = () => {
-
-    IntentLauncher.isAppInstalled('com.enparadigm.bharthiaxa')
-      .then((result) => {
-        console.log('isAppInstalled yes', result);
-
-        this.setState({
-          checkinstallstatus: true
-        })
-      })
-      .catch((error) => {
-        console.log("gdfsdvfgfvfhg", error);
-        this.setState({
-          checkinstallstatus: false
-        })
-      }
-
-      );
-  }
-
   installApp = () => {
     // https://play.google.com/store/apps/details?id=com.enparadigm.bharthiaxa&hl=en&gl=US
     Linking.openURL("market://details?id=com.enparadigm.bharthiaxa&hl=en&gl=US");
   }
-
-  // logout = () => {
-
-  //   const savedToken = getConfiguration('token');
-
-  //   let url = "https://accounts.bharti-axalife.com/oidc/logout?"
-
-
-  //   let finalurl = url + "id_token_hint=" + savedToken + "&post_logout_redirect_uri=com.bhartiaxa.virtualoffice://oauth"
-
-  //   console.log("gczdhvb", finalurl);
-
-  //   //console.log("vdgfhhg", decryptData(response.CheckAgentCodeJWTResult,key,salt));
-
-  //   axios.get(finalurl, {
-  //     "headers": {
-  //       "content-type": "application/json",
-  //     },
-  //   })
-  //     .then(function (response) {
-  //       console.log("vdgf42253465656hhg", response);
-  //       //let decResponse = decryptData("rT/lgzM78o/24AyqFmdOF3/PeVhs6Exj0gXuU6LbWEPyWbe7cbfqZj3YbrmbqV+OQz5deQp4CLj2efcjM/jLyHe2wBSLaS3HVJYT8fj7us/2xOqjJWsDwRwZObUofyUJriGmFXwTtrNolsTW4h4VOWffql3OecJsdELEaSF/I1POKXi2MmEtZKA63glc7MctDg5ApcmpZuKLKKVqxB0YdZ9D6/7/wYDUZJ/MFlLiA23ywwkTdeKnbYeI0kJ0mjFN",'6c0ce6669b01b8e918f786f466be6968e70025c573a42753b7efb13cd89d6e5a','$!rl@$b!')
-  //       //console.log("vdgfhhg",decResponse);
-
-  //     })
-
-  //     .catch(function (error) {
-
-  //       console.log("cvzgvxbhvb", error);
-
-  //     });
-  // }
-
-  // CheckJWTToken = () => {
-
-  //   let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTService/Service1.svc/WE_CheckAgentCodeJWT"
-
-  //   let params = {
-  //     "DecodeJWT": this.state.savedToken,
-  //     "PartnerKey": "JWT12SER02"
-  //   };
-
-  //   axios.post(url, params, {
-  //     "headers": {
-  //       "content-type": "application/json",
-  //     },
-  //   })
-  //     .then(function (response) {
-  //       console.log("vdgf42253465656hhg", response.data);
-
-  //       var sales = response.data.IsSalesAgent;
-  //       var etoken = response.data.EncodedJWT
-  //       console.log("gafsvfhvb", sales);
-
-  //       setConfiguration('salesflag', sales)
-  //       setConfiguration('encryptedToken', etoken)
-
-  //       if (Platform.OS == 'android') {
-  //         NativeModules.HelloWorldModule.ShowMessage(
-  //           etoken,
-  //           'false',
-  //           5000,
-  //         );
-  //       } else if (Platform.OS == 'ios') {
-  //         NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
-  //       }
-
-  //     })
-  //     .catch(function (error) {
-
-  //       console.log("cvzgvxbhvb", error);
-
-  //     });
-
-
-  // }
 
   parseVersionApiData = async (data) => {
 
@@ -471,32 +374,6 @@ export default class Dashboard extends React.Component {
     alert('Coming Soon')
   }
 
-  rederHeader = () => {
-
-    return (
-      <View style={[styles.headerView, { elevation: this.state.showVersionPopup ? 0 : 10 }]}>
-        <TouchableOpacity
-          style={styles.backTouchable}
-          onPress={() => this.copyToClipboard()}>
-          <Image resizeMode="contain" style={styles.leftLogo}
-            source={require('../../../assets/logo_rht.png')} />
-        </TouchableOpacity>
-        <View style={styles.welcomContainer}>
-          <Text style={styles.headerTitle}> Welcome to</Text>
-          <Text style={styles.headerTitle1}> Virtual Office</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.backTouchable}
-          onPress={() => this.openDrawerClick()}>
-
-          <Image resizeMode="contain" style={styles.rghtLogo}
-            source={require('../../../assets/menu.jpeg')} />
-        </TouchableOpacity>
-      </View>
-    )
-
-  }
-
   closeVersionPopup = async () => {
     this.setState({ showVersionPopup: false });
   }
@@ -524,6 +401,32 @@ export default class Dashboard extends React.Component {
 
       Linking.openURL("https://apps.apple.com/us/app/" + item.iosId);
     }
+
+  }
+
+  rederHeader = () => {
+
+    return (
+      <View style={[styles.headerView, { elevation: this.state.showVersionPopup ? 0 : 10 }]}>
+        <TouchableOpacity
+          style={styles.backTouchable}
+          onPress={() => this.copyToClipboard()}>
+          <Image resizeMode="contain" style={styles.leftLogo}
+            source={require('../../../assets/logo_rht.png')} />
+        </TouchableOpacity>
+        <View style={styles.welcomContainer}>
+          <Text style={styles.headerTitle}> Welcome to</Text>
+          <Text style={styles.headerTitle1}> Virtual Office</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.backTouchable}
+          onPress={() => this.openDrawerClick()}>
+
+          <Image resizeMode="contain" style={styles.rghtLogo}
+            source={require('../../../assets/menu.jpeg')} />
+        </TouchableOpacity>
+      </View>
+    )
 
   }
 
@@ -964,7 +867,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    flex:0.7,
+    flex: 0.7,
     position: 'absolute',
     backgroundColor: 'rgb(234,240,248)',
     justifyContent: 'center',

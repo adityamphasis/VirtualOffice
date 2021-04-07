@@ -16,8 +16,8 @@ import { Page, Button, ButtonContainer, Form, FormLabel, FormValue, Heading } fr
 import axios from 'react-native-axios';
 import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
-import VersionInfo from 'react-native-version-info';
 
+import VersionInfo from 'react-native-version-info';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 const config = {
@@ -43,7 +43,7 @@ export default class Splash extends React.Component {
     super(props);
     this.state = {
       isLoading: false,
-      versionCode:''
+      versionCode: ''
     }
     this.authChecking = false;
 
@@ -51,12 +51,8 @@ export default class Splash extends React.Component {
 
 
   componentDidMount = async () => {
-    console.log("gcv",VersionInfo.appVersion);
-    console.log("ytgh",VersionInfo.buildVersion);
-    console.log("yewUEU",VersionInfo.bundleIdentifier);
-    this.setState({
-      versionCode:VersionInfo.appVersion
-    })
+
+    this.setState({ versionCode: VersionInfo.appVersion });
 
     const bioEnable = await getStorage('isBioEnabled');
     if (bioEnable)
@@ -309,14 +305,14 @@ export default class Splash extends React.Component {
           width: wp('100%'),
           height: hp('85%'),
           marginTop: 40,
-
         }}>
           <Image resizeMode="center" style={{ alignSelf: 'center', width: '40%', height: '40%', backgroundColor: 'transparent' }}
             source={require('../../../assets/splash_img2.png')}
           />
-<Text style={[styles.welocmeText,{textAlign:'right', marginTop:'50%', fontFamily: "WorkSans-Thin",marginEnd:'5%'}]}>Version:{this.state.versionCode}</Text>
         </ImageBackground>
-        
+
+        <Text style={[{ position: 'absolute', bottom: 10, alignSelf: 'center', fontFamily: 'WorkSans-Medium' }]}>Version: {this.state.versionCode}</Text>
+
       </Page>
     );
   }

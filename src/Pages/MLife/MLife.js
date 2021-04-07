@@ -26,6 +26,12 @@ export default class MLife extends React.Component {
 
   }
 
+  componentDidMount = () => {
+
+    this.versionApiData = getConfiguration('appsData');
+
+  }
+
   goBack() {
     this.props.navigation.goBack();
   }
@@ -39,96 +45,78 @@ export default class MLife extends React.Component {
 
   clickiLearn = () => {
 
-
-    IntentLauncher.isAppInstalled('com.chaptervitamins.bharatiaxa')
-    .then((result) => {
-      console.log('isAppInstalled yes');
-  
-     
     IntentLauncher.startAppByPackageName('com.chaptervitamins.bharatiaxa')
-    .then((result) => {
-      console.log('startAppByPackageName started');
-    })
-    .catch((error) => console.warn('startAppByPackageName: could not open', error));
-  
-    })
-    .catch((error) => {
-      console.warn('isAppInstalled: no', error)
-  
-      Linking.openURL("https://play.google.com/store/apps/details?id=com.chaptervitamins.bharatiaxa");
-  
-    });
-  
+      .then((result) => {
+        console.log('startAppByPackageName started');
+      })
+      .catch((error) => {
+        console.warn('startAppByPackageName: could not open', error);
+
+        if (this.versionApiData) {
+          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.chaptervitamins.bharatiaxa');
+          console.log('index', index);
+          if (index != -1) {
+            Linking.openURL(this.versionApiData[index].AppDownloadLink);
+            return;
+          }
+        }
+
+        Linking.openURL('https://play.google.com/store/apps/details?id=com.chaptervitamins.bharatiaxa');
+
+      });
+
 
   }
 
   clickiearn = () => {
 
-
-    IntentLauncher.isAppInstalled('com.bhartiaxa.mlife')
-    .then((result) => {
-      console.log('isAppInstalled yes');
-  
-     
     IntentLauncher.startAppByPackageName('com.bhartiaxa.mlife')
-    .then((result) => {
-      console.log('startAppByPackageName started');
-    })
-    .catch((error) => console.warn('startAppByPackageName: could not open', error));
-  
-    })
-    .catch((error) => {
-      console.warn('isAppInstalled: no', error)
-  
-      Linking.openURL("https://play.google.com/store/apps/details?id=com.bhartiaxa.mlife");
-  
-    });
+      .then((result) => {
+        console.log('startAppByPackageName started');
+      })
+      .catch((error) => {
+        console.warn('startAppByPackageName: could not open', error);
 
-   
+        if (this.versionApiData) {
+          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.bhartiaxa.mlife');
+          console.log('index', index);
+          if (index != -1) {
+            Linking.openURL(this.versionApiData[index].AppDownloadLink);
+            return;
+          }
+        }
+
+        Linking.openURL('https://play.google.com/store/apps/details?id=com.bhartiaxa.mlife');
+
+
+      });
 
   }
 
   gotoRecruit() {
 
-
-    IntentLauncher.isAppInstalled('com.bhartiaxa.recruit')
-    .then((result) => {
-      console.log('isAppInstalled yes');
-  
-     
     IntentLauncher.startAppByPackageName('com.bhartiaxa.recruit')
-    .then((result) => {
-      console.log('startAppByPackageName started');
-    })
-    .catch((error) => console.warn('startAppByPackageName: could not open', error));
-  
-    })
-    .catch((error) => {
-      console.warn('isAppInstalled: no', error)
-  
-      Linking.openURL("https://we.tl/t-F0IemaPQsd");
-  
-    });
+      .then((result) => {
+        console.log('startAppByPackageName started');
+      })
+      .catch((error) => {
+        console.warn('startAppByPackageName: could not open', error);
 
-    
-  }
+        if (this.versionApiData) {
+          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.bhartiaxa.recruit');
+          console.log('index', index);
+          if (index != -1) {
+            Linking.openURL(this.versionApiData[index].AppDownloadLink);
+            return;
+          }
+        }
+
+        Linking.openURL('https://play.google.com/store/apps/details?id=com.bhartiaxa.recruit');
 
 
+      });
 
-  clickApp = () => {
-    this.setState({
-      clickOnApp: true
-    })
-  }
 
-  closePopUp = () => {
-    this.setState({
-      clickOnApp: false
-    })
-  }
-
-  showAlert = () => {
-    alert('Coming Soon')
   }
 
   gotoService = () => {
@@ -147,9 +135,7 @@ export default class MLife extends React.Component {
     } else {
       alert('Available only for Agents')
     }
-
   }
-
 
   ApiWin = async () => {
 
@@ -190,7 +176,6 @@ export default class MLife extends React.Component {
 
   }
 
-
   parseiWinApiData = async (data) => {
 
     try {
@@ -214,10 +199,18 @@ export default class MLife extends React.Component {
       alert('No user found');
     }
 
+  }
 
+  clickApp = () => {
+    this.setState({ clickOnApp: true });
+  }
 
-    // this.props.navigation.navigate('SideMenu', { accessToken: accessToken })
+  closePopUp = () => {
+    this.setState({ clickOnApp: false });
+  }
 
+  showAlert = () => {
+    alert('Coming Soon');
   }
 
   render() {
@@ -248,18 +241,6 @@ export default class MLife extends React.Component {
         </View>
 
         <ScrollView style={styles.mainContainer}>
-
-
-          {/* <View style={styles.imgcontainer}> */}
-
-
-          {/* <Image resizeMode="contain" style={styles.imgprofile}
-            source = {require('../../../assets/prfl_img.jpg')}/> */}
-          {/* <Text style={styles.appName}> Welcome Test </Text> */}
-          {/* <Text style={styles.appName}> Designation, Team </Text> */}
-
-
-          {/* </View> */}
 
           <Loader visible={this.state.isLoading} />
 
@@ -542,7 +523,7 @@ const styles = StyleSheet.create({
     width: wp('45%'),
     height: wp('25%'),
     top: 0,
-    padding:5,
+    padding: 5,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
