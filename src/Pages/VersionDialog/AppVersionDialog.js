@@ -3,16 +3,16 @@ import {
   ImageBackground, Image, StatusBar, Keyboard,
   Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
 } from 'react-native';
-import React, { PropTypes } from 'react'
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp
-} from 'react-native-responsive-screen';
+import React, { PropTypes } from 'react';
 
+import axios from 'react-native-axios';
 import RNAndroidInstalledApps from 'react-native-android-installed-apps';
 import moment from "moment";
 
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
+import { encryptData, decryptData } from '../../utils/AES';
+import { setStorage } from '../../utils/authentication';
+
 
 import { Loader, ButtonOutline } from '../../../components';
 
@@ -48,6 +48,16 @@ const appArray = [
     bundleId: 'com.xoxoday.compass',
     iosId: 'compass-xoxo/id1504258298'
   }, {
+    icon: require('../../../assets/i-WIN.png'),
+    appName: 'i-Win',
+    versionCode: 0,
+    isInstalled: false,
+    isLatest: false,
+    lastUpdated: 1,
+    androidId: 'com.xoxoday.compassuat',
+    bundleId: 'com.xoxoday.compassuat',
+    iosId: 'compass-xoxo/id1504258298'
+  }, {
     icon: require('../../../assets/i-LEARN.png'),
     appName: 'i-Learn',
     isInstalled: false,
@@ -55,7 +65,17 @@ const appArray = [
     versionCode: 0,
     lastUpdated: 1,
     androidId: 'com.chaptervitamins.bharatiaxa',
-    bundleId: 'com.chaptervitamins.bharathiaxa',
+    bundleId: 'com.chaptervitamins.bharatiaxa',
+    iosId: ''
+  }, {
+    icon: require('../../../assets/i-LEARN.png'),
+    appName: 'i-Learn',
+    isInstalled: false,
+    isLatest: false,
+    versionCode: 0,
+    lastUpdated: 1,
+    androidId: 'com.chaptervitamins.bhartiaxa',
+    bundleId: 'com.chaptervitamins.bhartiaxa',
     iosId: ''
   }, {
     icon: require('../../../assets/i-EARN.png'),
@@ -87,6 +107,7 @@ export default class AppVersionDialog extends React.Component {
     super(props);
 
     this.state = {
+      isLoading: false,
       appList: []
     };
 
@@ -96,18 +117,71 @@ export default class AppVersionDialog extends React.Component {
 
   componentDidMount() {
 
-    this.versionControlPopupLogic();
+    console.log('-----------------------App version componentDidMount------------------')
+
+    this.getData();
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       if (this.isCheckedPopup)
         this.versionControlPopupLogic();
     });
 
-    console.log('-----------------------App version componentDidMount------------------')
 
   }
 
   componentWillUnmount() {
     this.focusListener.remove();
+  }
+
+  getData = async () => {
+
+    this.setState({ isLoading: true });
+
+    let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestService/Service1.svc/GetVersionControlDetails"
+
+    let params = {
+      'Platform': Platform.OS === 'android' ? 'Android' : 'Ios',
+      'PartnerKey': 'VC18APP02SER'
+    }
+
+    const encryptedParam = await encryptData(JSON.stringify(params));
+
+    console.log('version ecrypted data: ', encryptedParam);
+
+    let encParams = {
+      "request": encryptedParam
+    };
+
+    axios.post(url, encParams, {
+      "headers": {
+        "content-type": "application/json",
+      }
+    }).then(response => {
+
+      console.log("version response => ", JSON.stringify(response.data));
+
+      this.parseVersionApiData(response.data);
+
+    }).catch(error => {
+      console.log("version error", JSON.stringify(error));
+    });
+
+
+  }
+
+  parseVersionApiData = async (data) => {
+
+    const result = await decryptData(data.response);
+
+    this.setState({ isLoading: false });
+
+    console.log('result => ', result);
+
+    const versionApiData = result.AppDetails ? result.AppDetails : [];
+
+    setConfiguration('appsData', versionApiData);
+
+    this.versionControlPopupLogic();
+
   }
 
   versionControlPopupLogic = async () => {
@@ -121,22 +195,20 @@ export default class AppVersionDialog extends React.Component {
 
       const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
 
-      installedApps.map(item => {
-        console.log('installedApps item', item.packageName +" "+item.appName);
-      });
+      // installedApps.map(item => {
+      //   console.log('installedApps item', item.packageName +" "+item.appName);
+      // });
 
       let tempList = [];
 
       versionApiData.map(item => {
 
-        console.log('versionApiData item', JSON.stringify(item));
-
         let index = installedApps.findIndex(x => x.packageName === item.PackageName);
         let iconIndex = appArray.findIndex(x => x.androidId === item.PackageName);
 
-        if (index != -1) {
-          console.log('pack', installedApps[index].packageName);
-        }
+        // if (index != -1) {
+        //   console.log('pack', installedApps[index].packageName);
+        // }
 
         const iObj = {
           icon: iconIndex != -1 ? appArray[iconIndex].icon : '',// require('../../../assets/m_shell.png'),
@@ -154,10 +226,12 @@ export default class AppVersionDialog extends React.Component {
 
       });
 
-      if (tempList.length > 0)
-        this.setState({ appList: tempList });
+      this.setState({ appList: tempList });
 
       this.isCheckedPopup = false;
+
+      await setStorage('isDialogShown', 'yes');
+
 
     } catch (error) {
       console.log('error', JSON.stringify(error));
@@ -266,7 +340,11 @@ export default class AppVersionDialog extends React.Component {
 
     return (
       <SafeAreaView style={styles.background}>
+
+        <Loader visible={this.state.isLoading} />
+
         {this.renderVersionPopup()}
+
       </SafeAreaView>
     );
 

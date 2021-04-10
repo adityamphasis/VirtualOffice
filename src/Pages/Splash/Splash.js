@@ -60,15 +60,21 @@ export default class Splash extends React.Component {
     else
       unsetConfiguration('isBioEnabled');
 
-    setConfiguration('token', await getStorage('token'));
-    setConfiguration('idToken', await getStorage('idToken'));
-    setConfiguration('refreshToken', await getStorage('refreshToken'));
-    setConfiguration('salesflag', await getStorage('salesflag') === 'true' ? true : false);
-    setConfiguration('encryptedToken', await getStorage('encryptedToken'));
-    setConfiguration('Agent', await getStorage('Agent'));
-    setConfiguration('Employee', await getStorage('Employee'));
-    setConfiguration('AgentName', await getStorage('AgentName'));
-    setConfiguration('MobileNumber', await getStorage('MobileNumber'));
+    const savedToken = await getStorage('token');
+
+    if (savedToken && savedToken != '') {
+
+      setConfiguration('token', savedToken);
+      setConfiguration('idToken', await getStorage('idToken'));
+      setConfiguration('refreshToken', await getStorage('refreshToken'));
+      setConfiguration('salesflag', await getStorage('salesflag') === 'true' ? true : false);
+      setConfiguration('encryptedToken', await getStorage('encryptedToken'));
+      setConfiguration('Agent', await getStorage('Agent'));
+      setConfiguration('Employee', await getStorage('Employee'));
+      setConfiguration('AgentName', await getStorage('AgentName'));
+      setConfiguration('MobileNumber', await getStorage('MobileNumber'));
+
+    }
 
     this.checkForBioAndProceed();
 
@@ -87,6 +93,7 @@ export default class Splash extends React.Component {
         return;
       }
     } catch (error) {
+
     }
 
     this.getData();
@@ -121,8 +128,7 @@ export default class Splash extends React.Component {
       const accessToken = getConfiguration('token');
       console.log('already logged in:', accessToken);
       if (accessToken && accessToken != '') {
-        // this.props.navigation.replace('SideMenu', { accessToken: accessToken });
-        this.props.navigation.navigate('MainScreen', { accessToken: accessToken });
+        this.props.navigation.navigate('MainScreen');
         return
       }
     } catch (error) {
@@ -237,18 +243,18 @@ export default class Splash extends React.Component {
     try {
       const isBioEnabled = getConfiguration('isBioEnabled');
       if (isBioEnabled && isBioEnabled === 'enable') {
-        this.props.navigation.navigate('MainScreen', { accessToken: accessToken });
+        this.props.navigation.navigate('MainScreen');
         return;
       }
     } catch (error) {
 
     }
 
-    this.askForSettingBio(accessToken);
+    this.askForSettingBio();
 
   }
 
-  askForSettingBio = (accessToken) => {
+  askForSettingBio = () => {
 
     FingerprintScanner
       .isSensorAvailable()
@@ -270,12 +276,12 @@ export default class Splash extends React.Component {
               text: 'NO', onPress: async () => {
                 setConfiguration('isBioEnabled', 'disable');
                 await setStorage('isBioEnabled', 'disable');
-                this.props.navigation.navigate('MainScreen', { accessToken: accessToken });
+                this.props.navigation.navigate('MainScreen');
               }
             },
           ]
         );
-      }).catch(error => this.props.navigation.navigate('MainScreen', { accessToken: accessToken }));
+      }).catch(error => this.props.navigation.navigate('MainScreen'));
 
   }
 

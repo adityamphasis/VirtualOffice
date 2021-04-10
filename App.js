@@ -17,11 +17,11 @@ import { setConfiguration, unsetConfiguration } from './src/utils/configuration'
 
 
 export default class App extends Component {
-componentDidMount()
-{
- // console.disableYellowBox = true
-  LogBox.ignoreAllLogs(true)
-}
+
+  componentDidMount() {
+    // console.disableYellowBox = true
+    LogBox.ignoreAllLogs(true)
+  }
 
   handleNavigationState = (previous, next, action) => {
 

@@ -14,10 +14,13 @@ import {
   Platform,
   processColor,
   window,
-  Linking
+  Linking,
+  ActivityIndicator
 } from 'react-native';
-import { DrawerActions } from 'react-navigation-drawer';
+
+import axios from 'react-native-axios';
 import { WebView } from 'react-native-webview';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -26,146 +29,156 @@ import {
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { Loader } from '../../../components';
 
+// const token = 'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIyOTIxNDQiLCJhdXQiOiJBUFBMSUNBVElPTl9VU0VSIiwiYXVkIjoiN0lvX2lGZjVvaXEzUDJLalVxWGJTdEttS3BZYSIsImJpbmRpbmdfdHlwZSI6ImNvb2tpZSIsIm5iZiI6IjE2MTc4NzYzODAiLCJhenAiOiI3SW9faUZmNW9pcTNQMktqVXFYYlN0S21LcFlhIiwic2NvcGUiOiJvcGVuaWQiLCJpc3MiOiJodHRwczovL2FjY291bnRzLmJoYXJ0aS1heGFsaWZlLmNvbTo0NDMvb2F1dGgyL3Rva2VuIiwiZXhwIjoxNjE3OTYzMDAzLCJpYXQiOiIxNjE3ODc2MzgwIiwiYmluZGluZ19yZWYiOiI3MDJhZmU4YWM3NjI3MTAwMTMwYjhmN2VhOGNiZGYxZSIsImp0aSI6ImYzNDU3NjIzLTgwODQtNGVlOS1iNDg0LTg0Nzc3MDliOGMzZiJ9.';
 
 export default class MCustomer extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      accessToken: getConfiguration('encryptedToken', ''),
-      platform: '',
-      isSales: getConfiguration('salesflag', ''),
-      comingScreen: this.props.navigation.getParam('screen'),
-      isLoading: true
-    };
+
+    // this.state = { isLoading: true };
+
+    this.accessToken = getConfiguration('encryptedToken');
+    this.platform = Platform.OS;// ==='android'
+    this.comingScreen = this.props.navigation.getParam('screen');
+    this.isSales = getConfiguration('salesflag', '');
 
   }
 
   componentDidMount() {
+    // this.renderView();
+  }
 
-    if (Platform.OS === 'ios') {
-      this.setState({ platform: 'ios' });
-    } else {
-      this.setState({
-        platform: 'android'
-      })
+  componentWillUnmount() {
+
+    this.webview.stopLoading();
+
+    if (this.ssoid) {
+
+      const logOutURL = 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/tokenData/' + this.ssoid
+      // axios.post(logOutURL)
+      console.log('logOutURL', logOutURL);
+      axios.get(logOutURL).then(response => {
+        console.log('mcustomer logout success');
+      }).catch(error => {
+        console.log("mcustomer logout error", error);
+      });
+
     }
-
   }
 
   goBack() {
     this.props.navigation.goBack();
   }
 
+  onScriptSuccess = (event) => {
+    if (event.url.includes('https://uat.bhartiaxa.tk/app?ssoid=')) {
+      console.log('mcustomeer url =', JSON.stringify(event.url));
+      // this.setState({ isLoading: false });
+      // this.webview.stopLoading();
+      this.ssoid = event.url.substring(event.url.lastIndexOf('=') + 1);
+      this.goBack();
+      Linking.openURL(event.url);
+    }
+  }
+
+  renderView = () => {
+
+    if (this.comingScreen === 'customer') {
+      return <WebView
+        ref={(ref) => { this.webview = ref; }}
+        originWhitelist={['*']}
+        cacheEnabled={false}
+        incognito={true}
+        // setSupportMultipleWindows={false}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        startInLoadingState={true}
+        cacheMode={'LOAD_NO_CACHE'}
+        renderLoading={() => { return (<ActivityIndicator />) }}
+        // onLoadEnd={() => this.setState({ isLoading: false })}
+        onNavigationStateChange={(event) => this.onScriptSuccess(event)}
+        source={{
+          html: '<script type="text/javascript"> ' +
+            'window.onload=function(){' +
+            'document.forms["myForm"].submit();' +
+            '}</script>' +
+            '<body>' +
+            '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
+            '<input type="hidden" name="source" value="' + this.platform + '"/>' +
+            '<input type="hidden" name="jwtToken" value="' + this.accessToken + '"/>' +
+            '<input type="hidden" type="submit" value="Login"/>' +
+            '</form>' +
+            '</body>'
+        }}
+      />
+
+    }
+
+    return <WebView
+      originWhitelist={['*']}
+      cacheEnabled={false}
+      setSupportMultipleWindows={false}
+      saveFormDataDisabled={true}
+      allowsBackForwardNavigationGestures={true}
+      onError={console.error.bind(console, 'error')}
+      incognito={true}
+      cacheMode={'LOAD_NO_CACHE'}
+      javaScriptEnabled={true}
+      onLoadEnd={() => this.setState({ isLoading: false })}
+      source={{
+        html: '<script type="text/javascript"> ' +
+          'window.onload=function(){' +
+          'document.forms["myForm"].submit();' + '}</script>' +
+          '<body >' +
+          '<form id="myForm" method="POST" action="https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1">' +
+          '<input type="hidden" name="isSales" value="' + this.isSales + '"/>' +
+          '<input type="hidden" name="jwtToken" value="' + this.accessToken + '"/>' +
+          '<input type="hidden" type="submit" value="Login"/>' +
+          '</form>' +
+          '</body>'
+      }}
+    />
+
+  }
+
   render() {
+
+    console.log('accessToken:', this.accessToken);
+    console.log('coming from:', this.comingScreen);
+    console.log('is sales:', this.isSales);
+    console.log('platform:', this.platform);
 
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 
-        <Loader visible={this.state.isLoading} />
+        {/* <Loader visible={this.state.isLoading} /> */}
 
-        {/* {this.state.comingScreen == 'service' ?
-          <View style={styles.headerView}>
-            <TouchableOpacity
-              style={styles.backTouchable}
-              onPress={() => this.goBack()}>
-              <Image resizeMode="contain" style={styles.leftLogo}
-                source={require('../../../assets/logo_rht.png')} />
-              <Text style={[styles.headerTitle1, { marginLeft: 5, color: 'black' }]}>i-Service</Text>
-            </TouchableOpacity>
-            <View style={styles.welcomContainer}>
-              <Text style={styles.headerTitle}> Welcome to</Text>
-              <Text style={styles.headerTitle1}>i-Service</Text>
-            </View>
+        {this.comingScreen != 'service' && <View style={styles.headerView}>
+          <TouchableOpacity
+            style={styles.backTouchable}
+            onPress={() => this.goBack()}>
+            <Image resizeMode="contain" style={styles.leftLogo}
+              source={require('../../../assets/logo_rht.png')} />
+            <Text style={[styles.headerTitle1, { marginLeft: 5, color: 'black' }]}>M-Customer</Text>
+          </TouchableOpacity>
+          <View style={styles.welcomContainer}>
+            <Text style={styles.headerTitle}> Welcome to</Text>
+            <Text style={styles.headerTitle1}>M-Customer</Text>
           </View>
-          : */}
-          {this.state.comingScreen != 'service' && <View style={styles.headerView}>
-            <TouchableOpacity
-              style={styles.backTouchable}
-              onPress={() => this.goBack()}>
-              <Image resizeMode="contain" style={styles.leftLogo}
-                source={require('../../../assets/logo_rht.png')} />
-              <Text style={[styles.headerTitle1, { marginLeft: 5, color: 'black' }]}>M-Customer</Text>
-            </TouchableOpacity>
-            <View style={styles.welcomContainer}>
-              <Text style={styles.headerTitle}> Welcome to</Text>
-              <Text style={styles.headerTitle1}>M-Customer</Text>
-            </View>
-          </View>
+        </View>
         }
 
         <View style={styles.gridViewBackground}>
-          <View style={{ width: '100%', flex: 1, overflow: 'hidden', backgroundColor: 'white' }}>
+          {/* <View style={{
+            width: '100%', flex: 1,
+            overflow: 'hidden',
+            backgroundColor: 'white'
+          }}> */}
 
-            {
-              this.state.comingScreen == 'customer' ?
-                <WebView
-                  ref={(ref) => { this.webview = ref; }}
-                  originWhitelist={['*']}
-                  cacheEnabled={false}
-                  incognito={true}
-                  cacheMode={'LOAD_NO_CACHE'}
-                  // setSupportMultipleWindows={false}
-                  // saveFormDataDisabled={true}
-                  // allowsBackForwardNavigationGestures={true}
-                  // // onShouldStartLoadWithRequest={this.shouldStartLoadWithRequest}
-                  // onError={console.error.bind(console, 'error')}
-                  // // injectedJavaScript={runFirst}
-                  // // onMessage={this.onMessage.bind(this)}
-                  // javaScriptEnabled={true}
-                  onNavigationStateChange={(event) => {
-                    if (event.url.includes('https://uat.bhartiaxa.tk/app?ssoid=')) {
-                      this.setState({ isLoading: false });
-                      this.webview.stopLoading();
-                      this.goBack();
-                      Linking.openURL(event.url);
-                    }
-                  }}
-                  source={{
-                    html: '<script type="text/javascript"> ' +
-                      'window.onload=function(){' +
-                      'document.forms["myForm"].submit();' +
-                      '}</script>' +
-                      '<body>' +
-                      '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
-                      '<input type="hidden" name="source" value="' + this.state.platform + '"/>' +
-                      '<input type="hidden" name="jwtToken" value="' + this.state.accessToken + '"/>' +
-                      '<input type="hidden" type="submit" value="Login"/>' +
-                      '</form>' +
-                      '</body>'
-                  }}
-                />
-                :
-                <WebView
-                  originWhitelist={['*']}
-                  cacheEnabled={false}
-                  setSupportMultipleWindows={false}
-                  saveFormDataDisabled={true}
-                  allowsBackForwardNavigationGestures={true}
-                  // onShouldStartLoadWithRequest={this.shouldStartLoadWithRequest}
-                  onError={console.error.bind(console, 'error')}
-                  // injectedJavaScript={runFirst}
-                  incognito={true}
-                  cacheMode={'LOAD_NO_CACHE'}
-                  // onMessage={this.onMessage.bind(this)}
-                  javaScriptEnabled={true}
-                  onLoadEnd={() => this.setState({ isLoading: false })}
-                  source={{
-                    html: '<script type="text/javascript"> ' +
-                      'window.onload=function(){' +
-                      'document.forms["myForm"].submit();' + '}</script>' +
-                      '<body >' +
-                      '<form id="myForm" method="POST" action="https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1">' +
-                      '<input type="hidden" name="isSales" value="' + this.state.isSales + '"/>' +
-                      '<input type="hidden" name="jwtToken" value="' + this.state.accessToken + '"/>' +
-                      '<input type="hidden" type="submit" value="Login"/>' +
-                      '</form>' +
-                      '</body>'
-                  }}
-                />
-            }
+          {this.renderView()}
 
-          </View>
+          {/* </View> */}
         </View>
 
       </SafeAreaView>

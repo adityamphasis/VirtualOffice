@@ -4,88 +4,26 @@ import {
   Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
 } from 'react-native';
 import React, { PropTypes } from 'react'
+import AppLink from 'react-native-app-link';
+import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
+import Clipboard from '@react-native-community/clipboard';
+import axios from 'react-native-axios';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
-import RNAndroidInstalledApps from 'react-native-android-installed-apps';
-import moment from "moment";
+import { getConfiguration, unsetConfiguration } from '../../utils/configuration';
+import { clearStorage, getStorage } from '../../utils/authentication';
 
-import { DrawerActions } from 'react-navigation-drawer';
-import { getConfiguration, setConfiguration } from '../../utils/configuration';
-import axios from 'react-native-axios';
-import { Page, Button, ButtonOutline, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
+import {
+  Page, Button, ButtonOutline, ButtonContainer,
+  Form, FormLabel, FormValue, Heading
+} from '../../../components';
 
-import AppLink from 'react-native-app-link';
-import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
-import Clipboard from '@react-native-community/clipboard';
 import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
-
-const appArray = [
-  {
-    icon: require('../../../assets/vymo.png'),
-    appName: 'VYMO',
-    versionCode: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    androidId: 'com.getvymo.android',
-    bundleId: 'com.getvymo.android',
-    iosId: ''
-  }, {
-    icon: require('../../../assets/m_shell.png'),
-    appName: 'MSell',
-    isInstalled: false,
-    isLatest: false,
-    versionCode: 0,
-    lastUpdated: 1,
-    androidId: 'com.enparadigm.bharthiaxa',
-    bundleId: 'com.enparadigm.bharthiaxa',
-    iosId: 'm-sell/id1518565564'
-  }, {
-    icon: require('../../../assets/i-WIN.png'),
-    appName: 'i-Win',
-    versionCode: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    androidId: 'com.xoxoday.compass',
-    bundleId: 'com.xoxoday.compass',
-    iosId: 'compass-xoxo/id1504258298'
-  }, {
-    icon: require('../../../assets/i-LEARN.png'),
-    appName: 'i-Learn',
-    isInstalled: false,
-    isLatest: false,
-    versionCode: 0,
-    lastUpdated: 1,
-    androidId: 'com.chaptervitamins.bhartiaxa',
-    bundleId: 'com.chaptervitamins.bharthiaxa',
-    iosId: ''
-  }, {
-    icon: require('../../../assets/i-EARN.png'),
-    appName: 'i-Earn',
-    isInstalled: false,
-    isLatest: false,
-    versionCode: 1,
-    lastUpdated: 1,
-    androidId: 'com.bhartiaxa.mlife',
-    bundleId: 'com.bhartiaxa.mlife',
-    iosId: 'm-life/id1550263609'
-  }, {
-    icon: require('../../../assets/i-RECRUIT.png'),
-    appName: 'i-Recruit',
-    versionCode: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    androidId: 'com.bhartiaxa.recruit',
-    bundleId: 'com.bhartiaxa.recruit',
-    iosId: ''
-  }
-]
 
 
 export default class Dashboard extends React.Component {
@@ -98,42 +36,111 @@ export default class Dashboard extends React.Component {
       clickOnApp: false,
       isShownCmgSoon: true,
       checkinstallstatus: true,
-      savedToken: this.props.navigation.getParam('accessToken'),
-      showVersionPopup: false,
       AgentName: getConfiguration('AgentName', ''),
       AgentMobile: getConfiguration('MobileNumber', ''),
-      appList: []
     };
 
-    this.isCheckedPopup = false;
-
   }
 
-
-  appInstall() {
-    AppLink.openInStore({ appName: "M-Sell", appStoreId: '529379082', appStoreLocale: 'us', playStoreId: 'id=com.enparadigm.bharthiaxa' }).then((datares) => {
-      // do stuff
-      console.log("ghfbbbnbbn", datares);
-      alert("app installed")
-
-    }).catch((err) => {
-      // handle error
-      alert(err)
-    });
-  }
 
   componentDidMount() {
-    this.getVersionControlsApi();
+    this.validateTokenApi();
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-    // this.focusListener = this.props.navigation.addListener("didFocus", () => {
-    //   if (this.isCheckedPopup)
-    //     this.versionControlPopupLogic();
-    // });
   }
 
   componentWillUnmount() {
     // this.focusListener.remove();
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  validateTokenApi = async () => {
+
+    console.log("validateTokenApi");
+
+    this.setState({ isLoading: true });
+
+    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/ValidateJWT"
+
+    let params = {
+      'DecodeJWT': getConfiguration('encryptedToken'),
+      'PartnerKey': 'JWT12SER02'
+    }
+
+    const encryptedParam = await encryptData(JSON.stringify(params));
+
+    console.log('validate ecrypted data: ', encryptedParam);
+
+    let encParams = {
+      "request": encryptedParam
+    };
+
+    axios.post(url, encParams, {
+      "headers": {
+        "content-type": "application/json",
+      }
+    }).then(response => {
+
+      console.log("validate response => ", JSON.stringify(response.data));
+
+      this.parseData(response.data);
+
+    }).catch(error => {
+      console.log("validate error", JSON.stringify(error));
+    });
+
+  }
+
+  parseData = async (data) => {
+
+    const result = await decryptData(data.response);
+
+    this.setState({ isLoading: false });
+    console.log('validate result => ', result);
+
+    if (!result.IsValidToken) {
+
+      Alert.alert(
+        'Expired!',
+        'Your session has been expired. Please login again.',
+        [
+          { text: 'Login Again', onPress: () => this.onSessionExpired() },
+        ]
+      );
+
+      return;
+
+    }
+
+    const isDialogShown = await getStorage('isDialogShown');
+    console.log('isDialogShown', isDialogShown);
+
+    if (!isDialogShown) {
+      this.props.navigation.navigate('AppVersionDialog');
+    }
+
+
+  }
+
+  onSessionExpired = async () => {
+
+    unsetConfiguration('token');
+    unsetConfiguration('salesflag');
+    unsetConfiguration('encryptedToken');
+    unsetConfiguration('Agent');
+    unsetConfiguration('Employee');
+    unsetConfiguration('AgentName');
+    unsetConfiguration('MobileNumber');
+
+    await clearStorage();
+
+    if (Platform.OS == 'android')
+      NativeModules.HelloWorldModule.ShowMessage('', 'false', 5000);
+    else if (Platform.OS == 'ios')
+      NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
+
+    this.props.navigation.navigate('SplashScreen');
+
+
   }
 
   handleBackButton = () => {
@@ -174,6 +181,18 @@ export default class Dashboard extends React.Component {
     this.props.navigation.openDrawer();
   }
 
+  appInstall() {
+    AppLink.openInStore({ appName: "M-Sell", appStoreId: '529379082', appStoreLocale: 'us', playStoreId: 'id=com.enparadigm.bharthiaxa' }).then((datares) => {
+      // do stuff
+      console.log("ghfbbbnbbn", datares);
+      alert("app installed")
+
+    }).catch((err) => {
+      // handle error
+      alert(err)
+    });
+  }
+
   clickApp = () => {
     this.setState({
       clickOnApp: true
@@ -186,7 +205,7 @@ export default class Dashboard extends React.Component {
   }
 
   gotomcustomer = () => {
-    // console.log("sdfbsn", getConfiguration('salesflag'));
+    console.log("salesflag", getConfiguration('salesflag'));
     if (getConfiguration('salesflag')) {
       this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken, screen: 'customer' })
     } else {
@@ -266,148 +285,15 @@ export default class Dashboard extends React.Component {
     Linking.openURL("market://details?id=com.enparadigm.bharthiaxa&hl=en&gl=US");
   }
 
-  parseVersionApiData = async (data) => {
-
-    const result = await decryptData(data.response);
-
-    this.setState({ isLoading: false });
-    console.log('result => ', result);
-
-    this.versionApiData = result.AppDetails ? result.AppDetails : [];
-
-    setConfiguration('appsData', this.versionApiData);
-
-    this.props.navigation.navigate('AppVersionDialog');
-
-    // this.versionControlPopupLogic();
-
-  }
-
-  versionControlPopupLogic = async () => {
-
-    if (this.state.isLoading)
-      return;
-
-    if (!this.versionApiData)
-      return;
-
-    try {
-
-      const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
-
-      let tempList = [];
-
-      this.versionApiData.map(item => {
-
-        let index = installedApps.findIndex(x => x.packageName === item.PackageName);
-        let iconIndex = appArray.findIndex(x => x.androidId === item.PackageName);
-
-        const iObj = {
-          icon: iconIndex != -1 ? appArray[iconIndex].icon : '',// require('../../../assets/m_shell.png'),
-          appName: item.AppName,
-          versionCode: item.MandatoryVersion,
-          androidId: item.PackageName,
-          bundleId: item.PackageName,
-          lastUpdated: index != -1 ? moment(installedApps[index].lastUpdateTime).format("DD/MM/YYYY") : '',
-          isInstalled: index != -1 ? true : false,
-          isLatest: (index != -1 && item.MandatoryVersion == installedApps[index].versionName + '') ? true : false,
-          AppDownloadLink: item.AppDownloadLink ? item.AppDownloadLink : ''
-        }
-
-        tempList.push(iObj);
-
-      });
-
-      if (tempList.length > 0)
-        this.setState({ showVersionPopup: true, appList: tempList });
-
-      this.isCheckedPopup = false;
-
-    } catch (error) {
-      console.log('error', JSON.stringify(error));
-    }
-
-
-  }
-
-  getVersionControlsApi = async () => {
-
-
-    console.log("getVersionControlsApi");
-
-    this.setState({ isLoading: true });
-
-    let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestService/Service1.svc/GetVersionControlDetails"
-
-    // const param = 'bIUNut6Ks+Z1mTyaFx9dI+N9nxOrxQPSNsOkASCTDquWxiWumx6e8gKAn7YrNcikIxHS9Z9LEYjMDOxwHivKFw==';
-
-    let params = {
-      'Platform': Platform.OS === 'android' ? 'Android' : 'Ios',
-      'PartnerKey': 'VC18APP02SER'
-    }
-
-    const encryptedParam = await encryptData(JSON.stringify(params));
-
-    console.log('version ecrypted data: ', encryptedParam);
-
-    let encParams = {
-      "request": encryptedParam
-    };
-
-    axios.post(url, encParams, {
-      "headers": {
-        "content-type": "application/json",
-      }
-    }).then(response => {
-      // const result =  response.toJson();
-      console.log("version response => ", JSON.stringify(response.data));
-
-      this.parseVersionApiData(response.data);
-
-    }).catch(error => {
-      console.log("version error", JSON.stringify(error));
-    });
-
-  }
-
   showAlert = () => {
     alert('Coming Soon')
   }
 
-  closeVersionPopup = async () => {
-    this.setState({ showVersionPopup: false });
-  }
-
-  onInstallUpdatePress = (item) => {
-
-    if (Platform.OS == 'android') {
-
-      if (item.AppDownloadLink === '') {
-        alert('Application details not available.');
-        return;
-      }
-
-      this.isCheckedPopup = true;
-      Linking.openURL(item.AppDownloadLink);
-
-    } else {
-
-      if (item.iosId === '') {
-        alert('Application details not available.');
-        return;
-      }
-
-      this.isCheckedPopup = true;
-
-      Linking.openURL("https://apps.apple.com/us/app/" + item.iosId);
-    }
-
-  }
 
   rederHeader = () => {
 
     return (
-      <View style={[styles.headerView, { elevation: this.state.showVersionPopup ? 0 : 10 }]}>
+      <View style={[styles.headerView]}>
         <TouchableOpacity
           style={styles.backTouchable}
           onPress={() => this.copyToClipboard()}>
@@ -728,7 +614,6 @@ export default class Dashboard extends React.Component {
         </View>
 
         {this.renderComingSoonPopup()}
-        {/* {this.state.showVersionPopup && this.renderVersionPopup()} */}
         {this.renderPopup()}
 
       </SafeAreaView>

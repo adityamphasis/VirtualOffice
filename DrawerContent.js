@@ -74,7 +74,7 @@ class DrawerContent extends Component {
     let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/logout"
 
     let params = {
-      'jwtToken': getConfiguration('encryptedToken', ''),
+      'jwtToken': getConfiguration('encryptedToken'),
       'PartnerKey': 'JWT12SER02'
     }
 
