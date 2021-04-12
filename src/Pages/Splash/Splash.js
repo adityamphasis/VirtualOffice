@@ -17,7 +17,7 @@ import axios from 'react-native-axios';
 import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
 
-import VersionInfo from 'react-native-version-info';
+import DeviceInfo from 'react-native-device-info';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 const config = {
@@ -52,7 +52,7 @@ export default class Splash extends React.Component {
 
   componentDidMount = async () => {
 
-    this.setState({ versionCode: VersionInfo.appVersion });
+    this.setState({ versionCode: DeviceInfo.getVersion() });
 
     const bioEnable = await getStorage('isBioEnabled');
     if (bioEnable)
@@ -302,7 +302,6 @@ export default class Splash extends React.Component {
           <Image resizeMode="stretch" style={{ top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%', backgroundColor: 'transparent' }}
             source={require('../../../assets/spalsh_logo.png')}
           />
-
           <Text style={styles.welocmeText}> Welcome to </Text>
         </View>
 

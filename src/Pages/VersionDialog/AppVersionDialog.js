@@ -1,9 +1,9 @@
+import React, { PropTypes } from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity,
   ImageBackground, Image, StatusBar, Keyboard,
   Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
 } from 'react-native';
-import React, { PropTypes } from 'react';
 
 import axios from 'react-native-axios';
 import RNAndroidInstalledApps from 'react-native-android-installed-apps';
@@ -12,7 +12,7 @@ import moment from "moment";
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { encryptData, decryptData } from '../../utils/AES';
 import { setStorage } from '../../utils/authentication';
-
+import { getAvailableFreeSpace, getNetworkSpeed } from '../../utils/calculation';
 
 import { Loader, ButtonOutline } from '../../../components';
 
@@ -20,82 +20,82 @@ const appArray = [
   {
     icon: require('../../../assets/vymo.png'),
     appName: 'VYMO',
-    versionCode: 0,
+    version: 0,
+    mVersion: 0,
     isInstalled: false,
     isLatest: false,
     lastUpdated: 1,
-    androidId: 'com.getvymo.android',
-    bundleId: 'com.getvymo.android',
+    packageName: 'com.getvymo.android',
     iosId: ''
   }, {
     icon: require('../../../assets/m_shell.png'),
     appName: 'MSell',
     isInstalled: false,
     isLatest: false,
-    versionCode: 0,
+    version: 0,
+    mVersion: 0,
     lastUpdated: 1,
-    androidId: 'com.enparadigm.bharthiaxa',
-    bundleId: 'com.enparadigm.bharthiaxa',
+    packageName: 'com.enparadigm.bharthiaxa',
     iosId: 'm-sell/id1518565564'
   }, {
     icon: require('../../../assets/i-WIN.png'),
     appName: 'i-Win',
-    versionCode: 0,
+    version: 0,
+    mVersion: 0,
     isInstalled: false,
     isLatest: false,
     lastUpdated: 1,
-    androidId: 'com.xoxoday.compass',
-    bundleId: 'com.xoxoday.compass',
+    packageName: 'com.xoxoday.compass',
     iosId: 'compass-xoxo/id1504258298'
   }, {
     icon: require('../../../assets/i-WIN.png'),
     appName: 'i-Win',
-    versionCode: 0,
+    version: 0,
+    mVersion: 0,
     isInstalled: false,
     isLatest: false,
     lastUpdated: 1,
-    androidId: 'com.xoxoday.compassuat',
-    bundleId: 'com.xoxoday.compassuat',
+    packageName: 'com.xoxoday.compassuat',
     iosId: 'compass-xoxo/id1504258298'
   }, {
     icon: require('../../../assets/i-LEARN.png'),
     appName: 'i-Learn',
     isInstalled: false,
     isLatest: false,
-    versionCode: 0,
+    version: 0,
+    mVersion: 0,
     lastUpdated: 1,
-    androidId: 'com.chaptervitamins.bharatiaxa',
-    bundleId: 'com.chaptervitamins.bharatiaxa',
+    packageName: 'com.chaptervitamins.bharatiaxa',
     iosId: ''
   }, {
     icon: require('../../../assets/i-LEARN.png'),
     appName: 'i-Learn',
     isInstalled: false,
     isLatest: false,
-    versionCode: 0,
+    version: 0,
+    mVersion: 0,
     lastUpdated: 1,
-    androidId: 'com.chaptervitamins.bhartiaxa',
-    bundleId: 'com.chaptervitamins.bhartiaxa',
+    packageName: 'com.chaptervitamins.bhartiaxa',
     iosId: ''
   }, {
     icon: require('../../../assets/i-EARN.png'),
     appName: 'i-Earn',
     isInstalled: false,
     isLatest: false,
-    versionCode: 1,
+    version: 0,
+    mVersion: 0,
     lastUpdated: 1,
-    androidId: 'com.bhartiaxa.mlife',
-    bundleId: 'com.bhartiaxa.mlife',
+    packageName: 'com.bhartiaxa.mlife',
     iosId: 'm-life/id1550263609'
   }, {
     icon: require('../../../assets/i-RECRUIT.png'),
     appName: 'i-Recruit',
-    versionCode: 0,
+    version: 0,
+    mVersion: 0,
     isInstalled: false,
     isLatest: false,
     lastUpdated: 1,
-    androidId: 'com.bhartiaxa.recruit',
-    bundleId: 'com.bhartiaxa.recruit',
+    packageName: 'com.bhartiaxa.recruit',
     iosId: ''
   }
 ]
@@ -108,19 +108,28 @@ export default class AppVersionDialog extends React.Component {
 
     this.state = {
       isLoading: false,
-      appList: []
+      appList: [],
+      availableSpace: 'NA',
+      networkSpeed: 'NA'
     };
-
     this.isCheckedPopup = false;
 
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
 
     console.log('-----------------------App version componentDidMount------------------')
 
+    // let freeSpace = await DeviceInfo.getFreeDiskStorage();
+
+    const sizeIn = await getAvailableFreeSpace();
+    const nSpeed = await getNetworkSpeed();
+
+    this.setState({ availableSpace: sizeIn, networkSpeed: nSpeed });
+
     this.getData();
-    this.focusListener = this.props.navigation.addListener("didFocus", () => {
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      console.log('didFocus');
       if (this.isCheckedPopup)
         this.versionControlPopupLogic();
     });
@@ -186,6 +195,8 @@ export default class AppVersionDialog extends React.Component {
 
   versionControlPopupLogic = async () => {
 
+    console.log('versionControlPopupLogic');
+
     if (this.state.isLoading)
       return;
 
@@ -196,7 +207,7 @@ export default class AppVersionDialog extends React.Component {
       const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
 
       // installedApps.map(item => {
-      //   console.log('installedApps item', item.packageName +" "+item.appName);
+      //   console.log('installedApps item', JSON.stringify(item));
       // });
 
       let tempList = [];
@@ -204,21 +215,19 @@ export default class AppVersionDialog extends React.Component {
       versionApiData.map(item => {
 
         let index = installedApps.findIndex(x => x.packageName === item.PackageName);
-        let iconIndex = appArray.findIndex(x => x.androidId === item.PackageName);
-
-        // if (index != -1) {
-        //   console.log('pack', installedApps[index].packageName);
-        // }
+        let iconIndex = appArray.findIndex(x => x.packageName === item.PackageName);
 
         const iObj = {
           icon: iconIndex != -1 ? appArray[iconIndex].icon : '',// require('../../../assets/m_shell.png'),
           appName: item.AppName,
-          versionCode: item.MandatoryVersion,
-          androidId: item.PackageName,
-          bundleId: item.PackageName,
+          version: index != -1 ? installedApps[index].versionName : 0,
+          mVersion: item.MandatoryVersion,
+          packageName: item.PackageName,
+          iosId: item.iosId ? item.iosId : '',
           lastUpdated: index != -1 ? moment(installedApps[index].lastUpdateTime).format("DD/MM/YYYY") : '',
           isInstalled: index != -1 ? true : false,
           isLatest: (index != -1 && item.MandatoryVersion == installedApps[index].versionName + '') ? true : false,
+          updateRequired: index == -1 ? false : this.checkUpdateRequired(installedApps[index].versionName, item.MandatoryVersion), //: false,
           AppDownloadLink: item.AppDownloadLink ? item.AppDownloadLink : ''
         }
 
@@ -226,7 +235,9 @@ export default class AppVersionDialog extends React.Component {
 
       });
 
-      this.setState({ appList: tempList });
+      const sizeIn = await getAvailableFreeSpace();
+
+      this.setState({ appList: tempList, availableSpace: sizeIn });
 
       this.isCheckedPopup = false;
 
@@ -236,6 +247,15 @@ export default class AppVersionDialog extends React.Component {
     } catch (error) {
       console.log('error', JSON.stringify(error));
     }
+
+  }
+
+  checkUpdateRequired = (currentVerion, mandatoryVersion) => {
+
+    currentVerion = currentVerion.split(".").join('');
+    mandatoryVersion = mandatoryVersion.split(".").join('');
+
+    return parseInt(currentVerion) < parseInt(mandatoryVersion);
 
   }
 
@@ -275,7 +295,7 @@ export default class AppVersionDialog extends React.Component {
 
     return (
       <ImageBackground style={{
-        borderColor: '#a4a4a4',
+        borderColor: item.updateRequired ? 'red' : '#a4a4a4',
         borderWidth: 1,
         borderRadius: 10,
         margin: 10,
@@ -294,6 +314,7 @@ export default class AppVersionDialog extends React.Component {
         </View>
         <View style={{ width: 1, backgroundColor: 'grey', height: '90%' }} />
         <View style={{ flex: 4, alignItems: 'center', paddingLeft: 30, paddingRight: 30 }}>
+          {item.updateRequired && <Text style={{ fontSize: 10, color: 'red', textAlign: 'center' }}>{'Update Required'}</Text>}
           {!item.isInstalled && <ButtonOutline onPress={() => this.onInstallUpdatePress(item)} textColor='rgb(30,77,155)' borderColor='green' title='Install' />}
           {item.isInstalled && !item.isLatest && <ButtonOutline onPress={() => this.onInstallUpdatePress(item)} textColor='rgb(30,77,155)' borderColor='yellow' title='Update' />}
           {item.isInstalled && item.isLatest && <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'rgb(30,77,155)', textAlign: 'center' }}>{'Installed'}</Text>}
@@ -305,6 +326,24 @@ export default class AppVersionDialog extends React.Component {
 
   }
 
+  renderDevideDetailsPopup = () => {
+    return (
+      <View style={styles.background}>
+        <View style={[styles.overlayAppView]}>
+          <View style={styles.deviceInfoContainer}>
+            <Text style={styles.appStatuts}>Details</Text>
+
+            <View>
+              <Text style={styles.appStatuts}>Available Space: { }</Text>
+              <Text style={styles.appStatuts}>Network Speed: { }</Text>
+            </View>
+
+          </View>
+        </View>
+      </View>
+    )
+  }
+
   renderVersionPopup = () => {
 
     return (
@@ -312,7 +351,7 @@ export default class AppVersionDialog extends React.Component {
 
         <View style={styles.appStatusContainer}>
 
-          <View style={{ flexDirection: 'row', backgroundColor: 'transparent', height: '10%', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', backgroundColor: 'transparent', height: '9%', justifyContent: 'space-between' }}>
 
             <Text style={styles.appStatuts}>APPS STATUS</Text>
             <TouchableOpacity
@@ -322,6 +361,13 @@ export default class AppVersionDialog extends React.Component {
                 source={require('../../../assets/close.png')} />
             </TouchableOpacity>
           </View>
+
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 5 }}>
+            <Text style={styles.infoText}>Available Space: {this.state.availableSpace}</Text>
+            <Text style={styles.infoText}>Network Speed: {this.state.networkSpeed}</Text>
+          </View>
+
+          <Text style={{ fontSize: 12, margin: 10, textAlign: 'center' }}>{'Note: Highlighted app`s needs to be update'}</Text>
 
           <FlatList
             data={this.state.appList}
@@ -344,6 +390,7 @@ export default class AppVersionDialog extends React.Component {
         <Loader visible={this.state.isLoading} />
 
         {this.renderVersionPopup()}
+        {/* {this.renderDevideDetailsPopup()} */}
 
       </SafeAreaView>
     );
@@ -374,6 +421,21 @@ const styles = StyleSheet.create({
     opacity: 0.95,
     padding: 25
   },
+  deviceInfoContainer: {
+    backgroundColor: 'white',
+    elevation: 3,
+    borderRadius: 15,
+    width: '80%',
+    padding: 10,
+    shadowColor: "#000000",
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 0.5,
+      width: 0,
+    },
+    elevation: 10,
+  },
   appStatusContainer: {
     flex: 1,
     backgroundColor: 'white',
@@ -396,7 +458,13 @@ const styles = StyleSheet.create({
     color: 'rgb(30,77,155)',
     fontWeight: 'bold',
     fontSize: 16,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    fontFamily: 'WorkSans-Medium'
+  },
+  infoText: {
+    color: 'rgb(30,77,155)',
+    fontSize: 14,
+    fontFamily: 'WorkSans-Medium'
   }
 
 });
