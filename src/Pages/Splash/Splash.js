@@ -116,6 +116,7 @@ export default class Splash extends React.Component {
             return;
           }
         } catch (error) {
+
         }
         this.getData();
       });
@@ -158,6 +159,7 @@ export default class Splash extends React.Component {
     catch (error) {
       this.authChecking = false;
       console.log(error);
+      BackHandler.exitApp();
     }
 
   };

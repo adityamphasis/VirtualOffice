@@ -124,7 +124,7 @@ export default class MLife extends React.Component {
     if (getConfiguration('salesflag')) {
       this.props.navigation.navigate('MCustomer', { screen: 'service' })
     } else {
-      alert('Available only for Agents')
+      alert('Application is not applicable to login user.')
     }
 
   }
@@ -133,7 +133,7 @@ export default class MLife extends React.Component {
     if (getConfiguration('salesflag')) {
       this.ApiWin()
     } else {
-      alert('Available only for Agents')
+      alert('Application is not applicable to login user.')
     }
   }
 

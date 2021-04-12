@@ -1,18 +1,19 @@
 import React, { PropTypes } from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity,
-  ImageBackground, Image, StatusBar, Keyboard,
+  ImageBackground, Image, StatusBar, Keyboard, AppState,
   Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
 } from 'react-native';
 
 import axios from 'react-native-axios';
 import RNAndroidInstalledApps from 'react-native-android-installed-apps';
 import moment from "moment";
+import networkSpeed from 'react-native-network-speed';
 
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { encryptData, decryptData } from '../../utils/AES';
 import { setStorage } from '../../utils/authentication';
-import { getAvailableFreeSpace, getNetworkSpeed } from '../../utils/calculation';
+import { getAvailableFreeSpace } from '../../utils/calculation';
 
 import { Loader, ButtonOutline } from '../../../components';
 
@@ -113,7 +114,7 @@ export default class AppVersionDialog extends React.Component {
       networkSpeed: 'NA'
     };
     this.isCheckedPopup = false;
-
+    this.verUpdated = false;
   }
 
   componentDidMount = async () => {
@@ -123,22 +124,43 @@ export default class AppVersionDialog extends React.Component {
     // let freeSpace = await DeviceInfo.getFreeDiskStorage();
 
     const sizeIn = await getAvailableFreeSpace();
-    const nSpeed = await getNetworkSpeed();
+    // const nSpeed = await getNetworkSpeed();
 
-    this.setState({ availableSpace: sizeIn, networkSpeed: nSpeed });
+    this.setState({ availableSpace: sizeIn });
 
     this.getData();
-    this.focusListener = this.props.navigation.addListener('didFocus', () => {
-      console.log('didFocus');
-      if (this.isCheckedPopup)
-        this.versionControlPopupLogic();
-    });
+    // this.focusListener = this.props.navigation.addListener('didFocus', () => {
+    //   console.log('didFocus');
+    //   if (this.isCheckedPopup)
+    //     this.versionControlPopupLogic();
+    // });
 
+    AppState.addEventListener("change", this._handleAppStateChange);
+
+    networkSpeed.startListenNetworkSpeed(({ downLoadSpeed, downLoadSpeedCurrent, upLoadSpeed, upLoadSpeedCurrent }) => {
+      console.log(downLoadSpeed + 'kb/s') // download speed for the entire device 整个设备的下载速度
+      // console.log(downLoadSpeedCurrent + 'kb/s') // download speed for the current app 当前app的下载速度(currently can only be used on Android)
+      // console.log(upLoadSpeed + 'kb/s') // upload speed for the entire device 整个设备的上传速度
+      // console.log(upLoadSpeedCurrent + 'kb/s') // upload speed for the current app 当前app的上传速度(currently can only be used on Android)
+
+      if (!this.state.isLoading) {
+        this.setState({ networkSpeed: downLoadSpeed + 'kb/s' });
+      }
+
+    });
 
   }
 
+  _handleAppStateChange = nextAppState => {
+    console.log("App has come to the foreground!" + nextAppState);
+    if (nextAppState === 'active')
+      this.versionControlPopupLogic();
+  };
+
   componentWillUnmount() {
-    this.focusListener.remove();
+    // this.focusListener.remove();
+    networkSpeed.stopListenNetworkSpeed();
+    AppState.removeEventListener("change", this._handleAppStateChange);
   }
 
   getData = async () => {
@@ -206,11 +228,13 @@ export default class AppVersionDialog extends React.Component {
 
       const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
 
-      // installedApps.map(item => {
-      //   console.log('installedApps item', JSON.stringify(item));
-      // });
+      installedApps.map(item => {
+        console.log('installedApps item', JSON.stringify(item.packageName));
+      });
 
       let tempList = [];
+
+      this.verUpdated = false;
 
       versionApiData.map(item => {
 
@@ -232,6 +256,10 @@ export default class AppVersionDialog extends React.Component {
         }
 
         tempList.push(iObj);
+
+        if (iObj.updateRequired)
+          this.verUpdated = iObj.updateRequired;
+
 
       });
 
@@ -260,6 +288,12 @@ export default class AppVersionDialog extends React.Component {
   }
 
   closeVersionPopup = async () => {
+
+    if (this.verUpdated) {
+      alert('You need to install/update listed app`s to madantory version');
+      return;
+    }
+
     this.props.navigation.goBack();
   }
 

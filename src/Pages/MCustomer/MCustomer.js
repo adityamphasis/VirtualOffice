@@ -36,12 +36,13 @@ export default class MCustomer extends React.Component {
   constructor(props) {
     super(props);
 
-    // this.state = { isLoading: true };
+    this.state = { isLoading: true };
 
     this.accessToken = getConfiguration('encryptedToken');
     this.platform = Platform.OS;// ==='android'
     this.comingScreen = this.props.navigation.getParam('screen');
     this.isSales = getConfiguration('salesflag', '');
+    this.isRedirect = false;
 
   }
 
@@ -53,18 +54,18 @@ export default class MCustomer extends React.Component {
 
     this.webview.stopLoading();
 
-    if (this.ssoid) {
+    // if (this.ssoid) {
 
-      const logOutURL = 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/tokenData/' + this.ssoid
-      // axios.post(logOutURL)
-      console.log('logOutURL', logOutURL);
-      axios.get(logOutURL).then(response => {
-        console.log('mcustomer logout success');
-      }).catch(error => {
-        console.log("mcustomer logout error", error);
-      });
+    //   const logOutURL = 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/tokenData/' + this.ssoid
+    //   // axios.post(logOutURL)
+    //   console.log('logOutURL', logOutURL);
+    //   axios.get(logOutURL).then(response => {
+    //     console.log('mcustomer logout success');
+    //   }).catch(error => {
+    //     console.log("mcustomer logout error", error);
+    //   });
 
-    }
+    // }
   }
 
   goBack() {
@@ -72,10 +73,11 @@ export default class MCustomer extends React.Component {
   }
 
   onScriptSuccess = (event) => {
-    if (event.url.includes('https://uat.bhartiaxa.tk/app?ssoid=')) {
+    if (!this.isRedirect && event.url.includes('https://uat.bhartiaxa.tk/app?ssoid=')) {
       console.log('mcustomeer url =', JSON.stringify(event.url));
-      // this.setState({ isLoading: false });
-      // this.webview.stopLoading();
+      this.webview.stopLoading();
+      this.isRedirect = true;
+      this.setState({ isLoading: false });
       this.ssoid = event.url.substring(event.url.lastIndexOf('=') + 1);
       this.goBack();
       Linking.openURL(event.url);
@@ -95,7 +97,7 @@ export default class MCustomer extends React.Component {
         domStorageEnabled={true}
         startInLoadingState={true}
         cacheMode={'LOAD_NO_CACHE'}
-        renderLoading={() => { return (<ActivityIndicator />) }}
+        // renderLoading={() => { return (<ActivityIndicator />) }}
         // onLoadEnd={() => this.setState({ isLoading: false })}
         onNavigationStateChange={(event) => this.onScriptSuccess(event)}
         source={{
@@ -144,15 +146,10 @@ export default class MCustomer extends React.Component {
 
   render() {
 
-    console.log('accessToken:', this.accessToken);
-    console.log('coming from:', this.comingScreen);
-    console.log('is sales:', this.isSales);
-    console.log('platform:', this.platform);
-
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 
-        {/* <Loader visible={this.state.isLoading} /> */}
+        <Loader visible={this.state.isLoading} />
 
         {this.comingScreen != 'service' && <View style={styles.headerView}>
           <TouchableOpacity
