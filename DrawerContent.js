@@ -5,7 +5,7 @@ import {
   ScrollView, Linking, NativeModules, Platform, Alert
 } from 'react-native';
 import axios from 'react-native-axios';
-import { getConfiguration, unsetConfiguration } from './src/utils/configuration';
+import { getConfiguration, setConfiguration, unsetConfiguration } from './src/utils/configuration';
 import { clearStorage } from './src/utils/authentication';
 
 import { encryptData, decryptData } from './src/utils/AES';
@@ -40,6 +40,12 @@ class DrawerContent extends Component {
     );
 
 
+  }
+
+  navigateToSupport = () =>
+  {
+    setConfiguration('isSupport',true)
+    this.navigateToScreen('DashboardScreen')
   }
 
   logout = async () => {
@@ -169,7 +175,7 @@ class DrawerContent extends Component {
 
           <View style={styles.divider} />
 
-          <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('PaymentMethodScreen')}>
+          <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('Support')}>
             <Image resizeMode="contain" style={styles.tileIcon}
               source={require('./assets/support.png')} />
             <Text style={styles.tileTitle}> Support </Text>

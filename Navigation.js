@@ -13,6 +13,7 @@ import Dashboard from './src/Pages/Dashboard';
 import Profile from './src/Pages/Profile';
 import MLife from './src/Pages/MLife';
 import MCustomer from './src/Pages/MCustomer';
+import Support from './src/Pages/Support';
 
 import AppVersionDialog from './src/Pages/VersionDialog';
 
@@ -22,6 +23,7 @@ const MainStack = createStackNavigator({
   ProfileScreen: { screen: Profile },
   MLife: { screen: MLife },
   MCustomer: { screen: MCustomer },
+  Support: { screen: Support },
   AppVersionDialog: { screen: AppVersionDialog }
 }, {
   headerMode: 'none'
