@@ -14,7 +14,6 @@ import Profile from './src/Pages/Profile';
 import MLife from './src/Pages/MLife';
 import MCustomer from './src/Pages/MCustomer';
 import Support from './src/Pages/Support';
-
 import AppVersionDialog from './src/Pages/VersionDialog';
 
 

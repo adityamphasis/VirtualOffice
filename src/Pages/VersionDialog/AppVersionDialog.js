@@ -1,106 +1,27 @@
-import React, { PropTypes } from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity,
   ImageBackground, Image, StatusBar, Keyboard, AppState,
   Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
 } from 'react-native';
+import React, { PropTypes } from 'react';
 
 import axios from 'react-native-axios';
 import RNAndroidInstalledApps from 'react-native-android-installed-apps';
 import moment from "moment";
-import networkSpeed from 'react-native-network-speed';
+// import networkSpeed from 'react-native-network-speed';
+import RNBackgroundDownloader from 'react-native-background-downloader';
+
+import RNFetchBlob from 'rn-fetch-blob';
+const android = RNFetchBlob.android;
 
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { encryptData, decryptData } from '../../utils/AES';
 import { setStorage } from '../../utils/authentication';
-import { getAvailableFreeSpace } from '../../utils/calculation';
+import { getAvailableFreeSpace, isSuficientSpace } from '../../utils/calculation';
+import { requestStoragePermission } from '../../utils/permissionsUtil';
 
-import { Loader, ButtonOutline } from '../../../components';
-
-const appArray = [
-  {
-    icon: require('../../../assets/vymo.png'),
-    appName: 'VYMO',
-    version: 0,
-    mVersion: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    packageName: 'com.getvymo.android',
-    iosId: ''
-  }, {
-    icon: require('../../../assets/m_shell.png'),
-    appName: 'MSell',
-    isInstalled: false,
-    isLatest: false,
-    version: 0,
-    mVersion: 0,
-    lastUpdated: 1,
-    packageName: 'com.enparadigm.bharthiaxa',
-    iosId: 'm-sell/id1518565564'
-  }, {
-    icon: require('../../../assets/i-WIN.png'),
-    appName: 'i-Win',
-    version: 0,
-    mVersion: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    packageName: 'com.xoxoday.compass',
-    iosId: 'compass-xoxo/id1504258298'
-  }, {
-    icon: require('../../../assets/i-WIN.png'),
-    appName: 'i-Win',
-    version: 0,
-    mVersion: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    packageName: 'com.xoxoday.compassuat',
-    iosId: 'compass-xoxo/id1504258298'
-  }, {
-    icon: require('../../../assets/i-LEARN.png'),
-    appName: 'i-Learn',
-    isInstalled: false,
-    isLatest: false,
-    version: 0,
-    mVersion: 0,
-    lastUpdated: 1,
-    packageName: 'com.chaptervitamins.bharatiaxa',
-    iosId: ''
-  }, {
-    icon: require('../../../assets/i-LEARN.png'),
-    appName: 'i-Learn',
-    isInstalled: false,
-    isLatest: false,
-    version: 0,
-    mVersion: 0,
-    lastUpdated: 1,
-    packageName: 'com.chaptervitamins.bhartiaxa',
-    iosId: ''
-  }, {
-    icon: require('../../../assets/i-EARN.png'),
-    appName: 'i-Earn',
-    isInstalled: false,
-    isLatest: false,
-    version: 0,
-    mVersion: 0,
-    lastUpdated: 1,
-    packageName: 'com.bhartiaxa.mlife',
-    iosId: 'm-life/id1550263609'
-  }, {
-    icon: require('../../../assets/i-RECRUIT.png'),
-    appName: 'i-Recruit',
-    version: 0,
-    mVersion: 0,
-    isInstalled: false,
-    isLatest: false,
-    lastUpdated: 1,
-    packageName: 'com.bhartiaxa.recruit',
-    iosId: ''
-  }
-]
-
+import { Loader, ButtonOutline, InstallItem } from '../../../components';
+import appArray from './appArray';
 
 export default class AppVersionDialog extends React.Component {
 
@@ -110,45 +31,45 @@ export default class AppVersionDialog extends React.Component {
     this.state = {
       isLoading: false,
       appList: [],
-      availableSpace: 'NA',
-      networkSpeed: 'NA'
+      availableSpace: 0,
+      isSuficient: false,
+      networkSpeed: 0,
+      networkState: '',
+      started: false
     };
-    this.isCheckedPopup = false;
+
     this.verUpdated = false;
+    this.downloadIndex = -1;
   }
 
   componentDidMount = async () => {
 
     console.log('-----------------------App version componentDidMount------------------')
 
-    // let freeSpace = await DeviceInfo.getFreeDiskStorage();
-
-    const sizeIn = await getAvailableFreeSpace();
-    // const nSpeed = await getNetworkSpeed();
-
-    this.setState({ availableSpace: sizeIn });
-
-    this.getData();
-    // this.focusListener = this.props.navigation.addListener('didFocus', () => {
-    //   console.log('didFocus');
-    //   if (this.isCheckedPopup)
-    //     this.versionControlPopupLogic();
-    // });
-
     AppState.addEventListener("change", this._handleAppStateChange);
 
-    networkSpeed.startListenNetworkSpeed(({ downLoadSpeed, downLoadSpeedCurrent, upLoadSpeed, upLoadSpeedCurrent }) => {
-      console.log(downLoadSpeed + 'kb/s') // download speed for the entire device 整个设备的下载速度
-      // console.log(downLoadSpeedCurrent + 'kb/s') // download speed for the current app 当前app的下载速度(currently can only be used on Android)
-      // console.log(upLoadSpeed + 'kb/s') // upload speed for the entire device 整个设备的上传速度
-      // console.log(upLoadSpeedCurrent + 'kb/s') // upload speed for the current app 当前app的上传速度(currently can only be used on Android)
+    this.setSize();
 
-      if (!this.state.isLoading) {
-        this.setState({ networkSpeed: downLoadSpeed + 'kb/s' });
-      }
+    this.getData();
 
-    });
+    // networkSpeed.startListenNetworkSpeed(({ downLoadSpeed, downLoadSpeedCurrent, upLoadSpeed, upLoadSpeedCurrent }) => {
+    //   console.log(downLoadSpeed + 'kb/s') // download speed for the entire device 整个设备的下载速度
+    //   // console.log(downLoadSpeedCurrent + 'kb/s') // download speed for the current app 当前app的下载速度(currently can only be used on Android)
+    //   // console.log(upLoadSpeed + 'kb/s') // upload speed for the entire device 整个设备的上传速度
+    //   // console.log(upLoadSpeedCurrent + 'kb/s') // upload speed for the current app 当前app的上传速度(currently can only be used on Android)
 
+    //   if (!this.state.isLoading) {
+    //     this.setState({ networkSpeed: downLoadSpeed + 'kb/s' });
+    //   }
+
+    // });
+
+  }
+
+  componentWillUnmount() {
+    // this.focusListener.remove();
+    // networkSpeed.stopListenNetworkSpeed();
+    AppState.removeEventListener("change", this._handleAppStateChange);
   }
 
   _handleAppStateChange = nextAppState => {
@@ -157,10 +78,53 @@ export default class AppVersionDialog extends React.Component {
       this.versionControlPopupLogic();
   };
 
-  componentWillUnmount() {
-    // this.focusListener.remove();
-    networkSpeed.stopListenNetworkSpeed();
-    AppState.removeEventListener("change", this._handleAppStateChange);
+  setSize = async () => {
+
+    const sizeIn = await getAvailableFreeSpace();
+    // const nSpeed = await getNetworkSpeed();
+
+    const isSuficient = await isSuficientSpace();
+
+    this.setState({ availableSpace: sizeIn, isSuficient: isSuficient });
+
+  }
+
+  checkForAlreadyDownloadingTask = async () => {
+    console.log('checkForAlreadyDownloadingTask');
+
+    let lostTasks = await RNBackgroundDownloader.checkForExistingDownloads();
+    for (let task of lostTasks) {
+      console.log(`Task ${task.id} was found!`);
+
+      const foundIndex = this.state.appList.findIndex(x => x.packageName === task.id);
+      if (foundIndex == -1) {
+        return;
+      }
+
+      this.downloadIndex = foundIndex;
+      const tempList = this.state.appList;
+      tempList[this.downloadIndex].isFetching = true;
+      this.setState({ appList: tempList, started: true });
+
+      this.task = task;
+      this.task.progress((percent) => {
+        console.log(`Downloaded: ${percent * 100}%`);
+      }).done(() => {
+        console.log('Downlaod is done!' + task.id);
+
+        tempList[this.downloadIndex].isFetching = false;
+        tempList[this.downloadIndex].isExists = true;
+        this.setState({ appList: tempList, started: true });
+        this.downloadIndex = this.downloadIndex + 1;
+        this.onSyncAll();
+
+      }).error((error) => {
+        console.log('Download canceled due to error: ', error);
+      });
+
+      return;
+    }
+
   }
 
   getData = async () => {
@@ -211,8 +175,22 @@ export default class AppVersionDialog extends React.Component {
 
     setConfiguration('appsData', versionApiData);
 
-    this.versionControlPopupLogic();
+    if (Platform.OS === 'android')
+      this.requestAccessPermission();
+    else
+      this.versionControlPopupLogic();
 
+  }
+
+  requestAccessPermission = async () => {
+
+    let canInstall = await requestStoragePermission();
+    if (canInstall) {
+      this.versionControlPopupLogic();
+      return;
+    }
+
+    this.requestAccessPermission();
   }
 
   versionControlPopupLogic = async () => {
@@ -228,30 +206,37 @@ export default class AppVersionDialog extends React.Component {
 
       const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
 
-      installedApps.map(item => {
-        console.log('installedApps item', JSON.stringify(item.packageName));
-      });
-
       let tempList = [];
 
       this.verUpdated = false;
 
-      versionApiData.map(item => {
+      versionApiData.map(async (item, index) => {
 
-        let index = installedApps.findIndex(x => x.packageName === item.PackageName);
+        const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + item.AppName + '.apk';
+
+        const isExists = await RNFetchBlob.fs.exists(filePath);
+        console.log(filePath, isExists);
+
+        let foundIndex = installedApps.findIndex(x => x.packageName === item.PackageName);
         let iconIndex = appArray.findIndex(x => x.packageName === item.PackageName);
+
+        const isFetching = index === this.downloadIndex ? true : false;
+
+        console.log('isFetching', item.AppName + ' ' + isFetching);
 
         const iObj = {
           icon: iconIndex != -1 ? appArray[iconIndex].icon : '',// require('../../../assets/m_shell.png'),
           appName: item.AppName,
-          version: index != -1 ? installedApps[index].versionName : 0,
+          version: foundIndex != -1 ? installedApps[foundIndex].versionName : 0,
           mVersion: item.MandatoryVersion,
           packageName: item.PackageName,
           iosId: item.iosId ? item.iosId : '',
-          lastUpdated: index != -1 ? moment(installedApps[index].lastUpdateTime).format("DD/MM/YYYY") : '',
-          isInstalled: index != -1 ? true : false,
-          isLatest: (index != -1 && item.MandatoryVersion == installedApps[index].versionName + '') ? true : false,
-          updateRequired: index == -1 ? false : this.checkUpdateRequired(installedApps[index].versionName, item.MandatoryVersion), //: false,
+          lastUpdated: foundIndex != -1 ? moment(installedApps[foundIndex].lastUpdateTime).format("DD/MM/YYYY") : '',
+          isInstalled: foundIndex != -1 ? true : false,
+          isFetching: isFetching,
+          isExists: isExists,
+          isLatest: (foundIndex != -1 && item.MandatoryVersion == installedApps[foundIndex].versionName + '') ? true : false,
+          updateRequired: foundIndex == -1 ? false : this.checkUpdateRequired(installedApps[foundIndex].versionName, item.MandatoryVersion), //: false,
           AppDownloadLink: item.AppDownloadLink ? item.AppDownloadLink : ''
         }
 
@@ -260,17 +245,18 @@ export default class AppVersionDialog extends React.Component {
         if (iObj.updateRequired)
           this.verUpdated = iObj.updateRequired;
 
-
       });
 
-      const sizeIn = await getAvailableFreeSpace();
+      this.setSize();
 
-      this.setState({ appList: tempList, availableSpace: sizeIn });
+      if (this.state.appList.length === 0) {
+        this.setState({ appList: tempList }, this.checkForAlreadyDownloadingTask);
+        return;
+      }
 
-      this.isCheckedPopup = false;
+      this.setState({ appList: tempList });
 
       await setStorage('isDialogShown', 'yes');
-
 
     } catch (error) {
       console.log('error', JSON.stringify(error));
@@ -297,66 +283,92 @@ export default class AppVersionDialog extends React.Component {
     this.props.navigation.goBack();
   }
 
-  onInstallUpdatePress = (item) => {
+  onSyncAll = async () => {
 
-    console.log('item', JSON.stringify(item));
-
-    if (Platform.OS == 'android') {
-
-      if (item.AppDownloadLink === '') {
-        alert('Application details not available.');
-        return;
-      }
-
-      this.isCheckedPopup = true;
-      Linking.openURL(item.AppDownloadLink);
-
-    } else {
-
-      if (item.iosId === '') {
-        alert('Application details not available.');
-        return;
-      }
-
-      this.isCheckedPopup = true;
-
-      Linking.openURL("https://apps.apple.com/us/app/" + item.iosId);
+    if (this.downloadIndex >= this.state.appList.length) {
+      this.onStop();
+      return;
     }
+
+    const item = this.state.appList[this.downloadIndex];
+
+    console.log('item:', JSON.stringify(item));
+
+    if (item.isInstalled) {
+      this.downloadIndex = this.downloadIndex + 1;
+      this.onSyncAll();
+      return;
+    }
+
+    if (item.isExists || item.AppDownloadLink === '' || item.AppDownloadLink.includes('https://play.google.com/store/apps/details')) {
+      this.downloadIndex = this.downloadIndex + 1;
+      this.onSyncAll();
+      return;
+    }
+
+
+    if (!this.state.started)
+      this.setState({ started: true });
+
+    const apkURL = item.AppDownloadLink;
+    // const filePath = `${RNBackgroundDownloader.directories.documents}/${item.appName}.apk`;
+    const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + item.appName + '.apk';
+
+    const config = {
+      id: item.packageName,
+      url: apkURL,
+      destination: filePath
+    }
+
+    this.task = RNBackgroundDownloader
+      .download(config)
+      .begin((expectedBytes) => {
+        console.log(`Going to download ${expectedBytes} bytes!`);
+
+        const tempList = this.state.appList;
+        tempList[this.downloadIndex].isFetching = true;
+        this.setState({ appList: tempList });
+
+      }).progress((percent) => {
+        console.log(`Downloaded: ${item.appName}${percent * 100}%`);
+      }).done(() => {
+        console.log('Download is done!', item.appName);
+
+        const tempList = this.state.appList;
+        tempList[this.downloadIndex].isFetching = false;
+        tempList[this.downloadIndex].isExists = true;
+        this.setState({ appList: tempList });
+
+        this.downloadIndex = this.downloadIndex + 1;
+        this.onSyncAll();
+
+      }).error((error) => {
+        console.log('Download canceled due to error: ', error);
+
+        const tempList = this.state.appList;
+        tempList[this.downloadIndex].isFetching = false;
+        this.setState({ appList: tempList });
+
+        this.downloadIndex = this.downloadIndex + 1;
+        this.onSyncAll();
+
+      });
 
   }
 
-  renderItem = ({ item }) => {
+  onStop = () => {
 
-    return (
-      <ImageBackground style={{
-        borderColor: item.updateRequired ? 'red' : '#a4a4a4',
-        borderWidth: 1,
-        borderRadius: 10,
-        margin: 10,
-        padding: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        overflow: 'hidden'
-      }}
-        source={require('../../../assets/grad.png')}>
+    const tempList = [];
+    this.state.appList.map(item => {
+      item.isFetching = false;
+      tempList.push(item);
+    });
 
-        <View style={{ flex: 2.5, alignItems: 'center' }}>
-          <Image style={[{ height: 40, width: 40, margin: 10 }]}
-            resizeMode='contain'
-            source={item.icon} />
-          <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'rgb(30,77,155)', textAlign: 'center' }}>{item.appName}</Text>
-        </View>
-        <View style={{ width: 1, backgroundColor: 'grey', height: '90%' }} />
-        <View style={{ flex: 4, alignItems: 'center', paddingLeft: 30, paddingRight: 30 }}>
-          {item.updateRequired && <Text style={{ fontSize: 10, color: 'red', textAlign: 'center' }}>{'Update Required'}</Text>}
-          {!item.isInstalled && <ButtonOutline onPress={() => this.onInstallUpdatePress(item)} textColor='rgb(30,77,155)' borderColor='green' title='Install' />}
-          {item.isInstalled && !item.isLatest && <ButtonOutline onPress={() => this.onInstallUpdatePress(item)} textColor='rgb(30,77,155)' borderColor='yellow' title='Update' />}
-          {item.isInstalled && item.isLatest && <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'rgb(30,77,155)', textAlign: 'center' }}>{'Installed'}</Text>}
-          {item.isInstalled && <Text style={{ fontSize: 12, color: 'rgb(30,77,155)', textAlign: 'center' }}>{'Last Updated on ' + item.lastUpdated}</Text>}
-        </View>
+    if (this.task) {
+      this.task.stop();
+    }
 
-      </ImageBackground>
-    )
+    this.setState({ started: false, appList: tempList });
 
   }
 
@@ -366,7 +378,6 @@ export default class AppVersionDialog extends React.Component {
         <View style={[styles.overlayAppView]}>
           <View style={styles.deviceInfoContainer}>
             <Text style={styles.appStatuts}>Details</Text>
-
             <View>
               <Text style={styles.appStatuts}>Available Space: { }</Text>
               <Text style={styles.appStatuts}>Network Speed: { }</Text>
@@ -396,22 +407,52 @@ export default class AppVersionDialog extends React.Component {
             </TouchableOpacity>
           </View>
 
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 5 }}>
-            <Text style={styles.infoText}>Available Space: {this.state.availableSpace}</Text>
-            <Text style={styles.infoText}>Network Speed: {this.state.networkSpeed}</Text>
+          {this.state.started ? <ButtonOutline
+            style={{ alignSelf: 'end' }}
+            width={150}
+            borderColor={'red'}
+            onPress={() => this.onStop()}
+            textColor='rgb(30,77,155)'
+            borderColor='green'
+            title={'Stop'} /> :
+            <ButtonOutline
+              style={{ width: 150, alignSelf: 'end' }}
+              width={150}
+              onPress={() => {
+                if (this.downloadIndex === -1)
+                  this.downloadIndex = this.downloadIndex + 1;
+                this.onSyncAll();
+
+              }}
+              textColor='rgb(30,77,155)'
+              borderColor='green'
+              title={'Sync All'} />
+          }
+
+          <View style={{ flexDirection: 'row', padding: 5, backgroundColor: 'rgba(0,0,0,0.03)' }}>
+            <View style={{ width: '50%' }}>
+              <Text style={styles.infoText}>Available Space: <Text style={[styles.infoText]}>{'\t' + this.state.availableSpace}</Text></Text>
+              <Text style={styles.infoText}>Required Space: {'\t200 MB'}</Text>
+            </View>
+            <View style={{ width: '50%' }}>
+              <Text style={styles.infoText}>Current Speed: <Text style={styles.infoText}>{'\t\t' + this.state.networkSpeed}</Text></Text>
+              <Text style={styles.infoText}>Required Speed: {'\t150Kb/s'}</Text>
+            </View>
           </View>
+
+          {!this.state.isSuficient && <Text style={styles.errorText}>{'Available free space is less than required space.'}</Text>}
+          {this.state.networkState != '' && <Text style={styles.errorText}>{this.state.networkState}</Text>}
 
           <Text style={{ fontSize: 12, margin: 10, textAlign: 'center' }}>{'Note: Highlighted app`s needs to be update'}</Text>
 
           <FlatList
             data={this.state.appList}
-            renderItem={this.renderItem}
-            keyExtractor={(item, index) => index.toString()}
-          />
+            renderItem={({ item }) => <InstallItem item={item} />}
+            keyExtractor={(item, index) => index.toString()} />
 
         </View>
 
-      </View>
+      </View >
     )
 
   }
@@ -497,8 +538,16 @@ const styles = StyleSheet.create({
   },
   infoText: {
     color: 'rgb(30,77,155)',
-    fontSize: 14,
-    fontFamily: 'WorkSans-Medium'
+    fontSize: 12,
+    fontFamily: 'WorkSans-Medium',
+    padding: 2
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    fontFamily: 'WorkSans-Medium',
+    padding: 2,
+    textAlign: 'center'
   }
 
 });

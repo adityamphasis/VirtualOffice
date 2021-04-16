@@ -98,7 +98,8 @@ export default class MCustomer extends React.Component {
         startInLoadingState={true}
         cacheMode={'LOAD_NO_CACHE'}
         // renderLoading={() => { return (<ActivityIndicator />) }}
-        // onLoadEnd={() => this.setState({ isLoading: false })}
+        onLoadEnd={() => this.setState({ isLoading: false })}
+        onError={() => this.setState({ isLoading: false })}
         onNavigationStateChange={(event) => this.onScriptSuccess(event)}
         source={{
           html: '<script type="text/javascript"> ' +

@@ -2,23 +2,25 @@ import {
   StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image,
   StatusBar, Keyboard, Platform, NativeModules, BackHandler, Alert
 } from 'react-native';
-import React, { PropTypes } from 'react'
+import React, { PropTypes } from 'react';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
+import axios from 'react-native-axios';
+import DeviceInfo from 'react-native-device-info';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
+
 import { getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
 import { getStorage, setStorage } from '../../utils/authentication';
 
-import { authorize, refresh, revoke, prefetchConfiguration } from 'react-native-app-auth';
-import { Page, Button, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
-import axios from 'react-native-axios';
+import { authorize } from 'react-native-app-auth';
+import { Page } from '../../../components';
+
 import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
-
-import DeviceInfo from 'react-native-device-info';
-import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 const config = {
   issuer: 'https://accounts.bharti-axalife.com',
@@ -45,7 +47,6 @@ export default class Splash extends React.Component {
       isLoading: false,
       versionCode: ''
     }
-    this.authChecking = false;
 
   }
 

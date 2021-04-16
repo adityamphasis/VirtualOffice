@@ -6,10 +6,10 @@
  * @flow
  */
 
-import React, { Component } from 'react';
 import { Platform, StyleSheet, Text, View, Alert, LogBox } from 'react-native';
+import React, { Component } from 'react';
 import Navigation from './Navigation';
-import { API_ROOT } from './env';
+// import { API_ROOT } from './env';
 // import configureStore from './src/redux/store';
 // import { Provider } from 'react-redux';
 import { setConfiguration, unsetConfiguration } from './src/utils/configuration';

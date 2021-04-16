@@ -7,3 +7,4 @@ export { default as FormValue } from './FormValue';
 export { default as Heading } from './Heading';
 export { default as Page } from './Page';
 export { default as Loader } from './Loader';
+export { default as InstallItem} from './InstallItem'

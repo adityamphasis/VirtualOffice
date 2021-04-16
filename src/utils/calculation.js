@@ -1,5 +1,13 @@
 import DeviceInfo from 'react-native-device-info';
 
+export async function isSuficientSpace() {
+    const freeSpace = await DeviceInfo.getFreeDiskStorage();
+    console.log('freeSpace', freeSpace.toFixed(2));
+    console.log('re space', (200 * 1024 * 1024))
+    return freeSpace.toFixed(2) > (200 * 1024 * 1024);
+}
+
+
 export async function getAvailableFreeSpace() {
 
     let freeSpace = await DeviceInfo.getFreeDiskStorage();
