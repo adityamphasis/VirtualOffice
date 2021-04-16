@@ -210,7 +210,7 @@ export default class Dashboard extends React.Component {
     if (getConfiguration('salesflag')) {
       this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken, screen: 'customer' })
     } else {
-      alert('Available only for Agents')
+      alert('Application is not applicable to login user.');
     }
   }
 

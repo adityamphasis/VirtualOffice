@@ -1,5 +1,4 @@
 import DeviceInfo from 'react-native-device-info';
-import { NetworkInfo } from 'react-native-network-info';
 
 export async function getAvailableFreeSpace() {
 
@@ -31,28 +30,5 @@ export async function getAvailableFreeSpace() {
     }
 
     return freeSpace.toFixed(2) + ' ' + sizeIn;
-
-}
-
-export async function getNetworkSpeed() {
-
-    let frequency = await NetworkInfo.getFrequency();
-
-    if (!frequency)
-        return '0 B/s';
-
-    let sizeIn = 'B';
-
-    if (frequency >= 1024) {
-        frequency = frequency / (1024);
-        sizeIn = 'Kb/s';
-    }
-
-    if (frequency >= 1024) {
-        frequency = frequency / (1024);
-        sizeIn = 'Mb/s';
-    }
-
-    return frequency.toFixed(2) + ' ' + sizeIn;
 
 }
