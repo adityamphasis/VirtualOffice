@@ -10,6 +10,7 @@ import RNAndroidInstalledApps from 'react-native-android-installed-apps';
 import moment from "moment";
 // import networkSpeed from 'react-native-network-speed';
 import RNBackgroundDownloader from 'react-native-background-downloader';
+import { measureConnectionSpeed } from 'react-native-network-bandwith-speed';
 
 import RNFetchBlob from 'rn-fetch-blob';
 const android = RNFetchBlob.android;
@@ -31,11 +32,13 @@ export default class AppVersionDialog extends React.Component {
     this.state = {
       isLoading: false,
       appList: [],
-      availableSpace: 0,
+      availableSpace: 'checking',
       isSuficient: false,
-      networkSpeed: 0,
+      networkSpeed: 'checking',
       networkState: '',
-      started: false
+      started: false,
+      appName: '',
+      dProgress: '0%'
     };
 
     this.verUpdated = false;
@@ -49,26 +52,17 @@ export default class AppVersionDialog extends React.Component {
     AppState.addEventListener("change", this._handleAppStateChange);
 
     this.setSize();
+    this.setNetworkSpeed();
 
-    this.getData();
 
-    // networkSpeed.startListenNetworkSpeed(({ downLoadSpeed, downLoadSpeedCurrent, upLoadSpeed, upLoadSpeedCurrent }) => {
-    //   console.log(downLoadSpeed + 'kb/s') // download speed for the entire device 整个设备的下载速度
-    //   // console.log(downLoadSpeedCurrent + 'kb/s') // download speed for the current app 当前app的下载速度(currently can only be used on Android)
-    //   // console.log(upLoadSpeed + 'kb/s') // upload speed for the entire device 整个设备的上传速度
-    //   // console.log(upLoadSpeedCurrent + 'kb/s') // upload speed for the current app 当前app的上传速度(currently can only be used on Android)
-
-    //   if (!this.state.isLoading) {
-    //     this.setState({ networkSpeed: downLoadSpeed + 'kb/s' });
-    //   }
-
-    // });
+    if (Platform.OS === 'android')
+      this.requestAccessPermission();
+    else
+      this.getData();
 
   }
 
   componentWillUnmount() {
-    // this.focusListener.remove();
-    // networkSpeed.stopListenNetworkSpeed();
     AppState.removeEventListener("change", this._handleAppStateChange);
   }
 
@@ -81,11 +75,32 @@ export default class AppVersionDialog extends React.Component {
   setSize = async () => {
 
     const sizeIn = await getAvailableFreeSpace();
-    // const nSpeed = await getNetworkSpeed();
-
     const isSuficient = await isSuficientSpace();
 
     this.setState({ availableSpace: sizeIn, isSuficient: isSuficient });
+
+  }
+
+  setNetworkSpeed = async () => {
+
+    try {
+      const networkResult = await measureConnectionSpeed();
+      console.log(networkResult); // Network bandwidth speed 
+
+      let netQuality = '';
+
+      if (networkResult.speed < 1.75)
+        netQuality = 'poor.';
+      else if (networkResult.speed < 3)
+        netQuality = 'average.';
+      else
+        netQuality = 'good.';
+
+      this.setState({ networkSpeed: (networkResult.speed).toFixed(2) + networkResult.metric, networkState: netQuality });
+
+    } catch (err) {
+      console.log(err);
+    }
 
   }
 
@@ -104,17 +119,18 @@ export default class AppVersionDialog extends React.Component {
       this.downloadIndex = foundIndex;
       const tempList = this.state.appList;
       tempList[this.downloadIndex].isFetching = true;
-      this.setState({ appList: tempList, started: true });
+      this.setState({ appList: tempList, started: true, appName: tempList[this.downloadIndex].appName + ' Processing.. ' });
 
       this.task = task;
       this.task.progress((percent) => {
         console.log(`Downloaded: ${percent * 100}%`);
+        this.setState({ dProgress: (percent.toFixed(2) * 100).toFixed(2) + '%' });
       }).done(() => {
         console.log('Downlaod is done!' + task.id);
 
         tempList[this.downloadIndex].isFetching = false;
         tempList[this.downloadIndex].isExists = true;
-        this.setState({ appList: tempList, started: true });
+        this.setState({ appList: tempList, appName: 'Completed' });
         this.downloadIndex = this.downloadIndex + 1;
         this.onSyncAll();
 
@@ -175,10 +191,7 @@ export default class AppVersionDialog extends React.Component {
 
     setConfiguration('appsData', versionApiData);
 
-    if (Platform.OS === 'android')
-      this.requestAccessPermission();
-    else
-      this.versionControlPopupLogic();
+    this.versionControlPopupLogic();
 
   }
 
@@ -186,7 +199,7 @@ export default class AppVersionDialog extends React.Component {
 
     let canInstall = await requestStoragePermission();
     if (canInstall) {
-      this.versionControlPopupLogic();
+      this.getData();
       return;
     }
 
@@ -199,6 +212,8 @@ export default class AppVersionDialog extends React.Component {
 
     if (this.state.isLoading)
       return;
+
+    // this.setState({ isLoading: true });
 
     try {
 
@@ -300,7 +315,7 @@ export default class AppVersionDialog extends React.Component {
       return;
     }
 
-    if (item.isExists || item.AppDownloadLink === '' || item.AppDownloadLink.includes('https://play.google.com/store/apps/details')) {
+    if (item.isExists || item.AppDownloadLink === '' || item.AppDownloadLink.includes('https://play.google.com')) {
       this.downloadIndex = this.downloadIndex + 1;
       this.onSyncAll();
       return;
@@ -327,17 +342,18 @@ export default class AppVersionDialog extends React.Component {
 
         const tempList = this.state.appList;
         tempList[this.downloadIndex].isFetching = true;
-        this.setState({ appList: tempList });
+        this.setState({ appList: tempList, appName: item.appName + ' Processing.. ' });
 
       }).progress((percent) => {
         console.log(`Downloaded: ${item.appName}${percent * 100}%`);
+        this.setState({ dProgress: (percent.toFixed(2) * 100).toFixed(2) + '%' });
       }).done(() => {
         console.log('Download is done!', item.appName);
 
         const tempList = this.state.appList;
         tempList[this.downloadIndex].isFetching = false;
         tempList[this.downloadIndex].isExists = true;
-        this.setState({ appList: tempList });
+        this.setState({ appList: tempList, appName: 'Completed' });
 
         this.downloadIndex = this.downloadIndex + 1;
         this.onSyncAll();
@@ -368,7 +384,7 @@ export default class AppVersionDialog extends React.Component {
       this.task.stop();
     }
 
-    this.setState({ started: false, appList: tempList });
+    this.setState({ started: false, appList: tempList, appName: '', dProgress: 0 + '%' });
 
   }
 
@@ -407,43 +423,43 @@ export default class AppVersionDialog extends React.Component {
             </TouchableOpacity>
           </View>
 
-          {this.state.started ? <ButtonOutline
-            style={{ alignSelf: 'end' }}
-            width={150}
-            borderColor={'red'}
-            onPress={() => this.onStop()}
-            textColor='rgb(30,77,155)'
-            borderColor='green'
-            title={'Stop'} /> :
+          {this.state.isSuficient && <View alignItems={'center'}>
             <ButtonOutline
-              style={{ width: 150, alignSelf: 'end' }}
-              width={150}
+              style={{ alignSelf: 'center' }}
+              width={250}
               onPress={() => {
+                if (this.state.started || this.state.downloadIndex >= this.state.appList.length) {
+                  console.log('Already in progress');
+                  return;
+                }
                 if (this.downloadIndex === -1)
                   this.downloadIndex = this.downloadIndex + 1;
                 this.onSyncAll();
-
               }}
               textColor='rgb(30,77,155)'
-              borderColor='green'
-              title={'Sync All'} />
+              borderColor='rgb(30,77,155)'
+              title={(!this.state.started && this.downloadIndex === -1) ?
+                'Download All' : this.state.started ?
+                  (this.state.appName + (this.state.appName === 'Completed' ?
+                    '' : this.state.dProgress)) : 'Completed'} />
+          </View>
           }
 
-          <View style={{ flexDirection: 'row', padding: 5, backgroundColor: 'rgba(0,0,0,0.03)' }}>
-            <View style={{ width: '50%' }}>
-              <Text style={styles.infoText}>Available Space: <Text style={[styles.infoText]}>{'\t' + this.state.availableSpace}</Text></Text>
-              <Text style={styles.infoText}>Required Space: {'\t200 MB'}</Text>
-            </View>
-            <View style={{ width: '50%' }}>
-              <Text style={styles.infoText}>Current Speed: <Text style={styles.infoText}>{'\t\t' + this.state.networkSpeed}</Text></Text>
-              <Text style={styles.infoText}>Required Speed: {'\t150Kb/s'}</Text>
-            </View>
+          <View style={{ padding: 5, backgroundColor: 'rgba(0,0,0,0.03)' }}>
+            {this.state.isSuficient ? <Text style={styles.infoText}>
+              * Recommended space 200 MB, you have sufficient space avaialble {'(' + this.state.availableSpace + ').'}</Text> :
+              <Text style={styles.infoText}>
+                * Available space is less than the recommended 200 MB, please continue with manual sync option.</Text>}
+            <Text style={styles.infoText}> * Your current network speed ({this.state.networkSpeed}) is {this.state.networkState}</Text>
           </View>
 
-          {!this.state.isSuficient && <Text style={styles.errorText}>{'Available free space is less than required space.'}</Text>}
-          {this.state.networkState != '' && <Text style={styles.errorText}>{this.state.networkState}</Text>}
+          <View style={{ padding: 5 }}>
+            <Text style={styles.errorText}> # Download all applications will take time.</Text>
+            <Text style={styles.errorText}> # Recommended to have a good internet speed.</Text>
+            <Text style={styles.errorText}> # Please do not terminate the process in between.</Text>
+          </View>
 
-          <Text style={{ fontSize: 12, margin: 10, textAlign: 'center' }}>{'Note: Highlighted app`s needs to be update'}</Text>
+          {/* <Text style={{ fontSize: 12, margin: 10, textAlign: 'center' }}>{'Note: Highlighted app`s needs to be update'}</Text> */}
 
           <FlatList
             data={this.state.appList}
@@ -452,7 +468,7 @@ export default class AppVersionDialog extends React.Component {
 
         </View>
 
-      </View >
+      </View>
     )
 
   }
@@ -544,10 +560,9 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    fontSize: 12,
-    fontFamily: 'WorkSans-Medium',
-    padding: 2,
-    textAlign: 'center'
+    fontSize: 10,
+    fontFamily: 'WorkSans-Regular',
+    padding: 1,
   }
 
 });

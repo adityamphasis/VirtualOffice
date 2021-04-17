@@ -34,7 +34,8 @@ const onInstallUpdatePress = async (item) => {
         const isExists = await RNFetchBlob.fs.exists(filePath);
 
         if (isExists) {
-            requestPermissionAndInstall(filePath);
+            android.actionViewIntent(filePath, 'application/vnd.android.package-archive');
+            // requestPermissionAndInstall(filePath);
             return;
         }
 
@@ -85,7 +86,7 @@ const InstallItem = ({ item }) => {
                     {(item.isExists && !item.isInstalled) && <ButtonOutline
                         onPress={() => onInstallUpdatePress(item)}
                         textColor='rgb(30,77,155)'
-                        borderColor='green'
+                        borderColor='rgb(30,77,155)'
                         title={'Install'} />}
                     {item.isInstalled && !item.isLatest && <ButtonOutline
                         onPress={() => onInstallUpdatePress(item)}

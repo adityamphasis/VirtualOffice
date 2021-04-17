@@ -43,7 +43,7 @@
     "react-native-gesture-handler": "^1.8.0",
     "react-native-intent-launcher": "^0.2.1",
     "react-native-level-fs": "^3.0.0",
-    "react-native-network-speed": "^1.1.2",
+    "react-native-network-bandwith-speed": "^3.0.0",
     "react-native-os": "^1.0.1",
     "react-native-randombytes": "^3.6.0",
     "react-native-reanimated": "^1.13.2",
