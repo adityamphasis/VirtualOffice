@@ -12,6 +12,7 @@ import {
 import axios from 'react-native-axios';
 import DeviceInfo from 'react-native-device-info';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
+import JailMonkey from 'jail-monkey'
 
 import { getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
 import { getStorage, setStorage } from '../../utils/authentication';
@@ -55,6 +56,12 @@ export default class Splash extends React.Component {
 
     this.setState({ versionCode: DeviceInfo.getVersion() });
 
+    // if (JailMonkey.isJailBroken()) {
+    //   console.log('JailMonkey: ', JailMonkey.isJailBroken());
+    //   this.showAlertForRooted();
+    //   return;
+    // }
+
     const bioEnable = await getStorage('isBioEnabled');
     if (bioEnable)
       setConfiguration('isBioEnabled', bioEnable);
@@ -83,6 +90,18 @@ export default class Splash extends React.Component {
 
   componentWillUnmount() {
     FingerprintScanner.release();
+  }
+
+  showAlertForRooted = async () => {
+
+    Alert.alert(
+      'Alert!',
+      'You can not use this app on rooted device.',
+      [
+        { text: 'Ok', onPress: () => BackHandler.exitApp() },
+      ]
+    );
+
   }
 
   checkForBioAndProceed = () => {
