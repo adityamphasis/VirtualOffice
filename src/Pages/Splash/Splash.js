@@ -13,6 +13,7 @@ import axios from 'react-native-axios';
 import DeviceInfo from 'react-native-device-info';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import JailMonkey from 'jail-monkey'
+import RNGoogleSafetyNet from 'react-native-google-safetynet';
 
 import { getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
 import { getStorage, setStorage } from '../../utils/authentication';
@@ -22,6 +23,8 @@ import { Page } from '../../../components';
 
 import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
+
+const API_KEY = 'AIzaSyA2X9535aZI2NG3AgVevcfr4qYmVbOJuFM';
 
 const config = {
   issuer: 'https://accounts.bharti-axalife.com',
@@ -56,11 +59,29 @@ export default class Splash extends React.Component {
 
     this.setState({ versionCode: DeviceInfo.getVersion() });
 
-    // if (JailMonkey.isJailBroken()) {
-    //   console.log('JailMonkey: ', JailMonkey.isJailBroken());
-    //   this.showAlertForRooted();
-    //   return;
-    // }
+    if (JailMonkey.isJailBroken()) {
+      console.log('JailMonkey: ', JailMonkey.isJailBroken());
+      this.showAlertForSplash('You can not use this app on rooted device as per security policy.');
+      return;
+    }
+
+    const isPlayService = await RNGoogleSafetyNet.isPlayServicesAvailable();
+    console.log('isPlayService', isPlayService);
+
+    if (!isPlayService) {
+      this.showAlertForSplash('Google play services is not availble');
+      return;
+    }
+
+    const nounce = await RNGoogleSafetyNet.generateNonce(24);
+    console.log('nounce', JSON.stringify(nounce));
+    const safetyResult = await RNGoogleSafetyNet.sendAndVerifyAttestation(nounce, API_KEY);
+
+    if (!safetyResult) {
+      console.log('safetyResult', JSON.stringify(safetyResult));
+      this.showAlertForSplash('OS or Application installed on your device are violating Android playstore safetynet policies.');
+      return;
+    }
 
     const bioEnable = await getStorage('isBioEnabled');
     if (bioEnable)
@@ -92,11 +113,11 @@ export default class Splash extends React.Component {
     FingerprintScanner.release();
   }
 
-  showAlertForRooted = async () => {
+  showAlertForSplash = async (msg) => {
 
     Alert.alert(
       'Alert!',
-      'You can not use this app on rooted device.',
+      msg,
       [
         { text: 'Ok', onPress: () => BackHandler.exitApp() },
       ]
