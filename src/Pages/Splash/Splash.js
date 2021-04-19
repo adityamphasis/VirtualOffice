@@ -73,12 +73,13 @@ export default class Splash extends React.Component {
       return;
     }
 
-    const nounce = await RNGoogleSafetyNet.generateNonce(24);
-    console.log('nounce', JSON.stringify(nounce));
-    const safetyResult = await RNGoogleSafetyNet.sendAndVerifyAttestation(nounce, API_KEY);
+    const nonce = await RNGoogleSafetyNet.generateNonce(16);
+    console.log('nounce', JSON.stringify(nonce));
 
-    if (!safetyResult) {
-      console.log('safetyResult', JSON.stringify(safetyResult));
+    const safetyResponse = await RNGoogleSafetyNet.sendAttestationRequest(nonce, API_KEY);
+    console.log('safetyReespone', JSON.stringify(safetyResponse));
+
+    if (!safetyResponse.ctsProfileMatch) {
       this.showAlertForSplash('OS or Application installed on your device are violating Android playstore safetynet policies.');
       return;
     }
