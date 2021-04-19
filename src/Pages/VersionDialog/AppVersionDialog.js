@@ -447,7 +447,7 @@ export default class AppVersionDialog extends React.Component {
 
           <View style={{ padding: 5, backgroundColor: 'rgba(0,0,0,0.03)' }}>
             {this.state.isSuficient ? <Text style={styles.infoText}>
-              * Recommended space 200 MB, you have sufficient space avaialble {'(' + this.state.availableSpace + ').'}</Text> :
+              * Recommended space 200 MB, you have sufficient space available {'(' + this.state.availableSpace + ').'}</Text> :
               <Text style={styles.infoText}>
                 * Available space is less than the recommended 200 MB, please continue with manual sync option.</Text>}
             <Text style={styles.infoText}> * Your current network speed ({this.state.networkSpeed}) is {this.state.networkState}</Text>
