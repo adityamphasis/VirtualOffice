@@ -55,12 +55,12 @@ export default class Dashboard extends React.Component {
 
   validateTokenApi = async () => {
 
-    console.log("validateTokenApi");
+  
 
     this.setState({ isLoading: true });
-    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNewUAT/Service1.svc/ValidateJWL"
+    //let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNewUAT/Service1.svc/ValidateJWL"
 
-   // let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/ValidateJWT"
+    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/ValidateJWT"
 
     let params = {
       'DecodeJWT': getConfiguration('encryptedToken'),

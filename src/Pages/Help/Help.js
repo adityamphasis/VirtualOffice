@@ -38,11 +38,11 @@ export default class Help extends React.Component {
 
     this.state = { isLoading: true };
 
-    this.accessToken = getConfiguration('encryptedToken');
-    this.platform = Platform.OS;// ==='android'
-    this.comingScreen = this.props.navigation.getParam('screen');
-    this.isSales = getConfiguration('salesflag', '');
-    this.isRedirect = false;
+    // this.accessToken = getConfiguration('encryptedToken');
+    // this.platform = Platform.OS;// ==='android'
+    // this.comingScreen = this.props.navigation.getParam('screen');
+    // this.isSales = getConfiguration('salesflag', '');
+    // this.isRedirect = false;
 
   }
 
@@ -52,37 +52,14 @@ export default class Help extends React.Component {
 
   componentWillUnmount() {
 
-    //this.webview.stopLoading();
-
-    // if (this.ssoid) {
-
-    //   const logOutURL = 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/tokenData/' + this.ssoid
-    //   // axios.post(logOutURL)
-    //   console.log('logOutURL', logOutURL);
-    //   axios.get(logOutURL).then(response => {
-    //     console.log('mcustomer logout success');
-    //   }).catch(error => {
-    //     console.log("mcustomer logout error", error);
-    //   });
-
-    // }
+   
   }
 
   goBack() {
     this.props.navigation.goBack();
   }
 
-  onScriptSuccess = (event) => {
-    if (!this.isRedirect && event.url.includes('https://uat.bhartiaxa.tk/app?ssoid=')) {
-      console.log('mcustomeer url =', JSON.stringify(event.url));
-      this.webview.stopLoading();
-      this.isRedirect = true;
-      this.setState({ isLoading: false });
-      this.ssoid = event.url.substring(event.url.lastIndexOf('=') + 1);
-      this.goBack();
-      Linking.openURL(event.url);
-    }
-  }
+ 
 
  
 
@@ -109,7 +86,7 @@ export default class Help extends React.Component {
 
         <View style={styles.gridViewBackground}>
           <WebView
-                 source={{uri: 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin', body:createFormData(this.state.accessToken),method:'POST'}}
+                 source={{uri: 'http://bhartiaxa.hashtechorange.com/virtual_office/guidlines/guidlines.html', body:createFormData(this.state.accessToken),method:'POST'}}
                  style={{ width: '100%', height: '100%', backgroundColor: 'white' }}
 
                />

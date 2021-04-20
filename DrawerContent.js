@@ -77,9 +77,9 @@ class DrawerContent extends Component {
 
     console.log('ApiWin');
 
-    let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/logout"
-
     //let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/logout"
+
+    let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/logout"
 
     let params = {
       'jwtToken': getConfiguration('encryptedToken'),
@@ -171,7 +171,7 @@ class DrawerContent extends Component {
 
           <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('AppVersionDialog')} >
             <Image resizeMode="contain" style={styles.tileIcon}
-              source={require('./assets/Zone.png')} />
+              source={require('./assets/version_status.png')} />
             <Text style={styles.tileTitle}> Version Status </Text>
           </TouchableOpacity>
 
@@ -187,7 +187,7 @@ class DrawerContent extends Component {
 
 <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('Help')}>
   <Image resizeMode="contain" style={styles.tileIcon}
-    source={require('./assets/support.png')} />
+    source={require('./assets/hrlp_icon.png')} />
   <Text style={styles.tileTitle}> Support </Text>
 </TouchableOpacity>
 
