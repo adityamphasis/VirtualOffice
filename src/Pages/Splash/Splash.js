@@ -211,8 +211,8 @@ export default class Splash extends React.Component {
     this.setState({ isLoading: true });
 
     console.log('JWTTokenValidation');
-
-    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/CheckAgentCodeJWT"
+   let url =  "https://online.bharti-axalife.com/MiscServices/JWT_CheckAgentRESTServiceUAT/Service1.svc/CheckAgentCodeJWT"
+  //  let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/CheckAgentCodeJWT"
 
     let params = {
       'DecodeJWT': token,

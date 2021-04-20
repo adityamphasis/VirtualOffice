@@ -58,8 +58,9 @@ export default class Dashboard extends React.Component {
     console.log("validateTokenApi");
 
     this.setState({ isLoading: true });
+    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNewUAT/Service1.svc/ValidateJWL"
 
-    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/ValidateJWT"
+   // let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/ValidateJWT"
 
     let params = {
       'DecodeJWT': getConfiguration('encryptedToken'),
@@ -303,7 +304,7 @@ export default class Dashboard extends React.Component {
         </TouchableOpacity>
         <View style={styles.welcomContainer}>
           <Text style={styles.headerTitle}> Welcome to</Text>
-          <Text style={styles.headerTitle1}> Virtual Office</Text>
+          <Text style={styles.headerTitle1}>M-Smart</Text>
         </View>
         <TouchableOpacity
           style={styles.backTouchable}

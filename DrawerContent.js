@@ -79,6 +79,8 @@ class DrawerContent extends Component {
 
     let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/logout"
 
+    //let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/logout"
+
     let params = {
       'jwtToken': getConfiguration('encryptedToken'),
       'PartnerKey': 'JWT12SER02'
@@ -180,6 +182,14 @@ class DrawerContent extends Component {
               source={require('./assets/support.png')} />
             <Text style={styles.tileTitle}> Support </Text>
           </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+<TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('Help')}>
+  <Image resizeMode="contain" style={styles.tileIcon}
+    source={require('./assets/support.png')} />
+  <Text style={styles.tileTitle}> Support </Text>
+</TouchableOpacity>
 
           <View style={styles.divider} />
 

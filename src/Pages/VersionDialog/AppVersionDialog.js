@@ -147,7 +147,9 @@ export default class AppVersionDialog extends React.Component {
 
     this.setState({ isLoading: true });
 
-    let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestService/Service1.svc/GetVersionControlDetails"
+    let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestServiceUAT/Service1.svc/GetVersionControlDetails"
+
+   // let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestService/Service1.svc/GetVersionControlDetails"
 
     let params = {
       'Platform': Platform.OS === 'android' ? 'Android' : 'Ios',

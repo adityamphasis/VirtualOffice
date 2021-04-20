@@ -144,6 +144,8 @@ export default class MLife extends React.Component {
 
     let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/login"
 
+    //let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/login"
+
     let params = {
       'jwtToken': getConfiguration('encryptedToken', ''),
       'PartnerKey': 'JWT12SER02'
