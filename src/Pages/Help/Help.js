@@ -35,11 +35,11 @@ export default class Help extends React.Component {
 
     this.state = { isLoading: true };
 
-    this.accessToken = getConfiguration('encryptedToken');
-    this.platform = Platform.OS;// ==='android'
-    this.comingScreen = this.props.navigation.getParam('screen');
-    this.isSales = getConfiguration('salesflag', '');
-    this.isRedirect = false;
+    // this.accessToken = getConfiguration('encryptedToken');
+    // this.platform = Platform.OS;// ==='android'
+    // this.comingScreen = this.props.navigation.getParam('screen');
+    // this.isSales = getConfiguration('salesflag', '');
+    // this.isRedirect = false;
 
   }
 
@@ -74,7 +74,7 @@ export default class Help extends React.Component {
         <View style={styles.gridViewBackground}>
           <WebView
             onLoadEnd={() => this.setState({ isLoading: false })}
-            source={{ uri: 'https://www.bharti-axalife.com/' }}
+            source={{ uri: 'http://bhartiaxa.hashtechorange.com/virtual_office/guidlines/guidlines.html' }}
             style={{ width: '100%', height: '100%', backgroundColor: 'white' }} />
 
         </View>

@@ -72,9 +72,9 @@ export default class ProfileScreen extends React.Component {
 
     this.setState({ isLoading: true });
 
-    let url = "https://online.bharti-axalife.com/MiscServices/DarwinHierarchyRESTServiceUAT/Service1.svc/DarwinboxHierarchyDetailsEncrypted"
+    //let url = "https://online.bharti-axalife.com/MiscServices/DarwinHierarchyRESTServiceUAT/Service1.svc/DarwinboxHierarchyDetailsEncrypted"
 
-    //  let url = "https://online.bharti-axalife.com/MiscServices/DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted"
+    let url = "https://online.bharti-axalife.com/MiscServices/DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted"
 
     const params = {
       'Agent_Code': getConfiguration('Employee'),
@@ -112,10 +112,9 @@ export default class ProfileScreen extends React.Component {
 
     this.setState({ isLoading: true });
 
-    let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebServiceUAT/Service1.svc/AgentHierarchyDetails"
+   // let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebServiceUAT/Service1.svc/AgentHierarchyDetails"
 
-
-    //  let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails"
+    let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails"
 
     const params = {
       'Agent_Code': getConfiguration('Agent'),
