@@ -12,15 +12,6 @@ import {
 } from 'react-native-responsive-screen';
 
 import { getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
-import { clearStorage, getStorage } from '../../utils/authentication';
-
-import {
-  Page, Button, ButtonOutline, ButtonContainer,
-  Form, FormLabel, FormValue, Heading
-} from '../../../components';
-
-import { Loader } from '../../../components';
-import { encryptData, decryptData } from '../../utils/AES';
 
 
 export default class Support extends React.Component {
@@ -59,19 +50,27 @@ export default class Support extends React.Component {
   onComposeMail = (input) => {
 
     try {
-      Linking.openURL(`mailto:${input}?subject=S-Mart App Support`);
+      Linking.openURL(`mailto:${input}?subject=M-Smart App Support`);
     } catch (error) {
-
+      console.log('error', JSON.stringify(error));
     }
 
   }
 
   onCallPress = (input) => {
 
-    try {
-      Linking.canOpenURL(`tel:${input}`);
-    } catch (error) {
+    console.log('onCallPress', input);
 
+    if (Platform.OS === 'android')
+      phoneNumber = `tel:${input}`;
+    else
+      phoneNumber = `telprompt:${input}`;
+
+
+    try {
+      Linking.openURL(phoneNumber);
+    } catch (error) {
+      console.log('error', JSON.stringify(error));
     }
 
   }
