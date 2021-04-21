@@ -172,7 +172,7 @@ export default class MLife extends React.Component {
     }).catch(error => {
       console.log("cvzgvxbhvb", error);
       this.setState({ isLoading: false });
-      alert('No User found')
+      alert('Something went wrong. Please try again after some time.');
 
     });
 

@@ -18,7 +18,6 @@ import {
   ActivityIndicator
 } from 'react-native';
 
-import axios from 'react-native-axios';
 import { WebView } from 'react-native-webview';
 
 import {
@@ -28,8 +27,6 @@ import {
 
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { Loader } from '../../../components';
-
-// const token = 'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIyOTIxNDQiLCJhdXQiOiJBUFBMSUNBVElPTl9VU0VSIiwiYXVkIjoiN0lvX2lGZjVvaXEzUDJLalVxWGJTdEttS3BZYSIsImJpbmRpbmdfdHlwZSI6ImNvb2tpZSIsIm5iZiI6IjE2MTc4NzYzODAiLCJhenAiOiI3SW9faUZmNW9pcTNQMktqVXFYYlN0S21LcFlhIiwic2NvcGUiOiJvcGVuaWQiLCJpc3MiOiJodHRwczovL2FjY291bnRzLmJoYXJ0aS1heGFsaWZlLmNvbTo0NDMvb2F1dGgyL3Rva2VuIiwiZXhwIjoxNjE3OTYzMDAzLCJpYXQiOiIxNjE3ODc2MzgwIiwiYmluZGluZ19yZWYiOiI3MDJhZmU4YWM3NjI3MTAwMTMwYjhmN2VhOGNiZGYxZSIsImp0aSI6ImYzNDU3NjIzLTgwODQtNGVlOS1iNDg0LTg0Nzc3MDliOGMzZiJ9.';
 
 export default class Help extends React.Component {
 
@@ -47,52 +44,22 @@ export default class Help extends React.Component {
   }
 
   componentDidMount() {
-    // this.renderView();
   }
 
   componentWillUnmount() {
 
-    //this.webview.stopLoading();
-
-    // if (this.ssoid) {
-
-    //   const logOutURL = 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/tokenData/' + this.ssoid
-    //   // axios.post(logOutURL)
-    //   console.log('logOutURL', logOutURL);
-    //   axios.get(logOutURL).then(response => {
-    //     console.log('mcustomer logout success');
-    //   }).catch(error => {
-    //     console.log("mcustomer logout error", error);
-    //   });
-
-    // }
   }
 
   goBack() {
     this.props.navigation.goBack();
   }
 
-  onScriptSuccess = (event) => {
-    if (!this.isRedirect && event.url.includes('https://uat.bhartiaxa.tk/app?ssoid=')) {
-      console.log('mcustomeer url =', JSON.stringify(event.url));
-      this.webview.stopLoading();
-      this.isRedirect = true;
-      this.setState({ isLoading: false });
-      this.ssoid = event.url.substring(event.url.lastIndexOf('=') + 1);
-      this.goBack();
-      Linking.openURL(event.url);
-    }
-  }
-
- 
-
   render() {
 
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 
-      
-       <View style={styles.headerView}>
+        <View style={styles.headerView}>
           <TouchableOpacity
             style={styles.backTouchable}
             onPress={() => this.goBack()}>
@@ -100,19 +67,16 @@ export default class Help extends React.Component {
               source={require('../../../assets/logo_rht.png')} />
             <Text style={[styles.headerTitle1, { marginLeft: 5, color: 'black' }]}>M-Smart</Text>
           </TouchableOpacity>
-          {/* <View style={styles.welcomContainer}>
-            <Text style={styles.headerTitle}> Welcome to</Text>
-            <Text style={styles.headerTitle1}>Virtual Office</Text>
-          </View> */}
         </View>
-     
+
+        <Loader visible={this.state.isLoading} />
 
         <View style={styles.gridViewBackground}>
           <WebView
-                 source={{uri: 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin', body:createFormData(this.state.accessToken),method:'POST'}}
-                 style={{ width: '100%', height: '100%', backgroundColor: 'white' }}
+            onLoadEnd={() => this.setState({ isLoading: false })}
+            source={{ uri: 'https://www.bharti-axalife.com/' }}
+            style={{ width: '100%', height: '100%', backgroundColor: 'white' }} />
 
-               />
         </View>
 
       </SafeAreaView>
@@ -159,18 +123,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(234,240,248)',
     justifyContent: 'center',
     alignItems: 'center',
-
-
   },
   rupeeContainer: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
     height: '50%',
     width: '50%',
-
     alignItems: 'center',
     justifyContent: 'space-between'
-
   },
   txttab: {
     fontSize: wp('4.8%'),
@@ -222,7 +182,6 @@ const styles = StyleSheet.create({
   rghtLogo: {
     width: 30,
     height: '90%',
-
     marginStart: 5,
     backgroundColor: 'transparent',
   },
@@ -237,11 +196,8 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-
   },
-
-  appiconView:
-  {
+  appiconView: {
     width: 70,
     height: 70,
     borderColor: 'lightgray',
@@ -252,15 +208,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: -50
   },
-
-  appIcon:
-  {
+  appIcon: {
     width: 30,
     height: 30,
     backgroundColor: 'transparent',
   },
-  cmgsoonIcon:
-  {
+  cmgsoonIcon: {
     width: 150,
     height: 150,
     backgroundColor: 'transparent',
@@ -272,7 +225,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row'
-
   },
   crossContainer: {
     width: '95%',
@@ -286,37 +238,29 @@ const styles = StyleSheet.create({
     height: 25,
     top: 10,
     backgroundColor: 'transparent',
-
   },
-  welcomContainer:
-  {
+  welcomContainer: {
     width: '30%',
     height: '100%',
-
     marginLeft: '30%',
     justifyContent: 'center',
     alignItems: 'center'
   },
-
   headerTitle: {
     color: 'rgb(30,77,155)',
     fontSize: 15,
-
   },
   headerTitle1: {
     color: 'rgb(30,77,155)',
     fontSize: 15,
     fontWeight: 'bold'
-
   },
   quickLinksText: {
     color: 'rgb(30,77,155)',
     fontWeight: 'bold',
     alignSelf: 'center',
     marginTop: 10,
-    fontSize: 15,
-
-
+    fontSize: 15
   },
   appName: {
     color: 'rgb(30,77,155)',
@@ -328,7 +272,6 @@ const styles = StyleSheet.create({
     color: 'rgb(30,77,155)',
     fontSize: 12,
     textAlign: 'center',
-
   },
   appBackground: {
     width: wp('45%'),
@@ -348,7 +291,6 @@ const styles = StyleSheet.create({
     shadowOffset: {
       height: 0.5,
       width: 0,
-
     },
     elevation: 5
   },
@@ -356,11 +298,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     width: wp('100%'),
     flex: 0.1,
-
     flexDirection: 'row',
     marginStart: 10,
     marginEnd: 10,
-
   },
   imgcontainer: {
     backgroundColor: 'transparent',
@@ -369,7 +309,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    // flexDirection:'row'
   },
   container1: {
     backgroundColor: 'transparent',
@@ -378,7 +317,6 @@ const styles = StyleSheet.create({
     marginTop: '20%',
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   container: {
     backgroundColor: 'transparent',

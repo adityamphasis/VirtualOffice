@@ -1,14 +1,11 @@
+import React, { PropTypes } from 'react'
+
 import {
   StyleSheet, Text, View, TouchableOpacity,
   ImageBackground, Image, StatusBar, Keyboard,
   Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
 } from 'react-native';
-import React, { PropTypes } from 'react'
-import AppLink from 'react-native-app-link';
-import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
-import Clipboard from '@react-native-community/clipboard';
-import axios from 'react-native-axios';
-import { DrawerActions } from 'react-navigation-drawer';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -55,244 +52,33 @@ export default class Support extends React.Component {
     // BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
-  componentDidUpdate() {
-    console.log("zhfbfxvjcvbn");
+  closePopup = async () => {
+    this.props.navigation.goBack();
   }
 
-  validateTokenApi = async () => {
-
-    console.log("validateTokenApi");
-
-    this.setState({ isLoading: true });
-
-    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/ValidateJWT"
-
-    let params = {
-      'DecodeJWT': getConfiguration('encryptedToken'),
-      'PartnerKey': 'JWT12SER02'
-    }
-
-    const encryptedParam = await encryptData(JSON.stringify(params));
-
-    console.log('validate ecrypted data: ', encryptedParam);
-
-    let encParams = {
-      "request": encryptedParam
-    };
-
-    axios.post(url, encParams, {
-      "headers": {
-        "content-type": "application/json",
-      }
-    }).then(response => {
-
-      console.log("validate response => ", JSON.stringify(response.data));
-
-      this.parseData(response.data);
-
-    }).catch(error => {
-      console.log("validate error", JSON.stringify(error));
-    });
-
-  }
-
-  parseData = async (data) => {
-
-    const result = await decryptData(data.response);
-
-    this.setState({ isLoading: false });
-    console.log('validate result => ', result);
-
-    if (!result.IsValidToken) {
-
-      Alert.alert(
-        'Expired!',
-        'Your session has been expired. Please login again.',
-        [
-          { text: 'Login Again', onPress: () => this.onSessionExpired() },
-        ]
-      );
-
-      return;
-
-    }
-
-    const isDialogShown = await getStorage('isDialogShown');
-    console.log('isDialogShown', isDialogShown);
-
-    if (!isDialogShown) {
-      this.props.navigation.navigate('AppVersionDialog');
-    }
-
-    this.setState({ isLoading: false });
-
-  }
-
-  onSessionExpired = async () => {
-
-    unsetConfiguration('token');
-    unsetConfiguration('salesflag');
-    unsetConfiguration('encryptedToken');
-    unsetConfiguration('Agent');
-    unsetConfiguration('Employee');
-    unsetConfiguration('AgentName');
-    unsetConfiguration('MobileNumber');
-
-    await clearStorage();
-
-    if (Platform.OS == 'android')
-      NativeModules.HelloWorldModule.ShowMessage('', 'false', 5000);
-    else if (Platform.OS == 'ios')
-      NativeModules.HelloWorld.ShowMessage('Awesome!its working!', 0.5);
-
-    this.props.navigation.navigate('SplashScreen');
-
-
-  }
-
-  handleBackButton = () => {
+  onComposeMail = (input) => {
 
     try {
-      const drawerState = getConfiguration('drawerState');
-      console.log('drawerState:', drawerState);
-      if (drawerState && drawerState === 'open') {
-        this.props.navigation.closeDrawer();
-        return true;
-      }
+      Linking.openURL(`mailto:${input}?subject=S-Mart App Support`);
     } catch (error) {
 
     }
 
-    if (this.props.navigation.isFocused()) {
-      Alert.alert(
-        'Exit!',
-        'Are you sure you want to exit the app?',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          { text: 'OK', onPress: () => BackHandler.exitApp() },
-        ]
-      );
-      return true;
-    } else {
-      return false;
+  }
+
+  onCallPress = (input) => {
+
+    try {
+      Linking.canOpenURL(`tel:${input}`);
+    } catch (error) {
+
     }
 
   }
-
-  openDrawerClick = () => {
-    this.props.navigation.dispatch(DrawerActions.openDrawer());
-  }
-
-  appInstall() {
-    AppLink.openInStore({ appName: "M-Sell", appStoreId: '529379082', appStoreLocale: 'us', playStoreId: 'id=com.enparadigm.bharthiaxa' }).then((datares) => {
-      // do stuff
-      console.log("ghfbbbnbbn", datares);
-      alert("app installed")
-
-    }).catch((err) => {
-      // handle error
-      alert(err)
-    });
-  }
-
-  clickApp = () => {
-    this.setState({
-      clickOnApp: true
-    })
-  }
-
-  gotomlife = () => {
-    //this.logout()
-    this.props.navigation.navigate('MLife')
-  }
-
-  gotomcustomer = () => {
-    console.log("salesflag", getConfiguration('salesflag'));
-    if (getConfiguration('salesflag')) {
-      this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken, screen: 'customer' })
-    } else {
-      alert('Available only for Agents')
-    }
-  }
-
-  copyToClipboard = () => {
-
-    console.log("copy to clipboard", getConfiguration('encryptedToken', ''));
-
-    Clipboard.setString(getConfiguration('encryptedToken', ''))
-  }
-
-  closePopup = async () => {
-    this.props.navigation.goBack();
-  }
-  gotoVymo = () => {
-
-    IntentLauncher.startAppByPackageName('com.getvymo.android')
-      .then((result) => {
-        console.log('startAppByPackageName started');
-      }).catch((error) => {
-        console.warn('startAppByPackageName: could not open', error);
-
-        if (this.versionApiData) {
-          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.getvymo.android');
-          console.log('index', index);
-          if (index != -1) {
-            Linking.openURL(this.versionApiData[index].AppDownloadLink);
-            return;
-          }
-        }
-
-        Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
-
-      });
-
-  }
-
-  gotoMSell = () => {
-
-    IntentLauncher.startAppByPackageName('com.enparadigm.bharthiaxa')
-      .then((result) => {
-        console.log('startAppByPackageName started');
-      })
-      .catch((error) => {
-        console.warn('startAppByPackageName: could not open', error);
-
-        if (this.versionApiData) {
-          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.enparadigm.bharthiaxa');
-          console.log('index', index);
-          if (index != -1) {
-            Linking.openURL(this.versionApiData[index].AppDownloadLink);
-            return;
-          }
-        }
-
-        Linking.openURL('https://play.google.com/store/apps/details?id=com.enparadigm.bharthiaxa');
-
-      });
-  }
-
-
-
-  installApp = () => {
-    // https://play.google.com/store/apps/details?id=com.enparadigm.bharthiaxa&hl=en&gl=US
-    Linking.openURL("market://details?id=com.enparadigm.bharthiaxa&hl=en&gl=US");
-  }
-
-  showAlert = () => {
-    alert('Coming Soon')
-  }
-
-
-
-
-
 
 
   render = () => {
+
     return (
 
       <SafeAreaView style={styles.background}>
@@ -306,9 +92,12 @@ export default class Support extends React.Component {
               <Image resizeMode="contain" style={styles.crossButton}
                 source={require('../../../assets/close.png')} />
             </TouchableOpacity>
+
             <View style={styles.appcontainer}>
               <View style={styles.appcontainer1}>
-                <TouchableOpacity style={styles.buttonContainer}>
+                <TouchableOpacity
+                  onPress={() => this.onComposeMail('support@bharatiaxa.com')}
+                  style={styles.buttonContainer}>
                   <Image resizeMode="contain" style={styles.appIcon}
                     source={require('../../../assets/eml_icon.png')} />
                   <View style={styles.appBackground1}>
@@ -319,12 +108,11 @@ export default class Support extends React.Component {
               </View>
 
 
-
-
               <View
-                style={styles.appcontainer1}
-              >
-                <TouchableOpacity style={styles.buttonContainer}>
+                style={styles.appcontainer1}>
+                <TouchableOpacity
+                  onPress={() => this.onCallPress('9999341059')}
+                  style={styles.buttonContainer}>
                   <Image resizeMode="contain" style={styles.appIcon}
                     source={require('../../../assets/phn_icon.png')} />
                   <View style={styles.appBackground1}>
@@ -333,7 +121,6 @@ export default class Support extends React.Component {
                   </View>
                 </TouchableOpacity>
               </View>
-
             </View>
           </View>
         </ImageBackground>

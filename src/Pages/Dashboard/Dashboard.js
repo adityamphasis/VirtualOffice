@@ -58,9 +58,10 @@ export default class Dashboard extends React.Component {
     console.log("validateTokenApi");
 
     this.setState({ isLoading: true });
-    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNewUAT/Service1.svc/ValidateJWL"
+    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNewUAT/Service1.svc/ValidateJWT"
+    // let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNewUAT/Service1.svc/ValidateJWL";
 
-   // let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/ValidateJWT"
+    // let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/ValidateJWT"
 
     let params = {
       'DecodeJWT': getConfiguration('encryptedToken'),
@@ -87,6 +88,8 @@ export default class Dashboard extends React.Component {
 
     }).catch(error => {
       console.log("validate error", JSON.stringify(error));
+      this.setState({ isLoading: false });
+      alert('Something went wrong. Please try again after some time.');
     });
 
   }

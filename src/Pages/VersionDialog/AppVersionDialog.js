@@ -149,7 +149,7 @@ export default class AppVersionDialog extends React.Component {
 
     let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestServiceUAT/Service1.svc/GetVersionControlDetails"
 
-   // let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestService/Service1.svc/GetVersionControlDetails"
+    // let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestService/Service1.svc/GetVersionControlDetails"
 
     let params = {
       'Platform': Platform.OS === 'android' ? 'Android' : 'Ios',
@@ -176,6 +176,8 @@ export default class AppVersionDialog extends React.Component {
 
     }).catch(error => {
       console.log("version error", JSON.stringify(error));
+      this.setState({ isLoading: false });
+      alert('Something went wrong. Please try again after some time.');
     });
 
 

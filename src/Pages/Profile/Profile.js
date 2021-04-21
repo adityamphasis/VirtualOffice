@@ -74,7 +74,7 @@ export default class ProfileScreen extends React.Component {
 
     let url = "https://online.bharti-axalife.com/MiscServices/DarwinHierarchyRESTServiceUAT/Service1.svc/DarwinboxHierarchyDetailsEncrypted"
 
-  //  let url = "https://online.bharti-axalife.com/MiscServices/DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted"
+    //  let url = "https://online.bharti-axalife.com/MiscServices/DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted"
 
     const params = {
       'Agent_Code': getConfiguration('Employee'),
@@ -100,6 +100,8 @@ export default class ProfileScreen extends React.Component {
 
     }).catch(error => {
       console.log("Employee eror", JSON.stringify(error));
+      this.setState({ isLoading: false });
+      alert('Something went wrong. Please try again after some time.');
     });
 
 
@@ -113,7 +115,7 @@ export default class ProfileScreen extends React.Component {
     let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebServiceUAT/Service1.svc/AgentHierarchyDetails"
 
 
-  //  let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails"
+    //  let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails"
 
     const params = {
       'Agent_Code': getConfiguration('Agent'),
@@ -139,6 +141,8 @@ export default class ProfileScreen extends React.Component {
 
     }).catch(error => {
       console.log("Agent profile error", error);
+      this.setState({ isLoading: false });
+      alert('Something went wrong. Please try again after some time.');
     });
 
   }
@@ -153,17 +157,17 @@ export default class ProfileScreen extends React.Component {
 
 
     this.setState({
-      bcode: result.Agent_Code?result.Agent_Code:'NA',
-      Channel: result.Channel?result.Channel:'NA',
-      Employee: result.Emp_Code?result.Emp_Code:'NA',
-      supervisor: result.Supervisor_Name?result.Supervisor_Name:'NA',
-      branch: result.BranchName?result.BranchName:'NA',
-      region: result.BranchName?result.BranchName:'NA',
-      zone: result.BranchName?result.BranchName:'NA',
-      mobile: result.Tel3?result.Tel3:'NA',
-      email: result.EmailId?result.EmailId:'NA',
-      name: result.Agent_Name?result.Agent_Name:'NA',
-      designation: result.Designation?result.Designation:'NA'
+      bcode: result.Agent_Code ? result.Agent_Code : 'NA',
+      Channel: result.Channel ? result.Channel : 'NA',
+      Employee: result.Emp_Code ? result.Emp_Code : 'NA',
+      supervisor: result.Supervisor_Name ? result.Supervisor_Name : 'NA',
+      branch: result.BranchName ? result.BranchName : 'NA',
+      region: result.BranchName ? result.BranchName : 'NA',
+      zone: result.BranchName ? result.BranchName : 'NA',
+      mobile: result.Tel3 ? result.Tel3 : 'NA',
+      email: result.EmailId ? result.EmailId : 'NA',
+      name: result.Agent_Name ? result.Agent_Name : 'NA',
+      designation: result.Designation ? result.Designation : 'NA'
     })
 
   }
@@ -177,17 +181,17 @@ export default class ProfileScreen extends React.Component {
     console.log('employee profile result => ', result);
 
     this.setState({
-      bcode: result.Emp_Code?result.Emp_Code:'NA',
-      Channel: result.Channel?result.Channel:'NA',
-      Employee: result.Agent_Code?result.Agent_Code:'NA',
-      supervisor: result.Supervisor_Name?result.Supervisor_Name:'NA',
-      branch: result.BranchName?result.BranchName:'NA',
-      region: result.BranchName?result.BranchName:'NA',
-      zone: result.BranchName?result.BranchName:'NA',
-      mobile: result.Tel3?result.Tel3:'NA',
-      email: result.EmailId?result.EmailId:'NA',
-      name: result.Agent_Name?result.Agent_Name:'NA',
-      designation: result.Designation?result.Designation:'NA'
+      bcode: result.Emp_Code ? result.Emp_Code : 'NA',
+      Channel: result.Channel ? result.Channel : 'NA',
+      Employee: result.Agent_Code ? result.Agent_Code : 'NA',
+      supervisor: result.Supervisor_Name ? result.Supervisor_Name : 'NA',
+      branch: result.BranchName ? result.BranchName : 'NA',
+      region: result.BranchName ? result.BranchName : 'NA',
+      zone: result.BranchName ? result.BranchName : 'NA',
+      mobile: result.Tel3 ? result.Tel3 : 'NA',
+      email: result.EmailId ? result.EmailId : 'NA',
+      name: result.Agent_Name ? result.Agent_Name : 'NA',
+      designation: result.Designation ? result.Designation : 'NA'
     })
 
   }
@@ -216,7 +220,7 @@ export default class ProfileScreen extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <Loader visible={this.state.isLoading}/>
+        <Loader visible={this.state.isLoading} />
 
         <ScrollView style={{ backgroundColor: 'transparent' }}>
 
@@ -288,7 +292,7 @@ export default class ProfileScreen extends React.Component {
               <View style={{ width: wp('50%'), backgroundColor: 'transparent', height: '100%', flexDirection: 'row', alignItems: 'center' }}>
 
 
-                <Text style={[styles.quickLinksText]}>{getConfiguration('Employee') == '' ? 'NA' : getConfiguration('Employee') }</Text>
+                <Text style={[styles.quickLinksText]}>{getConfiguration('Employee') == '' ? 'NA' : getConfiguration('Employee')}</Text>
 
               </View>
 

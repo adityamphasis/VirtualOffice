@@ -69,7 +69,7 @@ export default class Splash extends React.Component {
     // console.log('isPlayService', isPlayService);
 
     // if (!isPlayService) {
-    //   this.showAlertForSplash('Google play services is not availble');
+    //   this.showAlertForSplash('Google play services is not availble.');
     //   return;
     // }
 
@@ -178,14 +178,10 @@ export default class Splash extends React.Component {
 
     }
 
-    this.authChecking = true;
-
     try {
       const result = await authorize(config);
 
       console.log('token result=>', JSON.stringify(result));
-
-      this.authChecking = false;
 
       await setStorage('token', result.accessToken);
       await setStorage('idToken', result.idToken);
@@ -199,7 +195,6 @@ export default class Splash extends React.Component {
 
     }
     catch (error) {
-      this.authChecking = false;
       console.log(error);
       BackHandler.exitApp();
     }
@@ -211,8 +206,10 @@ export default class Splash extends React.Component {
     this.setState({ isLoading: true });
 
     console.log('JWTTokenValidation');
-   let url =  "https://online.bharti-axalife.com/MiscServices/JWT_CheckAgentRESTServiceUAT/Service1.svc/CheckAgentCodeJWT"
-  //  let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/CheckAgentCodeJWT"
+
+    // let url = "https://online.bharti-axalife.com/MiscServices/JWT_CheckAgentRESTServiceUAT/Service1.svc/CheckAgentCodeJWT"
+    //  let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/CheckAgentCodeJWT"
+    let url = "https://online.bharti-axalife.com/MiscServices/JWT_CheckAgentRESTServiceNewUAT/Service1.svc/CheckAgentCodeJWT";
 
     let params = {
       'DecodeJWT': token,
@@ -239,7 +236,7 @@ export default class Splash extends React.Component {
     }).catch(error => {
       console.log("jwt error", error);
       this.setState({ isLoading: false });
-
+      alert('Something went wrong. Please try again after some time.');
     });
 
   }

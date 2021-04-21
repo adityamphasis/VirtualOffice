@@ -42,16 +42,15 @@ class DrawerContent extends Component {
 
   }
 
-  navigateToSupport = () =>
-  {
-    setConfiguration('isSupport',true)
+  navigateToSupport = () => {
+    setConfiguration('isSupport', true)
     this.navigateToScreen('DashboardScreen')
   }
 
   logout = async () => {
 
     this.LogoutApi();
-   
+
     unsetConfiguration('token');
     unsetConfiguration('salesflag');
     unsetConfiguration('encryptedToken');
@@ -185,11 +184,11 @@ class DrawerContent extends Component {
 
           <View style={styles.divider} />
 
-<TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('Help')}>
-  <Image resizeMode="contain" style={styles.tileIcon}
-    source={require('./assets/support.png')} />
-  <Text style={styles.tileTitle}> Support </Text>
-</TouchableOpacity>
+          <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('Help')}>
+            <Image resizeMode="contain" style={styles.tileIcon}
+              source={require('./assets/support.png')} />
+            <Text style={styles.tileTitle}> Help </Text>
+          </TouchableOpacity>
 
           <View style={styles.divider} />
 
