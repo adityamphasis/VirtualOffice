@@ -38,6 +38,7 @@
     "react-native-axios": "^0.17.1",
     "react-native-background-downloader": "^2.3.4",
     "react-native-browser": "^0.6.2",
+    "react-native-check-version": "^1.0.9",
     "react-native-crypto": "^2.2.0",
     "react-native-device-info": "^8.0.8",
     "react-native-fingerprint-scanner": "^6.0.0",
