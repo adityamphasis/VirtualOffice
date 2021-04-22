@@ -30,7 +30,7 @@ const onInstallUpdatePress = async (item) => {
 
     if (Platform.OS == 'android') {
 
-        const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + item.appName + '.apk';
+        const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + item.appName + '_' + item.mVersion + '.apk';
         const isExists = await RNFetchBlob.fs.exists(filePath);
 
         if (isExists) {

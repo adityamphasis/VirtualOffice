@@ -66,7 +66,6 @@ export default class Support extends React.Component {
     else
       phoneNumber = `telprompt:${input}`;
 
-
     try {
       Linking.openURL(phoneNumber);
     } catch (error) {
@@ -75,10 +74,11 @@ export default class Support extends React.Component {
 
   }
 
-  raiseTicket = () =>
-{
-  Linking.openURL("http://bhartiaxa.itservicedesk.com/");
-}
+  raiseTicket = () => {
+    Linking.openURL("http://bhartiaxa.itservicedesk.com/");
+  }
+
+
   render = () => {
 
     return (
@@ -184,21 +184,17 @@ export default class Support extends React.Component {
                 </TouchableOpacity>
               </View>
             </View>
-            
-            <View style={{marginTop:'50%',backgroundColor:'transparent',flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-         
-                    <Text style={styles.appName1}>To raise ticket in Symphony</Text>
-                    <TouchableOpacity  onPress={() => this.raiseTicket()}>
-                 <Text style={{color:'blue',textDecorationLine: 'underline',marginLeft:5,marginTop:5}}>Click here</Text>
-                </TouchableOpacity>
-                  </View>
-                
-              
-          
-          
+
+            <View style={{ backgroundColor: 'transparent', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+
+              <Text style={styles.appName1}>To raise ticket in Symphony</Text>
+              <TouchableOpacity onPress={() => this.raiseTicket()}>
+                <Text style={{ color: 'blue', textDecorationLine: 'underline', marginLeft: 5, marginTop: 5 }}>Click here</Text>
+              </TouchableOpacity>
+            </View>
+
           </View>
 
-       
         </ImageBackground>
       </SafeAreaView>
 

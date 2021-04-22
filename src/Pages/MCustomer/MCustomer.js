@@ -58,7 +58,7 @@ export default class MCustomer extends React.Component {
 
   componentWillUnmount() {
 
-   // this.webview.stopLoading();
+    // this.webview.stopLoading();
 
     // if (this.ssoid) {
 
@@ -72,6 +72,7 @@ export default class MCustomer extends React.Component {
     //   });
 
     // }
+
   }
 
   goBack() {
@@ -105,7 +106,7 @@ export default class MCustomer extends React.Component {
         cacheMode={'LOAD_NO_CACHE'}
         // renderLoading={() => { return (<ActivityIndicator />) }}
         onLoadEnd={() => this.setState({ isLoading: false })}
-        onError={(error) => {console.log('error', JSON.stringify(error)); this.setState({ isLoading: false })}}
+        onError={(error) => { console.log('error', JSON.stringify(error)); this.setState({ isLoading: false }) }}
         onNavigationStateChange={(event) => this.onScriptSuccess(event)}
         source={{
           html: '<script type="text/javascript"> ' +
