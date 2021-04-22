@@ -75,7 +75,10 @@ export default class Support extends React.Component {
 
   }
 
-
+  raiseTicket = () =>
+{
+  Linking.openURL("http://bhartiaxa.itservicedesk.com/");
+}
   render = () => {
 
     return (
@@ -95,33 +98,107 @@ export default class Support extends React.Component {
             <View style={styles.appcontainer}>
               <View style={styles.appcontainer1}>
                 <TouchableOpacity
-                  onPress={() => this.onComposeMail('support@bharatiaxa.com')}
+                  onPress={() => this.onComposeMail('digitalappsupport@bhartiaxa.com')}
                   style={styles.buttonContainer}>
                   <Image resizeMode="contain" style={styles.appIcon}
                     source={require('../../../assets/eml_icon.png')} />
                   <View style={styles.appBackground1}>
                     <Text style={styles.appName1}>Email ID</Text>
-                    <Text style={styles.appName}>support@bhartiaxa.com</Text>
+                    <Text style={styles.appName}>digitalappsupport@bhartiaxa.com</Text>
                   </View>
                 </TouchableOpacity>
               </View>
 
 
               <View
-                style={styles.appcontainer1}>
+                style={styles.appcontaine2}>
                 <TouchableOpacity
-                  onPress={() => this.onCallPress('9999341059')}
+                  onPress={() => this.onCallPress('7400115321')}
                   style={styles.buttonContainer}>
                   <Image resizeMode="contain" style={styles.appIcon}
                     source={require('../../../assets/phn_icon.png')} />
                   <View style={styles.appBackground1}>
-                    <Text style={styles.appName1}>Phone</Text>
-                    <Text style={styles.appName}>9999341059</Text>
+                    <Text style={styles.appName1}>NINAD KAMBLI</Text>
+                    <Text style={styles.appName}>7400115321</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.onCallPress('90821774183')}
+                  style={styles.buttonContainer}>
+                  <Image resizeMode="contain" style={styles.appIcon}
+                    source={require('../../../assets/phn_icon.png')} />
+                  <View style={styles.appBackground1}>
+                    <Text style={styles.appName1}>AKASH ACHREKAR</Text>
+                    <Text style={styles.appName}>90821774183</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.onCallPress('9867984199')}
+                  style={styles.buttonContainer}>
+                  <Image resizeMode="contain" style={styles.appIcon}
+                    source={require('../../../assets/phn_icon.png')} />
+                  <View style={styles.appBackground1}>
+                    <Text style={styles.appName1}>DHANASHREE PARAB</Text>
+                    <Text style={styles.appName}>9867984199</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.onCallPress('9067586964')}
+                  style={styles.buttonContainer}>
+                  <Image resizeMode="contain" style={styles.appIcon}
+                    source={require('../../../assets/phn_icon.png')} />
+                  <View style={styles.appBackground1}>
+                    <Text style={styles.appName1}>HARSHIKA BUCHE</Text>
+                    <Text style={styles.appName}>9067586964</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.onCallPress('7350718325')}
+                  style={styles.buttonContainer}>
+                  <Image resizeMode="contain" style={styles.appIcon}
+                    source={require('../../../assets/phn_icon.png')} />
+                  <View style={styles.appBackground1}>
+                    <Text style={styles.appName1}>SHUBHAM PATIL</Text>
+                    <Text style={styles.appName}>7350718325</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.onCallPress('8898107104')}
+                  style={styles.buttonContainer}>
+                  <Image resizeMode="contain" style={styles.appIcon}
+                    source={require('../../../assets/phn_icon.png')} />
+                  <View style={styles.appBackground1}>
+                    <Text style={styles.appName1}>GAURAV CHANDRAWALE</Text>
+                    <Text style={styles.appName}>8898107104</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.onCallPress('7057052813')}
+                  style={styles.buttonContainer}>
+                  <Image resizeMode="contain" style={styles.appIcon}
+                    source={require('../../../assets/phn_icon.png')} />
+                  <View style={styles.appBackground1}>
+                    <Text style={styles.appName1}>AKSHAY PHAPALE</Text>
+                    <Text style={styles.appName}>7057052813</Text>
                   </View>
                 </TouchableOpacity>
               </View>
             </View>
+            
+            <View style={{marginTop:'50%',backgroundColor:'transparent',flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+         
+                    <Text style={styles.appName1}>To raise ticket in Symphony</Text>
+                    <TouchableOpacity  onPress={() => this.raiseTicket()}>
+                 <Text style={{color:'blue',textDecorationLine: 'underline',marginLeft:5,marginTop:5}}>Click here</Text>
+                </TouchableOpacity>
+                  </View>
+                
+              
+          
+          
           </View>
+
+       
         </ImageBackground>
       </SafeAreaView>
 
@@ -482,7 +559,7 @@ const styles = StyleSheet.create({
   popupcontainer: {
     backgroundColor: 'white',
     width: wp('90%'),
-    flex: 0.4,
+    flex: 0.9,
     borderRadius: 10,
     shadowColor: "lightgray",
     shadowOpacity: 0.5,
@@ -515,6 +592,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexDirection: 'row',
   },
-
+  appcontainer2: {
+    backgroundColor: 'yellow',
+    width: wp('90%'),
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+  },
 
 });
