@@ -52,7 +52,7 @@ export default class MCustomer extends React.Component {
 
   componentWillUnmount() {
 
-    this.webview.stopLoading();
+   // this.webview.stopLoading();
 
     // if (this.ssoid) {
 
