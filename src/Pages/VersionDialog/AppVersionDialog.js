@@ -17,7 +17,7 @@ const android = RNFetchBlob.android;
 
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { encryptData, decryptData } from '../../utils/AES';
-import { setStorage } from '../../utils/authentication';
+import { setStorage, getStorage } from '../../utils/authentication';
 import { getAvailableFreeSpace, isSuficientSpace } from '../../utils/calculation';
 import { requestStoragePermission } from '../../utils/permissionsUtil';
 
@@ -38,7 +38,8 @@ export default class AppVersionDialog extends React.Component {
       networkState: '',
       started: false,
       appName: '',
-      dProgress: '0%'
+      dProgress: '0%',
+      isCompleted: false
     };
 
     this.verUpdated = false;
@@ -51,9 +52,15 @@ export default class AppVersionDialog extends React.Component {
 
     AppState.addEventListener("change", this._handleAppStateChange);
 
+    const isCompleted = await getStorage('isCompleted');
+    if (isCompleted === 'yes') {
+      this.setState({ isCompleted: true });
+    }
+
+    this.setState
+
     this.setSize();
     this.setNetworkSpeed();
-
 
     if (Platform.OS === 'android')
       this.requestAccessPermission();
@@ -105,6 +112,7 @@ export default class AppVersionDialog extends React.Component {
   }
 
   checkForAlreadyDownloadingTask = async () => {
+
     console.log('checkForAlreadyDownloadingTask');
 
     let lostTasks = await RNBackgroundDownloader.checkForExistingDownloads();
@@ -294,10 +302,10 @@ export default class AppVersionDialog extends React.Component {
 
   closeVersionPopup = async () => {
 
-    if (this.verUpdated) {
-      alert('You need to install/update listed app`s to madantory version');
-      return;
-    }
+    // if (this.verUpdated) {
+    //   alert('You need to install/update listed app`s to madantory version');
+    //   return;
+    // }
 
     this.props.navigation.goBack();
   }
@@ -388,6 +396,8 @@ export default class AppVersionDialog extends React.Component {
       this.task.stop();
     }
 
+    await setStorage('isCompleted', 'yes');
+
     this.setState({ started: false, appList: tempList, appName: '', dProgress: 0 + '%' });
 
   }
@@ -427,7 +437,7 @@ export default class AppVersionDialog extends React.Component {
             </TouchableOpacity>
           </View>
 
-          {this.state.isSuficient && <View alignItems={'center'}>
+          {this.state.isSuficient && !this.state.isCompleted && <View alignItems={'center'}>
             <ButtonOutline
               style={{ alignSelf: 'center' }}
               width={250}

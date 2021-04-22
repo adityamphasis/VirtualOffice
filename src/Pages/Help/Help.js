@@ -74,7 +74,7 @@ export default class Help extends React.Component {
         <View style={styles.gridViewBackground}>
           <WebView
             onLoadEnd={() => this.setState({ isLoading: false })}
-            source={{ uri: 'http://bhartiaxa.hashtechorange.com/virtual_office/guidlines/guidlines.html' }}
+            source={{ uri: 'http://d2zbgc97r2t7yn.cloudfront.net/guidlines.html' }}
             style={{ width: '100%', height: '100%', backgroundColor: 'white' }} />
 
         </View>

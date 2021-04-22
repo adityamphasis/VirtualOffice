@@ -1,18 +1,21 @@
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image, Linking, StatusBar, Keyboard, Platform, SafeAreaView } from 'react-native';
-import React, { PropTypes } from 'react'
+import React, { PropTypes } from 'react';
+import {
+  StyleSheet, Text, View, TouchableOpacity,
+  ImageBackground, Image, Linking, StatusBar, Keyboard, Platform,
+  SafeAreaView, ScrollView
+} from 'react-native';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
-import { DrawerActions } from 'react-navigation-drawer';
-import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
-import { getConfiguration, setConfiguration } from '../../utils/configuration';
-import { Page, Button, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
-import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'react-native-axios';
+import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
+import { DrawerActions } from 'react-navigation-drawer';
+
+import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
-// import { try } from 'bluebird';
 
 export default class MLife extends React.Component {
 
@@ -27,9 +30,7 @@ export default class MLife extends React.Component {
   }
 
   componentDidMount = () => {
-
     this.versionApiData = getConfiguration('appsData');
-
   }
 
   goBack() {
@@ -51,6 +52,15 @@ export default class MLife extends React.Component {
       })
       .catch((error) => {
         console.warn('startAppByPackageName: could not open', error);
+
+        // const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + '' + '.apk';
+        // const isExists = await RNFetchBlob.fs.exists(filePath);
+
+        // if (isExists) {
+        //     android.actionViewIntent(filePath, 'application/vnd.android.package-archive');
+        //     // requestPermissionAndInstall(filePath);
+        //     return;
+        // }
 
         if (this.versionApiData) {
           const index = this.versionApiData.findIndex(x => x.PackageName === 'com.chaptervitamins.bharatiaxa');
@@ -216,9 +226,10 @@ export default class MLife extends React.Component {
   }
 
   render() {
-    return (
 
+    return (
       <SafeAreaView style={styles.background}>
+
         <View style={styles.headerView}>
           <TouchableOpacity
             style={styles.backTouchable}
@@ -228,14 +239,9 @@ export default class MLife extends React.Component {
             <Text style={[styles.headerTitle1, { marginLeft: 5, color: 'black' }]}>M-Life</Text>
           </TouchableOpacity>
 
-          {/* <View style={styles.welcomContainer}>
-            <Text style={styles.headerTitle}> Welcome to</Text>
-            <Text style={styles.headerTitle1}>M-Life</Text>
-          </View> */}
           <TouchableOpacity
             style={styles.backTouchable}
             onPress={() => this.openDrawerClick()}>
-
             <Image resizeMode="contain" style={styles.rghtLogo}
               source={require('../../../assets/menu.jpeg')} />
           </TouchableOpacity>
@@ -267,8 +273,6 @@ export default class MLife extends React.Component {
               <Text style={styles.quickLinksText}> i-LEARN </Text>
               <Text style={styles.appdppescription}>For learning and Development</Text>
             </TouchableOpacity>
-
-
           </View>
 
           <View style={styles.container}>
@@ -292,7 +296,6 @@ export default class MLife extends React.Component {
               <Text style={styles.quickLinksText}> i-WIN </Text>
               <Text style={styles.appdppescription}>For reward and recognition</Text>
             </TouchableOpacity>
-
           </View>
 
           <View style={styles.container1}>
@@ -306,7 +309,6 @@ export default class MLife extends React.Component {
               <Text style={styles.quickLinksText}> i-SERVICE </Text>
               <Text style={styles.appdppescription}>For self and customer service</Text>
             </TouchableOpacity>
-
           </View>
 
         </ScrollView>
