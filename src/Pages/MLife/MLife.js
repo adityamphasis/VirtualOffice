@@ -53,23 +53,14 @@ export default class MLife extends React.Component {
       .catch((error) => {
         console.warn('startAppByPackageName: could not open', error);
 
-        // const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + '' + '.apk';
-        // const isExists = await RNFetchBlob.fs.exists(filePath);
-
-        // if (isExists) {
-        //     android.actionViewIntent(filePath, 'application/vnd.android.package-archive');
-        //     // requestPermissionAndInstall(filePath);
+        // if (this.versionApiData) {
+        //   const index = this.versionApiData.findIndex(x => x.PackageName === 'com.chaptervitamins.bharatiaxa');
+        //   console.log('index', index);
+        //   if (index != -1) {
+        //     Linking.openURL(this.versionApiData[index].AppDownloadLink);
         //     return;
+        //   }
         // }
-
-        if (this.versionApiData) {
-          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.chaptervitamins.bharatiaxa');
-          console.log('index', index);
-          if (index != -1) {
-            Linking.openURL(this.versionApiData[index].AppDownloadLink);
-            return;
-          }
-        }
 
         Linking.openURL('https://play.google.com/store/apps/details?id=com.chaptervitamins.bharatiaxa');
 
@@ -87,17 +78,16 @@ export default class MLife extends React.Component {
       .catch((error) => {
         console.warn('startAppByPackageName: could not open', error);
 
-        if (this.versionApiData) {
-          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.bhartiaxa.mlife');
-          console.log('index', index);
-          if (index != -1) {
-            Linking.openURL(this.versionApiData[index].AppDownloadLink);
-            return;
-          }
-        }
+        // if (this.versionApiData) {
+        //   const index = this.versionApiData.findIndex(x => x.PackageName === 'com.bhartiaxa.mlife');
+        //   console.log('index', index);
+        //   if (index != -1) {
+        //     Linking.openURL(this.versionApiData[index].AppDownloadLink);
+        //     return;
+        //   }
+        // }
 
         Linking.openURL('https://play.google.com/store/apps/details?id=com.bhartiaxa.mlife');
-
 
       });
 
@@ -112,17 +102,16 @@ export default class MLife extends React.Component {
       .catch((error) => {
         console.warn('startAppByPackageName: could not open', error);
 
-        if (this.versionApiData) {
-          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.bhartiaxa.recruit');
-          console.log('index', index);
-          if (index != -1) {
-            Linking.openURL(this.versionApiData[index].AppDownloadLink);
-            return;
-          }
-        }
+        // if (this.versionApiData) {
+        //   const index = this.versionApiData.findIndex(x => x.PackageName === 'com.bhartiaxa.recruit');
+        //   console.log('index', index);
+        //   if (index != -1) {
+        //     Linking.openURL(this.versionApiData[index].AppDownloadLink);
+        //     return;
+        //   }
+        // }
 
         Linking.openURL('https://play.google.com/store/apps/details?id=com.bhartiaxa.recruit');
-
 
       });
 
@@ -200,15 +189,15 @@ export default class MLife extends React.Component {
       const url = result.data.deepLink
 
       if (url.includes("https")) {
-
         Linking.openURL(url).catch((err) => console.error('An error occurred', err));
-      }
-      else {
-        alert('No User found')
+      } else {
+        alert('No User found');
       }
 
     } catch (error) {
-      alert('No user found');
+      // alert('No user found');
+      this.setState({ isLoading: false });
+      alert('Something went wrong. Please try again after some time.');
     }
 
   }
@@ -318,7 +307,6 @@ export default class MLife extends React.Component {
 
     );
   }
-
 
 }
 

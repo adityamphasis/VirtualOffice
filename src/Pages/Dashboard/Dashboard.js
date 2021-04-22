@@ -1,9 +1,9 @@
+import React, { PropTypes } from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity,
   ImageBackground, Image, StatusBar, Keyboard,
   Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
 } from 'react-native';
-import React, { PropTypes } from 'react'
 import AppLink from 'react-native-app-link';
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
 import Clipboard from '@react-native-community/clipboard';
@@ -55,10 +55,8 @@ export default class Dashboard extends React.Component {
 
   validateTokenApi = async () => {
 
-  
-
     this.setState({ isLoading: true });
-    
+
     //let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNewUAT/Service1.svc/ValidateJWL"
 
     let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/ValidateJWT"
@@ -115,14 +113,13 @@ export default class Dashboard extends React.Component {
 
     }
 
-    const isDialogShown = await getStorage('isDialogShown');
-    console.log('isDialogShown', isDialogShown);
+    const isDownloaded = await getStorage('isDownloaded');
+    console.log('isDownloaded', isDownloaded);
+    this.setState({ isLoading: false });
 
-    if (!isDialogShown) {
+    if (!isDownloaded) {
       this.props.navigation.navigate('AppVersionDialog');
     }
-
-    this.setState({ isLoading: false });
 
   }
 
@@ -176,6 +173,16 @@ export default class Dashboard extends React.Component {
       );
       return true;
     } else {
+
+      try {
+        const appState = getConfiguration('appVersion');
+        console.log('appState', appState)
+        if (appState)
+          return true;
+      } catch (error) {
+
+      }
+
       return false;
     }
 

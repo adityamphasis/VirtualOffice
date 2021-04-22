@@ -18,7 +18,6 @@ import {
   ActivityIndicator
 } from 'react-native';
 
-import axios from 'react-native-axios';
 import { WebView } from 'react-native-webview';
 
 import {
@@ -30,6 +29,13 @@ import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { Loader } from '../../../components';
 
 // const token = 'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIyOTIxNDQiLCJhdXQiOiJBUFBMSUNBVElPTl9VU0VSIiwiYXVkIjoiN0lvX2lGZjVvaXEzUDJLalVxWGJTdEttS3BZYSIsImJpbmRpbmdfdHlwZSI6ImNvb2tpZSIsIm5iZiI6IjE2MTc4NzYzODAiLCJhenAiOiI3SW9faUZmNW9pcTNQMktqVXFYYlN0S21LcFlhIiwic2NvcGUiOiJvcGVuaWQiLCJpc3MiOiJodHRwczovL2FjY291bnRzLmJoYXJ0aS1heGFsaWZlLmNvbTo0NDMvb2F1dGgyL3Rva2VuIiwiZXhwIjoxNjE3OTYzMDAzLCJpYXQiOiIxNjE3ODc2MzgwIiwiYmluZGluZ19yZWYiOiI3MDJhZmU4YWM3NjI3MTAwMTMwYjhmN2VhOGNiZGYxZSIsImp0aSI6ImYzNDU3NjIzLTgwODQtNGVlOS1iNDg0LTg0Nzc3MDliOGMzZiJ9.';
+
+// const URL = 'https://bharti-axa-auth-qa.qa3.tothenew.net/'; // QA3
+// const URL = 'https://tpfrdk01sc.execute-api.ap-south-1.amazonaws.com/public/'; // DEV
+const URL = 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/'; // UAT
+// const URL = 'https://sidlce25m2.execute-api.ap-south-1.amazonaws.com/public/'; // PRO
+
+
 
 export default class MCustomer extends React.Component {
 
@@ -99,7 +105,7 @@ export default class MCustomer extends React.Component {
         cacheMode={'LOAD_NO_CACHE'}
         // renderLoading={() => { return (<ActivityIndicator />) }}
         onLoadEnd={() => this.setState({ isLoading: false })}
-        onError={() => this.setState({ isLoading: false })}
+        onError={(error) => {console.log('error', JSON.stringify(error)); this.setState({ isLoading: false })}}
         onNavigationStateChange={(event) => this.onScriptSuccess(event)}
         source={{
           html: '<script type="text/javascript"> ' +
@@ -107,7 +113,7 @@ export default class MCustomer extends React.Component {
             'document.forms["myForm"].submit();' +
             '}</script>' +
             '<body>' +
-            '<form id="myForm" method="POST" action="https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin">' +
+            '<form id="myForm" method="POST" action="' + URL + 'api/v1/auth/externalLogin">' +
             '<input type="hidden" name="source" value="' + this.platform + '"/>' +
             '<input type="hidden" name="jwtToken" value="' + this.accessToken + '"/>' +
             '<input type="hidden" type="submit" value="Login"/>' +

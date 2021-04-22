@@ -15,7 +15,7 @@ import { measureConnectionSpeed } from 'react-native-network-bandwith-speed';
 import RNFetchBlob from 'rn-fetch-blob';
 const android = RNFetchBlob.android;
 
-import { getConfiguration, setConfiguration } from '../../utils/configuration';
+import { getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
 import { encryptData, decryptData } from '../../utils/AES';
 import { setStorage, getStorage } from '../../utils/authentication';
 import { getAvailableFreeSpace, isSuficientSpace } from '../../utils/calculation';
@@ -38,8 +38,8 @@ export default class AppVersionDialog extends React.Component {
       networkState: '',
       started: false,
       appName: '',
-      dProgress: '0%',
-      isCompleted: false
+      dProgress: '',
+      isDownloaded: false
     };
 
     this.verUpdated = false;
@@ -50,14 +50,15 @@ export default class AppVersionDialog extends React.Component {
 
     console.log('-----------------------App version componentDidMount------------------')
 
+    setConfiguration('appVersion', 'yes');
+
     AppState.addEventListener("change", this._handleAppStateChange);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
 
-    const isCompleted = await getStorage('isCompleted');
-    if (isCompleted === 'yes') {
-      this.setState({ isCompleted: true });
+    const isDownloaded = await getStorage('isDownloaded');
+    if (isDownloaded) {
+      this.setState({ isDownloaded: true });
     }
-
-    this.setState
 
     this.setSize();
     this.setNetworkSpeed();
@@ -70,7 +71,9 @@ export default class AppVersionDialog extends React.Component {
   }
 
   componentWillUnmount() {
+    unsetConfiguration('appVersion');
     AppState.removeEventListener("change", this._handleAppStateChange);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
   }
 
   _handleAppStateChange = nextAppState => {
@@ -78,6 +81,11 @@ export default class AppVersionDialog extends React.Component {
     if (nextAppState === 'active')
       this.versionControlPopupLogic();
   };
+
+  handleBackPress = () => {
+    console.log('handleBackPress');
+    this.closeVersionPopup();
+  }
 
   setSize = async () => {
 
@@ -138,12 +146,16 @@ export default class AppVersionDialog extends React.Component {
 
         tempList[this.downloadIndex].isFetching = false;
         tempList[this.downloadIndex].isExists = true;
-        this.setState({ appList: tempList, appName: 'Completed' });
+        this.setState({ appList: tempList, appName: 'Checking..', dProgress: '' });
         this.downloadIndex = this.downloadIndex + 1;
         this.onSyncAll();
 
       }).error((error) => {
         console.log('Download canceled due to error: ', error);
+        tempList[this.downloadIndex].isFetching = false;
+        this.setState({ appList: tempList, appName: 'Checking..', dProgress: '' });
+        this.downloadIndex = this.downloadIndex + 1;
+        this.onSyncAll();
       });
 
       return;
@@ -239,7 +251,9 @@ export default class AppVersionDialog extends React.Component {
 
       versionApiData.map(async (item, index) => {
 
-        const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + item.AppName + '.apk';
+        console.log('item=>', JSON.stringify(item));
+
+        const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + item.AppName + '_' + item.MandatoryVersion + '.apk';
 
         const isExists = await RNFetchBlob.fs.exists(filePath);
         console.log(filePath, isExists);
@@ -302,10 +316,10 @@ export default class AppVersionDialog extends React.Component {
 
   closeVersionPopup = async () => {
 
-    // if (this.verUpdated) {
-    //   alert('You need to install/update listed app`s to madantory version');
-    //   return;
-    // }
+    if (this.verUpdated || this.state.started || !this.state.isDownloaded) {
+      alert('You need to install/update listed apps to madantory version.');
+      return;
+    }
 
     this.props.navigation.goBack();
   }
@@ -335,11 +349,11 @@ export default class AppVersionDialog extends React.Component {
 
 
     if (!this.state.started)
-      this.setState({ started: true });
+      this.setState({ started: true, appName: item.appName });
 
     const apkURL = item.AppDownloadLink;
     // const filePath = `${RNBackgroundDownloader.directories.documents}/${item.appName}.apk`;
-    const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + item.appName + '.apk';
+    const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + item.appName + '_' + item.mVersion + '.apk';
 
     const config = {
       id: item.packageName,
@@ -365,7 +379,7 @@ export default class AppVersionDialog extends React.Component {
         const tempList = this.state.appList;
         tempList[this.downloadIndex].isFetching = false;
         tempList[this.downloadIndex].isExists = true;
-        this.setState({ appList: tempList, appName: 'Completed' });
+        this.setState({ appList: tempList, appName: 'Checking...', dProgress: '' });
 
         this.downloadIndex = this.downloadIndex + 1;
         this.onSyncAll();
@@ -384,7 +398,7 @@ export default class AppVersionDialog extends React.Component {
 
   }
 
-  onStop = () => {
+  onStop = async () => {
 
     const tempList = [];
     this.state.appList.map(item => {
@@ -392,13 +406,12 @@ export default class AppVersionDialog extends React.Component {
       tempList.push(item);
     });
 
-    if (this.task) {
+    if (this.task)
       this.task.stop();
-    }
 
-    await setStorage('isCompleted', 'yes');
+    await setStorage('isDownloaded', 'yes');
 
-    this.setState({ started: false, appList: tempList, appName: '', dProgress: 0 + '%' });
+    this.setState({ started: false, appList: tempList, appName: 'Completed', dProgress: '' });
 
   }
 
@@ -437,7 +450,7 @@ export default class AppVersionDialog extends React.Component {
             </TouchableOpacity>
           </View>
 
-          {this.state.isSuficient && !this.state.isCompleted && <View alignItems={'center'}>
+          {this.state.isSuficient && !this.state.isDownloaded && <View alignItems={'center'}>
             <ButtonOutline
               style={{ alignSelf: 'center' }}
               width={250}
@@ -454,8 +467,7 @@ export default class AppVersionDialog extends React.Component {
               borderColor='rgb(30,77,155)'
               title={(!this.state.started && this.downloadIndex === -1) ?
                 'Download All' : this.state.started ?
-                  (this.state.appName + (this.state.appName === 'Completed' ?
-                    '' : this.state.dProgress)) : 'Completed'} />
+                  this.state.appName + ' ' + this.state.dProgress : 'Completed'} />
           </View>
           }
 

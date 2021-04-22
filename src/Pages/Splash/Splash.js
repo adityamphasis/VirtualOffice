@@ -1,6 +1,6 @@
 import {
   StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image,
-  StatusBar, Keyboard, Platform, NativeModules, BackHandler, Alert
+  StatusBar, Keyboard, Platform, NativeModules, BackHandler, Alert, Linking
 } from 'react-native';
 import React, { PropTypes } from 'react';
 
@@ -11,6 +11,7 @@ import {
 
 import axios from 'react-native-axios';
 import DeviceInfo from 'react-native-device-info';
+import { checkVersion } from "react-native-check-version";
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import JailMonkey from 'jail-monkey'
 import RNGoogleSafetyNet from 'react-native-google-safetynet';
@@ -57,7 +58,30 @@ export default class Splash extends React.Component {
 
   componentDidMount = async () => {
 
-    this.setState({ versionCode: DeviceInfo.getVersion() });
+    const currentVersion = DeviceInfo.getVersion();
+    
+    this.setState({ versionCode: currentVersion });
+
+    const verData = await checkVersion();
+
+    console.log('version:' + JSON.stringify(verData) + ' currentVersion:' + currentVersion);
+
+    if (verData.version && this.isUpdateNeeded(currentVersion, verData.version)) {
+
+      Alert.alert(
+        'Update!',
+        'New mandatory version is available on store, please update to proceed.',
+        [
+          {
+            text: 'UPDATE',
+            onPress: () => { Linking.openURL(verData.url); },
+          }
+        ]
+      );
+
+      return;
+    }
+
 
     // if (JailMonkey.isJailBroken()) {
     //   console.log('JailMonkey: ', JailMonkey.isJailBroken());
@@ -112,6 +136,15 @@ export default class Splash extends React.Component {
 
   componentWillUnmount() {
     FingerprintScanner.release();
+  }
+
+  isUpdateNeeded = (currentVersion, playVersion) => {
+
+    const playArray = playVersion.split('.');
+    const curVerArray = currentVersion.split('.');
+
+    return parseInt(curVerArray[0]) < parseInt(playArray[0]);
+
   }
 
   showAlertForSplash = async (msg) => {
@@ -206,8 +239,8 @@ export default class Splash extends React.Component {
     this.setState({ isLoading: true });
 
     console.log('JWTTokenValidation');
- // let url =  "https://online.bharti-axalife.com/MiscServices/JWT_CheckAgentRESTServiceUAT/Service1.svc/CheckAgentCodeJWT"
-   let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/CheckAgentCodeJWT"
+    // let url =  "https://online.bharti-axalife.com/MiscServices/JWT_CheckAgentRESTServiceUAT/Service1.svc/CheckAgentCodeJWT"
+    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/CheckAgentCodeJWT"
 
     let params = {
       'DecodeJWT': token,
