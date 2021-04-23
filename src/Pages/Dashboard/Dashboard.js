@@ -14,6 +14,7 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
+import { apiConfig } from '../../utils/apiConfig';
 import { getConfiguration, unsetConfiguration } from '../../utils/configuration';
 import { clearStorage, getStorage } from '../../utils/authentication';
 
@@ -57,14 +58,13 @@ export default class Dashboard extends React.Component {
 
     this.setState({ isLoading: true });
 
-    //let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNewUAT/Service1.svc/ValidateJWL"
-
-    let url = "https://online.bharti-axalife.com/MiscServices/JWTAgentRESTServiceNew/Service1.svc/ValidateJWT"
-
     let params = {
       'DecodeJWT': getConfiguration('encryptedToken'),
       'PartnerKey': 'JWT12SER02'
     }
+
+    const URL = apiConfig.VALIDATE_JWT;
+    console.log('URL:' + URL);
 
     const encryptedParam = await encryptData(JSON.stringify(params));
 
@@ -74,7 +74,7 @@ export default class Dashboard extends React.Component {
       "request": encryptedParam
     };
 
-    axios.post(url, encParams, {
+    axios.post(URL, encParams, {
       "headers": {
         "content-type": "application/json",
       }

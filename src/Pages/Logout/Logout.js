@@ -66,51 +66,7 @@ export default class LogoutScreen extends React.Component {
   }
 
   logout = async () => {
-
-    // this.props.navigation.replace('');
-    
     this.props.navigation.replace('Splash');
-
-    // const idToken = getConfiguration('idToken');
-    // const idToken = getConfiguration('token');
-
-    // console.log('Logout accessToken=>', idToken);
-
-    // let url = 'https://accounts.bharti-axalife.com/oidc/logout?' + "id_token_hint="
-    //   + idToken + "&post_logout_redirect_uri=" + "com.bhartiaxa.virtualoffice://oauth";
-
-    // const config = {
-    //   issuer: 'https://accounts.bharti-axalife.com',
-    //   //clientId: 'Bj4ppdGozkaf4fOTeYameOExlfIa',
-    //   clientId: '7Io_iFf5oiq3P2KjUqXbStKmKpYa',
-    //   redirectUrl: 'com.bhartiaxa.virtualoffice://oauth',
-    //   scopes: ['openid'],
-    //   // additionalParameters: { display: 'popup', id_token_hint: accessToken, post_logout_redirect_uri: 'com.bhartiaxa.virtualoffice://oauth' },
-    //   serviceConfiguration: {
-    //     authorizationEndpoint: url,//'https://accounts.bharti-axalife.com/oauth2/authorize',
-    //     tokenEndpoint: 'https://accounts.bharti-axalife.com/oauth2/token',
-    //     // revocationEndpoint: 'https://accounts.bharti-axalife.com/oidc/logout?id_token_hint=' + idToken + "&post_logout_redirect_uri=com.bhartiaxa.virtualoffice://oauth"
-    //   }
-    // };
-
-
-    // const { navigation } = this.props;
-
-    // console.log('Logout url=>', url);
-
-    // const revokeResult = await revoke(config, {
-    //   tokenToRevoke: idToken,
-    //   includeBasicAuth: true,
-    //   sendClientId: true,
-    // });
-
-    // const revokeResult = await authorize(revokeToken);
-
-    // console.log("result", JSON.stringify(revokeResult));
-    // } catch (error) {
-    //   console.log(error);
-    // }
-
   }
 
 

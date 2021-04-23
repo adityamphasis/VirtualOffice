@@ -30,7 +30,7 @@ export default class MLife extends React.Component {
   }
 
   componentDidMount = () => {
-    this.versionApiData = getConfiguration('appsData');
+    // this.versionApiData = getConfiguration('appsData');
   }
 
   goBack() {

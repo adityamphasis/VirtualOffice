@@ -1,15 +1,16 @@
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image, StatusBar, Keyboard, Platform, SafeAreaView } from 'react-native';
 import React, { PropTypes } from 'react'
+import {
+  StyleSheet, Text, View, TouchableOpacity,
+  ScrollView, ImageBackground, Image, StatusBar, Keyboard, Platform, SafeAreaView
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import { DrawerActions } from 'react-navigation-drawer';
-import { Page, Button, ButtonContainer, Form, FormLabel, FormValue, Heading } from '../../../components';
-
-import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'react-native-axios';
 
+import { apiConfig } from '../../utils/apiConfig';
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { encryptData, decryptData } from '../../utils/AES';
 
@@ -72,14 +73,13 @@ export default class ProfileScreen extends React.Component {
 
     this.setState({ isLoading: true });
 
-    //let url = "https://online.bharti-axalife.com/MiscServices/DarwinHierarchyRESTServiceUAT/Service1.svc/DarwinboxHierarchyDetailsEncrypted"
-
-    let url = "https://online.bharti-axalife.com/MiscServices/DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted"
-
     const params = {
       'Agent_Code': getConfiguration('Employee'),
       'PartnerKey': 'POIN06EM11'
     }
+    
+    const URL = apiConfig.EMPLOYEE;
+    console.log('URL:' + URL);
 
     const encryptedParams = await encryptData(JSON.stringify(params));
 
@@ -89,7 +89,7 @@ export default class ProfileScreen extends React.Component {
       "request": encryptedParams//"wZ41JrpUFxYN657xEboMROidcqi+SuudbDsP9Co2zeTjD6u1YHmdD5IYFReAL4vHAmty0BZVSxyiprqQbcNjZhS0ybG6D1HCTz7tU1CpN/ownifuNlThzFDgG9EHnXcUt5V4F76t4qcoBI6jkyKb37zgt5zRMWg51nECtBXVoYgYV35mYYCPNz8UK+JIjQRdB5trVjZblvfCj1ru4++DxGzr7KF3BY6KVnTAhuObg45O4fjdDQFsAtnG86IG9fMC9MEc+v8bNy1M3al+QmBfmRvYaavleXjbzJNpAS+bVLF0wZgD8SnaqfUFXwJxlgvoy7D7DpscCWonWZMQdKvZO66I/XQXt1fa5rHhfKy38qzki/g8o/GraaRRKjnq6xXxth5KKhG3ZM32PbMEvbYGvhPCSK0ZUb16Y60pdA98eK8qmpSlgm93XvisN/TDojkWRBq9MJKlczwOGocsWY8ih5VPKirjXGUaEEje8GmLKRmQ49OJtQYJUHuujDlblxSMHhHylyaiYUaI4wuhVQPGrqTrbw/2w9wRH/w3SQlcErsXNUOvcMWgPYiQwoQBl7kuhbTdhoEfFY95FNh1n7QQOtViCUIzhorCHKdNLTzbjuNYeiPWFtWl4G17tBz6EwxA"
     };
 
-    axios.post(url, encParams, {
+    axios.post(URL, encParams, {
       "headers": {
         "content-type": "application/json",
       },
@@ -112,14 +112,13 @@ export default class ProfileScreen extends React.Component {
 
     this.setState({ isLoading: true });
 
-   // let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebServiceUAT/Service1.svc/AgentHierarchyDetails"
-
-    let url = "https://online.bharti-axalife.com/MiscServices/AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails"
-
     const params = {
       'Agent_Code': getConfiguration('Agent'),
       'PartnerKey': 'POIN06EM11'
     }
+    
+    const URL = apiConfig.AGENT;
+    console.log('URL:' + URL);
 
     const encryptedParams = await encryptData(JSON.stringify(params));
 
@@ -129,7 +128,7 @@ export default class ProfileScreen extends React.Component {
       "request": encryptedParams//"wZ41JrpUFxYN657xEboMROidcqi+SuudbDsP9Co2zeTjD6u1YHmdD5IYFReAL4vHAmty0BZVSxyiprqQbcNjZhS0ybG6D1HCTz7tU1CpN/ownifuNlThzFDgG9EHnXcUt5V4F76t4qcoBI6jkyKb37zgt5zRMWg51nECtBXVoYgYV35mYYCPNz8UK+JIjQRdB5trVjZblvfCj1ru4++DxGzr7KF3BY6KVnTAhuObg45O4fjdDQFsAtnG86IG9fMC9MEc+v8bNy1M3al+QmBfmRvYaavleXjbzJNpAS+bVLF0wZgD8SnaqfUFXwJxlgvoy7D7DpscCWonWZMQdKvZO66I/XQXt1fa5rHhfKy38qzki/g8o/GraaRRKjnq6xXxth5KKhG3ZM32PbMEvbYGvhPCSK0ZUb16Y60pdA98eK8qmpSlgm93XvisN/TDojkWRBq9MJKlczwOGocsWY8ih5VPKirjXGUaEEje8GmLKRmQ49OJtQYJUHuujDlblxSMHhHylyaiYUaI4wuhVQPGrqTrbw/2w9wRH/w3SQlcErsXNUOvcMWgPYiQwoQBl7kuhbTdhoEfFY95FNh1n7QQOtViCUIzhorCHKdNLTzbjuNYeiPWFtWl4G17tBz6EwxA"
     };
 
-    axios.post(url, encParams, {
+    axios.post(URL, encParams, {
       "headers": {
         "content-type": "application/json",
       }

@@ -88,12 +88,12 @@ const InstallItem = ({ item }) => {
                         textColor='rgb(30,77,155)'
                         borderColor='rgb(30,77,155)'
                         title={'Install'} />}
-                    {item.isInstalled && !item.isLatest && <ButtonOutline
+                    {item.isInstalled && item.needUpdate && <ButtonOutline
                         onPress={() => onInstallUpdatePress(item)}
                         textColor='rgb(30,77,155)'
                         borderColor='yellow'
                         title={'Update'} />}
-                    {item.isInstalled && item.isLatest &&
+                    {item.isInstalled && !item.needUpdate &&
                         <Text style={styles.text}>{'Installed'}</Text>}
                     {item.isInstalled &&
                         <Text style={styles.lastUpdate}>{'Last Updated on ' + item.lastUpdated}</Text>}

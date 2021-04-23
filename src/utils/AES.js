@@ -10,10 +10,12 @@ const iterations = 2048;
 const keylen = 32;
 
 // Encrypt
-export async function encryptData(inputString) {
+export async function encryptData(inputString, iters) {
   try {
 
-    let cipher = crypto.createCipheriv(algorithm, crypto.pbkdf2Sync(password, salt, iterations, keylen, 'sha1'), iv);
+    iters = iters ? iters : iterations;
+
+    let cipher = crypto.createCipheriv(algorithm, crypto.pbkdf2Sync(password, salt, iters, keylen, 'sha1'), iv);
     let encrypted = cipher.update(inputString);
     let encryptedText = Buffer.concat([encrypted, cipher.final()]);
     return encryptedText.toString('base64');
@@ -26,12 +28,14 @@ export async function encryptData(inputString) {
 
 
 // Decrypt
-export async function decryptData(inputString) {
+export async function decryptData(inputString, iters) {
 
   try {
 
+    iters = iters ? iters : iterations;
+
     let encryptedText = Buffer(inputString, 'base64');//Buffer.from(text, "base64");
-    let decipher = crypto.createDecipheriv(algorithm, crypto.pbkdf2Sync(password, salt, iterations, keylen, 'sha1'), iv);
+    let decipher = crypto.createDecipheriv(algorithm, crypto.pbkdf2Sync(password, salt, iters, keylen, 'sha1'), iv);
     decipher.setAutoPadding(true);
     let decrypted = decipher.update(encryptedText);
     let decryptedText = Buffer.concat([decrypted, decipher.final()]);

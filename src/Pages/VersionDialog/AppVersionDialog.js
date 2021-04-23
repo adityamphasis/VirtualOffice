@@ -18,11 +18,14 @@ const android = RNFetchBlob.android;
 import { getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
 import { encryptData, decryptData } from '../../utils/AES';
 import { setStorage, getStorage } from '../../utils/authentication';
+import { apiConfig } from '../../utils/apiConfig';
 import { getAvailableFreeSpace, isSuficientSpace } from '../../utils/calculation';
 import { requestStoragePermission } from '../../utils/permissionsUtil';
 
 import { Loader, ButtonOutline, InstallItem } from '../../../components';
 import appArray from './appArray';
+
+const iterations = 512;
 
 export default class AppVersionDialog extends React.Component {
 
@@ -39,7 +42,8 @@ export default class AppVersionDialog extends React.Component {
       started: false,
       appName: '',
       dProgress: '',
-      isDownloaded: false
+      isDownloaded: false,
+      activeTab: 0,
     };
 
     this.verUpdated = false;
@@ -167,16 +171,12 @@ export default class AppVersionDialog extends React.Component {
 
     this.setState({ isLoading: true });
 
-    let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestServiceUAT/Service1.svc/GetVersionControlDetails"
-
-    // let url = "https://online.bharti-axalife.com/MiscServices/VersionControlRestService/Service1.svc/GetVersionControlDetails"
-
     let params = {
       'Platform': Platform.OS === 'android' ? 'Android' : 'Ios',
       'PartnerKey': 'VC18APP02SER'
     }
 
-    const encryptedParam = await encryptData(JSON.stringify(params));
+    const encryptedParam = await encryptData(JSON.stringify(params), iterations);
 
     console.log('version ecrypted data: ', encryptedParam);
 
@@ -184,7 +184,10 @@ export default class AppVersionDialog extends React.Component {
       "request": encryptedParam
     };
 
-    axios.post(url, encParams, {
+    const URL = apiConfig.VERSION_STATUS;
+    console.log('URL:' + URL);
+
+    axios.post(URL, encParams, {
       "headers": {
         "content-type": "application/json",
       }
@@ -205,7 +208,7 @@ export default class AppVersionDialog extends React.Component {
 
   parseVersionApiData = async (data) => {
 
-    const result = await decryptData(data.response);
+    const result = await decryptData(data.response, iterations);
 
     this.setState({ isLoading: false });
 
@@ -245,6 +248,8 @@ export default class AppVersionDialog extends React.Component {
 
       const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
 
+      installedApps.map(app => console.log('installed app:-' + app.appName + ' version: ' + app.versionName));
+
       let tempList = [];
 
       this.verUpdated = false;
@@ -262,8 +267,10 @@ export default class AppVersionDialog extends React.Component {
         let iconIndex = appArray.findIndex(x => x.packageName === item.PackageName);
 
         const isFetching = index === this.downloadIndex ? true : false;
+        const needUpdate = (foundIndex === -1 || this.state.activeTab === 0) ? false : this.checkUpdateRequired(installedApps[foundIndex].versionName, item.MandatoryVersion);
 
         console.log('isFetching', item.AppName + ' ' + isFetching);
+        console.log('needUpdate', needUpdate);
 
         const iObj = {
           icon: iconIndex != -1 ? appArray[iconIndex].icon : '',// require('../../../assets/m_shell.png'),
@@ -276,15 +283,14 @@ export default class AppVersionDialog extends React.Component {
           isInstalled: foundIndex != -1 ? true : false,
           isFetching: isFetching,
           isExists: isExists,
-          isLatest: (foundIndex != -1 && item.MandatoryVersion == installedApps[foundIndex].versionName + '') ? true : false,
-          updateRequired: foundIndex == -1 ? false : this.checkUpdateRequired(installedApps[foundIndex].versionName, item.MandatoryVersion), //: false,
+          needUpdate: needUpdate,
           AppDownloadLink: item.AppDownloadLink ? item.AppDownloadLink : ''
         }
 
         tempList.push(iObj);
 
-        if (iObj.updateRequired)
-          this.verUpdated = iObj.updateRequired;
+        if (needUpdate)
+          this.verUpdated = needUpdate;
 
       });
 
@@ -310,16 +316,18 @@ export default class AppVersionDialog extends React.Component {
     currentVerion = currentVerion.split(".").join('');
     mandatoryVersion = mandatoryVersion.split(".").join('');
 
+    console.log('currentVerion:' + currentVerion + ' mandatoryVersion' + mandatoryVersion);
+
     return parseInt(currentVerion) < parseInt(mandatoryVersion);
 
   }
 
   closeVersionPopup = async () => {
 
-    if (this.verUpdated || this.state.started || !this.state.isDownloaded) {
-      alert('You need to install/update listed apps to madantory version.');
-      return;
-    }
+    // if (this.verUpdated || this.state.started || !this.state.isDownloaded) {
+    //   alert('You need to install/update listed apps to madantory version.');
+    //   return;
+    // }
 
     this.props.navigation.goBack();
   }
