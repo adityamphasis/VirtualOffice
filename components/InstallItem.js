@@ -60,7 +60,7 @@ const onInstallUpdatePress = async (item) => {
 }
 
 
-const renderButton = (item, activeTab) => {
+const renderButton = (item, activeTab, started) => {
 
     if (!activeTab) {
         return (
@@ -73,9 +73,9 @@ const renderButton = (item, activeTab) => {
                     title={'Download'} />}
                 {(item.isExists && !item.isInstalled) && <ButtonOutline
                     width={150}
-                    onPress={() => onInstallUpdatePress(item)}
-                    textColor='grey'
-                    borderColor='grey'
+                    onPress={() => !started && onInstallUpdatePress(item)}
+                    textColor={started ? 'grey' : 'rgb(30,77,155)'}
+                    borderColor={started ? 'grey' : 'rgb(30,77,155)'}
                     title={'Install'} />}
             </View>
         )
@@ -84,25 +84,14 @@ const renderButton = (item, activeTab) => {
     return (
 
         <View>
-            {item.updateRequired && <Text style={{ fontSize: 10, color: 'red', textAlign: 'center' }}>{'Update Required'}</Text>}
-            {(!item.isInstalled && !item.isExists) && <ButtonOutline
+            {item.needUpdate && <Text style={{ fontSize: 10, color: 'red', textAlign: 'center' }}>{'Update Required'}</Text>}
+            {(item.isInstalled && item.needUpdate) || (!item.isInstalled) && <ButtonOutline
                 width={150}
                 onPress={() => onInstallUpdatePress(item)}
                 textColor='rgb(30,77,155)'
                 borderColor='green'
-                title={'Get'} />}
-            {(item.isExists && !item.isInstalled) && <ButtonOutline
-                onPress={() => onInstallUpdatePress(item)}
-                width={150}
-                textColor='rgb(30,77,155)'
-                borderColor='rgb(30,77,155)'
-                title={'Install'} />}
-            {item.isInstalled && item.needUpdate && <ButtonOutline
-                onPress={() => onInstallUpdatePress(item)}
-                width={150}
-                textColor='rgb(30,77,155)'
-                borderColor='yellow'
-                title={'Update'} />}
+                title={item.needUpdate ? 'Update' : 'Get'} />
+            }
         </View>
 
     )
@@ -110,7 +99,7 @@ const renderButton = (item, activeTab) => {
 
 
 
-const InstallItem = ({ item, activeTab }) => {
+const InstallItem = ({ item, activeTab, started }) => {
 
     return (
         <ImageBackground
@@ -129,7 +118,7 @@ const InstallItem = ({ item, activeTab }) => {
                 <ActivityIndicator size={40} color={'blue'} />
             </View> :
                 <View style={{ flex: 4, alignItems: 'center', paddingLeft: 30, paddingRight: 30 }}>
-                    {renderButton(item, activeTab)}
+                    {renderButton(item, activeTab, started)}
                     {item.isInstalled && !item.needUpdate &&
                         <Text style={styles.text}>{'Installed'}</Text>}
                     {item.isInstalled &&
