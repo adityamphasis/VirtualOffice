@@ -48,6 +48,7 @@ export default class AppVersionDialog extends React.Component {
 
     this.verUpdated = false;
     this.downloadIndex = -1;
+    this.sycnOption = '';
   }
 
   componentDidMount = async () => {
@@ -60,8 +61,13 @@ export default class AppVersionDialog extends React.Component {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
 
     const isDownloaded = await getStorage('isDownloaded');
+
+    this.sycnOption = await getStorage('sync');
+    if (this.sycnOption === 'playstore')
+      this.setState({ activeTab: true });
+
     if (isDownloaded) {
-      this.setState({ isDownloaded: true });
+      this.setState({ isDownloaded: true, appName: 'Completed' });
     }
 
     this.setSize();
@@ -359,7 +365,9 @@ export default class AppVersionDialog extends React.Component {
 
 
     if (!this.state.started)
-      this.setState({ started: true, appName: item.appName });
+      this.setState({ started: true, appName: 'Checking...' });
+
+    await setStorage('sync', 'download');
 
     const apkURL = item.AppDownloadLink;
     // const filePath = `${RNBackgroundDownloader.directories.documents}/${item.appName}.apk`;
@@ -427,42 +435,30 @@ export default class AppVersionDialog extends React.Component {
 
   askForPlaystoreConfirmation = () => {
 
-    if (this.state.started) {
-      alert('You already started your sync with download option, you can not change in between.');
+    if (this.sycnOption || this.state.started || this.state.isDownloaded) {
+      alert('You already selected your option, you can not change in between.');
       return;
     }
 
     Alert.alert(
       'Confirm!',
-      'If you select the sync with playstore once, you can not back to sync with download option. Do you want to continue?',
+      'Once you can select install invidial app, you will not back to download all option. Do you want to continue?',
       [
         {
           text: 'Cancel',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        { text: 'Continue', onPress: () => this.setState({ activeTab: true }) },
+        {
+          text: 'Continue', onPress: async () => {
+            await setStorage('sync', 'playstore');
+            this.setState({ activeTab: true });
+          }
+        },
       ]
     );
 
 
-  }
-
-  renderDevideDetailsPopup = () => {
-    return (
-      <View style={styles.background}>
-        <View style={[styles.overlayAppView]}>
-          <View style={styles.deviceInfoContainer}>
-            <Text style={styles.appStatuts}>Details</Text>
-            <View>
-              <Text style={styles.appStatuts}>Available Space: { }</Text>
-              <Text style={styles.appStatuts}>Network Speed: { }</Text>
-            </View>
-
-          </View>
-        </View>
-      </View>
-    )
   }
 
   renderVersionPopup = () => {
@@ -487,8 +483,9 @@ export default class AppVersionDialog extends React.Component {
           </View>
 
           <View flexDirection='row' alignItems='center' justifyContent='center'>
-            <Text style={styles.infoText}>Sync with downloads</Text>
+            <Text style={[styles.infoText]}>Download All</Text>
             <Switch
+              style={{ marginStart: 20, marginRight: 20 }}
               value={this.state.activeTab}
               onValueChange={(switchValue) => {
                 console.log('sw:', switchValue);
@@ -496,12 +493,13 @@ export default class AppVersionDialog extends React.Component {
                   this.askForPlaystoreConfirmation();
                   return;
                 }
+                alert('You already selected your option, you can not change in between.');
                 // this.setState({ activeTab: switchValue });
               }} />
-            <Text style={styles.infoText}>Sync with playstore</Text>
+            <Text style={[styles.infoText]}>individual App</Text>
           </View>
 
-          {!this.state.activeTab && this.state.isSuficient && this.state.isDownloaded &&
+          {!this.state.activeTab && this.state.isSuficient && !this.state.isDownloaded &&
             <View alignItems={'center'}>
               <ButtonOutline
                 style={{ alignSelf: 'center' }}
@@ -517,7 +515,7 @@ export default class AppVersionDialog extends React.Component {
                 }}
                 textColor='rgb(30,77,155)'
                 borderColor='rgb(30,77,155)'
-                title={(!this.state.started && this.downloadIndex === -1) ?
+                title={this.state.isDownloaded ? 'Completed' : (!this.state.started && this.downloadIndex === -1) ?
                   'Download All' : this.state.started ?
                     this.state.appName + ' ' + this.state.dProgress : 'Completed'} />
             </View>
@@ -541,7 +539,7 @@ export default class AppVersionDialog extends React.Component {
 
           <FlatList
             data={this.state.appList}
-            renderItem={({ item }) => <InstallItem activeTab={this.state.activeTab} item={item} />}
+            renderItem={({ item }) => <InstallItem started={this.state.started} activeTab={this.state.activeTab} item={item} />}
             keyExtractor={(item, index) => index.toString()} />
 
         </View>

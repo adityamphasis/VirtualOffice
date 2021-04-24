@@ -12,6 +12,8 @@ const I_SERVICE_URL = 'https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.a
 const SUPPORT_RAISE_TICKET = 'http://bhartiaxa.itservicedesk.com/';
 const HELP_URL = 'http://d2zbgc97r2t7yn.cloudfront.net/guidlines.html';
 
+const UAT = false;
+
 //uat urls
 // const apiConfig = {
 //     TOKEN_CODE: BASE_URL + PATH + 'JWT_CheckAgentRESTServiceUAT/Service1.svc/CheckAgentCodeJWT',
@@ -33,4 +35,4 @@ const apiConfig = {
     AGENT: BASE_URL + PATH + 'AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails'
 }
 
-export { apiConfig, MCUSTOMER_URL, I_SERVICE_URL, SUPPORT_RAISE_TICKET, HELP_URL };
+export { apiConfig, MCUSTOMER_URL, I_SERVICE_URL, SUPPORT_RAISE_TICKET, HELP_URL, UAT };

@@ -14,7 +14,7 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
-import { apiConfig } from '../../utils/apiConfig';
+import { apiConfig, UAT } from '../../utils/apiConfig';
 import { getConfiguration, unsetConfiguration } from '../../utils/configuration';
 import { clearStorage, getStorage } from '../../utils/authentication';
 
@@ -158,6 +158,15 @@ export default class Dashboard extends React.Component {
 
     }
 
+    try {
+      const appState = getConfiguration('appVersion');
+      console.log('appState', appState)
+      if (appState)
+        return true;
+    } catch (error) {
+
+    }
+
     if (this.props.navigation.isFocused()) {
       Alert.alert(
         'Exit!',
@@ -173,16 +182,6 @@ export default class Dashboard extends React.Component {
       );
       return true;
     } else {
-
-      try {
-        const appState = getConfiguration('appVersion');
-        console.log('appState', appState)
-        if (appState)
-          return true;
-      } catch (error) {
-
-      }
-
       return false;
     }
 
@@ -247,14 +246,14 @@ export default class Dashboard extends React.Component {
       }).catch((error) => {
         console.warn('startAppByPackageName: could not open', error);
 
-        if (this.versionApiData) {
-          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.getvymo.android');
-          console.log('index', index);
-          if (index != -1) {
-            Linking.openURL(this.versionApiData[index].AppDownloadLink);
-            return;
-          }
-        }
+        // if (this.versionApiData) {
+        //   const index = this.versionApiData.findIndex(x => x.PackageName === 'com.getvymo.android');
+        //   console.log('index', index);
+        //   if (index != -1) {
+        //     Linking.openURL(this.versionApiData[index].AppDownloadLink);
+        //     return;
+        //   }
+        // }
 
         Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
 
@@ -271,14 +270,14 @@ export default class Dashboard extends React.Component {
       .catch((error) => {
         console.warn('startAppByPackageName: could not open', error);
 
-        if (this.versionApiData) {
-          const index = this.versionApiData.findIndex(x => x.PackageName === 'com.enparadigm.bharthiaxa');
-          console.log('index', index);
-          if (index != -1) {
-            Linking.openURL(this.versionApiData[index].AppDownloadLink);
-            return;
-          }
-        }
+        // if (this.versionApiData) {
+        //   const index = this.versionApiData.findIndex(x => x.PackageName === 'com.enparadigm.bharthiaxa');
+        //   console.log('index', index);
+        //   if (index != -1) {
+        //     Linking.openURL(this.versionApiData[index].AppDownloadLink);
+        //     return;
+        //   }
+        // }
 
         Linking.openURL('https://play.google.com/store/apps/details?id=com.enparadigm.bharthiaxa');
 
@@ -312,6 +311,7 @@ export default class Dashboard extends React.Component {
           <Image resizeMode="contain" style={styles.leftLogo}
             source={require('../../../assets/logo_rht.png')} />
         </TouchableOpacity>
+        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center' }]}> UAT </Text>}
         <View style={styles.welcomContainer}>
           <Text style={styles.headerTitle}> Welcome to</Text>
           <Text style={styles.headerTitle1}>M-Smart</Text>
@@ -319,7 +319,6 @@ export default class Dashboard extends React.Component {
         <TouchableOpacity
           style={styles.backTouchable}
           onPress={() => this.openDrawerClick()}>
-
           <Image resizeMode="contain" style={styles.rghtLogo}
             source={require('../../../assets/menu.jpeg')} />
         </TouchableOpacity>
