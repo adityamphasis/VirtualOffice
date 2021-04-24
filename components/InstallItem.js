@@ -24,7 +24,7 @@ const requestPermissionAndInstall = async (filePath) => {
     requestPermissionAndInstall();
 }
 
-const onInstallUpdatePress = async (item) => {
+const onInstallUpdatePress = async (item, input) => {
 
     console.log('item', JSON.stringify(item));
 
@@ -33,7 +33,7 @@ const onInstallUpdatePress = async (item) => {
         const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + item.appName + '_' + item.mVersion + '.apk';
         const isExists = await RNFetchBlob.fs.exists(filePath);
 
-        if (isExists) {
+        if (isExists && input === 'Install') {
             android.actionViewIntent(filePath, 'application/vnd.android.package-archive');
             // requestPermissionAndInstall(filePath);
             return;
@@ -60,20 +60,20 @@ const onInstallUpdatePress = async (item) => {
 }
 
 
-const renderButton = (item, activeTab, started) => {
+const renderButton = (item, activeTab, started, isDownloaded) => {
 
     if (!activeTab) {
         return (
             <View>
                 {(!item.isInstalled && !item.isExists) && <ButtonOutline
                     width={150}
-                    onPress={() => { }}
+                    onPress={() => isDownloaded && onInstallUpdatePress(item)}
                     textColor='grey'
                     borderColor='grey'
-                    title={'Download'} />}
+                    title={isDownloaded ? 'Get' : 'Download'} />}
                 {(item.isExists && !item.isInstalled) && <ButtonOutline
                     width={150}
-                    onPress={() => !started && onInstallUpdatePress(item)}
+                    onPress={() => !started && onInstallUpdatePress(item, 'Install')}
                     textColor={started ? 'grey' : 'rgb(30,77,155)'}
                     borderColor={started ? 'grey' : 'rgb(30,77,155)'}
                     title={'Install'} />}
@@ -99,7 +99,7 @@ const renderButton = (item, activeTab, started) => {
 
 
 
-const InstallItem = ({ item, activeTab, started }) => {
+const InstallItem = ({ item, activeTab, started, isDownloaded }) => {
 
     return (
         <ImageBackground
@@ -118,7 +118,7 @@ const InstallItem = ({ item, activeTab, started }) => {
                 <ActivityIndicator size={40} color={'blue'} />
             </View> :
                 <View style={{ flex: 4, alignItems: 'center', paddingLeft: 30, paddingRight: 30 }}>
-                    {renderButton(item, activeTab, started)}
+                    {renderButton(item, activeTab, started, isDownloaded)}
                     {item.isInstalled && !item.needUpdate &&
                         <Text style={styles.text}>{'Installed'}</Text>}
                     {item.isInstalled &&

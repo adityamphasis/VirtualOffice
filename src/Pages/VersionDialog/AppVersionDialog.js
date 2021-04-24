@@ -436,13 +436,13 @@ export default class AppVersionDialog extends React.Component {
   askForPlaystoreConfirmation = () => {
 
     if (this.sycnOption || this.state.started || this.state.isDownloaded) {
-      alert('You already selected your option, you can not change in between.');
+      alert('Your chosen option is already under process. Cannot be changed now.');
       return;
     }
 
     Alert.alert(
       'Confirm!',
-      'Once you can select install invidial app, you will not back to download all option. Do you want to continue?',
+      'Once you select \'Install individual app\' option, you will not be able choose \'Download all\' option. Do you want to continue?',
       [
         {
           text: 'Cancel',
@@ -493,7 +493,7 @@ export default class AppVersionDialog extends React.Component {
                   this.askForPlaystoreConfirmation();
                   return;
                 }
-                alert('You already selected your option, you can not change in between.');
+                alert('Your chosen option is already under process. Cannot be changed now.');
                 // this.setState({ activeTab: switchValue });
               }} />
             <Text style={[styles.infoText]}>individual App</Text>
@@ -539,7 +539,11 @@ export default class AppVersionDialog extends React.Component {
 
           <FlatList
             data={this.state.appList}
-            renderItem={({ item }) => <InstallItem started={this.state.started} activeTab={this.state.activeTab} item={item} />}
+            renderItem={({ item }) => <InstallItem
+              started={this.state.started}
+              activeTab={this.state.activeTab}
+              isDownloaded={this.state.isDownloaded}
+              item={item} />}
             keyExtractor={(item, index) => index.toString()} />
 
         </View>

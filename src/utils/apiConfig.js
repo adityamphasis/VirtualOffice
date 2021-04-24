@@ -4,9 +4,9 @@ const BASE_URL = 'https://online.bharti-axalife.com/';
 const PATH = 'MiscServices/'
 
 // const MCUSTOMER_URL = 'https://bharti-axa-auth-qa.qa3.tothenew.net/api/v1/auth/externalLogin'; //AQ3
-const MCUSTOMER_URL = 'https://tpfrdk01sc.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //DEV
+// const MCUSTOMER_URL = 'https://tpfrdk01sc.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //DEV
 // const MCUSTOMER_URL = 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin'; //UAT
-// const MCUSTOMER_URL = 'https://sidlce25m2.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //PROD
+const MCUSTOMER_URL = 'https://sidlce25m2.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //PROD
 
 const I_SERVICE_URL = 'https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1';
 const SUPPORT_RAISE_TICKET = 'http://bhartiaxa.itservicedesk.com/';
