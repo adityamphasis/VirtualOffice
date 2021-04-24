@@ -59,11 +59,62 @@ const onInstallUpdatePress = async (item) => {
 
 }
 
-const InstallItem = ({ item }) => {
+
+const renderButton = (item, activeTab) => {
+
+    if (!activeTab) {
+        return (
+            <View>
+                {(!item.isInstalled && !item.isExists) && <ButtonOutline
+                    width={150}
+                    onPress={() => { }}
+                    textColor='grey'
+                    borderColor='grey'
+                    title={'Download'} />}
+                {(item.isExists && !item.isInstalled) && <ButtonOutline
+                    width={150}
+                    onPress={() => onInstallUpdatePress(item)}
+                    textColor='grey'
+                    borderColor='grey'
+                    title={'Install'} />}
+            </View>
+        )
+    }
+
+    return (
+
+        <View>
+            {item.updateRequired && <Text style={{ fontSize: 10, color: 'red', textAlign: 'center' }}>{'Update Required'}</Text>}
+            {(!item.isInstalled && !item.isExists) && <ButtonOutline
+                width={150}
+                onPress={() => onInstallUpdatePress(item)}
+                textColor='rgb(30,77,155)'
+                borderColor='green'
+                title={'Get'} />}
+            {(item.isExists && !item.isInstalled) && <ButtonOutline
+                onPress={() => onInstallUpdatePress(item)}
+                width={150}
+                textColor='rgb(30,77,155)'
+                borderColor='rgb(30,77,155)'
+                title={'Install'} />}
+            {item.isInstalled && item.needUpdate && <ButtonOutline
+                onPress={() => onInstallUpdatePress(item)}
+                width={150}
+                textColor='rgb(30,77,155)'
+                borderColor='yellow'
+                title={'Update'} />}
+        </View>
+
+    )
+}
+
+
+
+const InstallItem = ({ item, activeTab }) => {
 
     return (
         <ImageBackground
-            style={[styles.bgItem, { borderColor: item.updateRequired ? 'red' : '#a4a4a4' }]}
+            style={[styles.bgItem, { borderColor: item.updateRequired ? 'red' : '#a4a4a4', backgroundColor: '#a4a4a4' }]}
             source={require('../assets/grad.png')}>
 
             <View style={{ flex: 2.5, alignItems: 'center' }}>
@@ -73,26 +124,12 @@ const InstallItem = ({ item }) => {
                 <Text style={styles.title}>{item.appName}</Text>
             </View>
             <View style={{ width: 1, backgroundColor: 'grey', height: '90%' }} />
+
             {item.isFetching ? <View style={{ flex: 4, alignItems: 'center', paddingLeft: 30, paddingRight: 30, justifyContent: 'center' }}>
                 <ActivityIndicator size={40} color={'blue'} />
             </View> :
                 <View style={{ flex: 4, alignItems: 'center', paddingLeft: 30, paddingRight: 30 }}>
-                    {item.updateRequired && <Text style={{ fontSize: 10, color: 'red', textAlign: 'center' }}>{'Update Required'}</Text>}
-                    {(!item.isInstalled && !item.isExists) && <ButtonOutline
-                        onPress={() => onInstallUpdatePress(item)}
-                        textColor='rgb(30,77,155)'
-                        borderColor='green'
-                        title={'Get'} />}
-                    {(item.isExists && !item.isInstalled) && <ButtonOutline
-                        onPress={() => onInstallUpdatePress(item)}
-                        textColor='rgb(30,77,155)'
-                        borderColor='rgb(30,77,155)'
-                        title={'Install'} />}
-                    {item.isInstalled && item.needUpdate && <ButtonOutline
-                        onPress={() => onInstallUpdatePress(item)}
-                        textColor='rgb(30,77,155)'
-                        borderColor='yellow'
-                        title={'Update'} />}
+                    {renderButton(item, activeTab)}
                     {item.isInstalled && !item.needUpdate &&
                         <Text style={styles.text}>{'Installed'}</Text>}
                     {item.isInstalled &&

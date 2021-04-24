@@ -1,7 +1,7 @@
 import {
   StyleSheet, Text, View, TouchableOpacity,
   ImageBackground, Image, StatusBar, Keyboard, AppState,
-  Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
+  Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert, Switch
 } from 'react-native';
 import React, { PropTypes } from 'react';
 
@@ -43,7 +43,7 @@ export default class AppVersionDialog extends React.Component {
       appName: '',
       dProgress: '',
       isDownloaded: false,
-      activeTab: 0,
+      activeTab: false,
     };
 
     this.verUpdated = false;
@@ -143,8 +143,8 @@ export default class AppVersionDialog extends React.Component {
 
       this.task = task;
       this.task.progress((percent) => {
-        console.log(`Downloaded: ${percent * 100}%`);
-        this.setState({ dProgress: (percent.toFixed(2) * 100).toFixed(2) + '%' });
+        console.log(`Downloaded: ${(percent * 100)}%`);
+        this.setState({ dProgress: Math.round(percent * 100) + '%' });
       }).done(() => {
         console.log('Downlaod is done!' + task.id);
 
@@ -267,7 +267,9 @@ export default class AppVersionDialog extends React.Component {
         let iconIndex = appArray.findIndex(x => x.packageName === item.PackageName);
 
         const isFetching = index === this.downloadIndex ? true : false;
-        const needUpdate = (foundIndex === -1 || this.state.activeTab === 0) ? false : this.checkUpdateRequired(installedApps[foundIndex].versionName, item.MandatoryVersion);
+        let needUpdate = false;
+        if (this.state.activeTab)
+          needUpdate = foundIndex === -1 ? false : this.checkUpdateRequired(installedApps[foundIndex].versionName, item.MandatoryVersion);
 
         console.log('isFetching', item.AppName + ' ' + isFetching);
         console.log('needUpdate', needUpdate);
@@ -379,8 +381,8 @@ export default class AppVersionDialog extends React.Component {
         this.setState({ appList: tempList, appName: item.appName + ' Processing.. ' });
 
       }).progress((percent) => {
-        console.log(`Downloaded: ${item.appName}${percent * 100}%`);
-        this.setState({ dProgress: (percent.toFixed(2) * 100).toFixed(2) + '%' });
+        console.log(`Downloaded: ${(percent * 100)}%`);
+        this.setState({ dProgress: Math.round(percent * 100) + '%' });
       }).done(() => {
         console.log('Download is done!', item.appName);
 
@@ -423,6 +425,29 @@ export default class AppVersionDialog extends React.Component {
 
   }
 
+  askForPlaystoreConfirmation = () => {
+
+    if (this.state.started) {
+      alert('You already started your sync with download option, you can not change in between.');
+      return;
+    }
+
+    Alert.alert(
+      'Confirm!',
+      'If you select the sync with playstore once, you can not back to sync with download option. Do you want to continue?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'Continue', onPress: () => this.setState({ activeTab: true }) },
+      ]
+    );
+
+
+  }
+
   renderDevideDetailsPopup = () => {
     return (
       <View style={styles.background}>
@@ -447,7 +472,10 @@ export default class AppVersionDialog extends React.Component {
 
         <View style={styles.appStatusContainer}>
 
-          <View style={{ flexDirection: 'row', backgroundColor: 'transparent', height: '9%', justifyContent: 'space-between' }}>
+          <View style={{
+            flexDirection: 'row', backgroundColor: 'transparent',
+            height: '9%', justifyContent: 'space-between'
+          }}>
 
             <Text style={styles.appStatuts}>APPS STATUS</Text>
             <TouchableOpacity
@@ -458,25 +486,41 @@ export default class AppVersionDialog extends React.Component {
             </TouchableOpacity>
           </View>
 
-          {this.state.isSuficient && !this.state.isDownloaded && <View alignItems={'center'}>
-            <ButtonOutline
-              style={{ alignSelf: 'center' }}
-              width={250}
-              onPress={() => {
-                if (this.state.started || this.state.downloadIndex >= this.state.appList.length) {
-                  console.log('Already in progress');
+          <View flexDirection='row' alignItems='center' justifyContent='center'>
+            <Text style={styles.infoText}>Sync with downloads</Text>
+            <Switch
+              value={this.state.activeTab}
+              onValueChange={(switchValue) => {
+                console.log('sw:', switchValue);
+                if (switchValue) {
+                  this.askForPlaystoreConfirmation();
                   return;
                 }
-                if (this.downloadIndex === -1)
-                  this.downloadIndex = this.downloadIndex + 1;
-                this.onSyncAll();
-              }}
-              textColor='rgb(30,77,155)'
-              borderColor='rgb(30,77,155)'
-              title={(!this.state.started && this.downloadIndex === -1) ?
-                'Download All' : this.state.started ?
-                  this.state.appName + ' ' + this.state.dProgress : 'Completed'} />
+                // this.setState({ activeTab: switchValue });
+              }} />
+            <Text style={styles.infoText}>Sync with playstore</Text>
           </View>
+
+          {!this.state.activeTab && this.state.isSuficient && this.state.isDownloaded &&
+            <View alignItems={'center'}>
+              <ButtonOutline
+                style={{ alignSelf: 'center' }}
+                width={250}
+                onPress={() => {
+                  if (this.state.started || this.state.downloadIndex >= this.state.appList.length) {
+                    console.log('Already in progress');
+                    return;
+                  }
+                  if (this.downloadIndex === -1)
+                    this.downloadIndex = this.downloadIndex + 1;
+                  this.onSyncAll();
+                }}
+                textColor='rgb(30,77,155)'
+                borderColor='rgb(30,77,155)'
+                title={(!this.state.started && this.downloadIndex === -1) ?
+                  'Download All' : this.state.started ?
+                    this.state.appName + ' ' + this.state.dProgress : 'Completed'} />
+            </View>
           }
 
           <View style={{ padding: 5, backgroundColor: 'rgba(0,0,0,0.03)' }}>
@@ -497,7 +541,7 @@ export default class AppVersionDialog extends React.Component {
 
           <FlatList
             data={this.state.appList}
-            renderItem={({ item }) => <InstallItem item={item} />}
+            renderItem={({ item }) => <InstallItem activeTab={this.state.activeTab} item={item} />}
             keyExtractor={(item, index) => index.toString()} />
 
         </View>
