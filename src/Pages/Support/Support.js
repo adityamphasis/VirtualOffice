@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 
 import {
   StyleSheet, Text, View, TouchableOpacity,
-  ImageBackground, Image, StatusBar, Keyboard,
+  ImageBackground, Image, ScrollView, StatusBar, Keyboard,
   Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
 } from 'react-native';
 
@@ -86,7 +86,7 @@ export default class Support extends React.Component {
       <SafeAreaView style={styles.background}>
 
         <ImageBackground style={styles.overlayView} source={require('../../../assets/bg.png')}>
-          <View style={styles.popupcontainer}>
+          <ScrollView style={styles.popupcontainer}>
 
             <TouchableOpacity
               style={styles.crossContainer}
@@ -185,7 +185,7 @@ export default class Support extends React.Component {
               </View>
             </View>
 
-            <View style={{ backgroundColor: 'transparent', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ backgroundColor: 'transparent', flexDirection: 'row', justifyContent: 'center', alignItems: 'center',marginTop:'10%' }}>
 
               <Text style={styles.appName1}>To raise ticket in Symphony</Text>
               <TouchableOpacity onPress={() => this.raiseTicket()}>
@@ -193,7 +193,7 @@ export default class Support extends React.Component {
               </TouchableOpacity>
             </View>
 
-          </View>
+          </ScrollView>
 
         </ImageBackground>
       </SafeAreaView>
@@ -555,7 +555,7 @@ const styles = StyleSheet.create({
   popupcontainer: {
     backgroundColor: 'white',
     width: wp('90%'),
-    flex: 0.9,
+    flex: 0.8,
     borderRadius: 10,
     shadowColor: "lightgray",
     shadowOpacity: 0.5,
