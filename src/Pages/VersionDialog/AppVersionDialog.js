@@ -63,11 +63,11 @@ export default class AppVersionDialog extends React.Component {
     const isDownloaded = await getStorage('isDownloaded');
 
     this.sycnOption = await getStorage('sync');
-    if (this.sycnOption === 'playstore')
+    if (this.sycnOption != '' && this.sycnOption != undefined && this.sycnOption != null)
       this.setState({ activeTab: true });
 
     if (isDownloaded) {
-      this.setState({ isDownloaded: true, appName: 'Completed' });
+      this.setState({ isDownloaded: true, activeTab: true, appName: 'Completed' });
     }
 
     this.setSize();
@@ -259,8 +259,9 @@ export default class AppVersionDialog extends React.Component {
       let tempList = [];
 
       this.verUpdated = false;
+      let allInstalled = true;
 
-      versionApiData.map(async (item, index) => {
+      await versionApiData.map(async (item, index) => {
 
         console.log('item=>', JSON.stringify(item));
 
@@ -269,8 +270,12 @@ export default class AppVersionDialog extends React.Component {
         const isExists = await RNFetchBlob.fs.exists(filePath);
         console.log(filePath, isExists);
 
-        let foundIndex = installedApps.findIndex(x => x.packageName === item.PackageName);
-        let iconIndex = appArray.findIndex(x => x.packageName === item.PackageName);
+        const foundIndex = installedApps.findIndex(x => x.packageName === item.PackageName);
+        const iconIndex = appArray.findIndex(x => x.packageName === item.PackageName);
+
+        console.log('foundIndex', foundIndex + item.AppName);
+        if (foundIndex === -1)
+          allInstalled = false;
 
         const isFetching = index === this.downloadIndex ? true : false;
         let needUpdate = false;
@@ -302,6 +307,12 @@ export default class AppVersionDialog extends React.Component {
 
       });
 
+      console.log('allInstalled', allInstalled);
+      // if (allInstalled) {
+      //   // await setStorage('isDownloaded', 'yes');
+      //   // this.setState({ activeTab: true, isDownloaded: true });
+      // }
+
       this.setSize();
 
       if (this.state.appList.length === 0) {
@@ -332,10 +343,10 @@ export default class AppVersionDialog extends React.Component {
 
   closeVersionPopup = async () => {
 
-    // if (this.verUpdated || this.state.started || !this.state.isDownloaded) {
-    //   alert('You need to install/update listed apps to madantory version.');
-    //   return;
-    // }
+    if (this.state.started || !this.state.isDownloaded) {
+      alert('You need to install/update listed apps to madantory version.');
+      return;
+    }
 
     this.props.navigation.goBack();
   }
@@ -429,7 +440,7 @@ export default class AppVersionDialog extends React.Component {
 
     await setStorage('isDownloaded', 'yes');
 
-    this.setState({ started: false, appList: tempList, appName: 'Completed', dProgress: '' });
+    this.setState({ started: false, isDownloaded: true, appList: tempList, appName: 'Completed', dProgress: '' });
 
   }
 
@@ -458,7 +469,6 @@ export default class AppVersionDialog extends React.Component {
       ]
     );
 
-
   }
 
   renderVersionPopup = () => {
@@ -482,25 +492,29 @@ export default class AppVersionDialog extends React.Component {
             </TouchableOpacity>
           </View>
 
-          <View flexDirection='row' alignItems='center' justifyContent='center'>
-            <Text style={[styles.infoText]}>Download All</Text>
-            <Switch
-              style={{ marginStart: 20, marginRight: 20 }}
-              value={this.state.activeTab}
-              onValueChange={(switchValue) => {
-                console.log('sw:', switchValue);
-                if (switchValue) {
-                  this.askForPlaystoreConfirmation();
-                  return;
-                }
-                alert('Your chosen option is already under process. Cannot be changed now.');
-                // this.setState({ activeTab: switchValue });
-              }} />
-            <Text style={[styles.infoText]}>individual App</Text>
-          </View>
-
           {!this.state.activeTab && this.state.isSuficient && !this.state.isDownloaded &&
             <View alignItems={'center'}>
+              <View flexDirection='row' alignItems='center' justifyContent='center'>
+                <Text style={[styles.infoText]}>Download All</Text>
+                <Switch
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={this.state.activeTab ? "#f5dd4b" : "#f4f3f4"}
+                  style={{ marginStart: 20, marginRight: 20 }}
+                  value={this.state.activeTab}
+                  onValueChange={(switchValue) => {
+                    console.log('sw:', switchValue);
+                    // this.setState({ activeTab: switchValue });
+                    // return;
+
+                    if (switchValue) {
+                      this.askForPlaystoreConfirmation();
+                      return;
+                    }
+                    alert('Your chosen option is already under process. Cannot be changed now.');
+                    // this.setState({ activeTab: switchValue });
+                  }} />
+                <Text style={[styles.infoText]}>Individual App</Text>
+              </View>
               <ButtonOutline
                 style={{ alignSelf: 'center' }}
                 width={250}
@@ -522,11 +536,9 @@ export default class AppVersionDialog extends React.Component {
           }
 
           <View style={{ padding: 5, backgroundColor: 'rgba(0,0,0,0.03)' }}>
-            {this.state.isSuficient ? <Text style={styles.infoText}>
-              * Recommended space 200 MB, you have sufficient space available {'(' + this.state.availableSpace + ').'}</Text> :
-              <Text style={styles.infoText}>
-                * Available space is less than the recommended 200 MB, please continue with manual sync option.</Text>}
-            <Text style={styles.infoText}> * Your current network speed ({this.state.networkSpeed}) is {this.state.networkState}</Text>
+            {this.state.isSuficient ? <Text style={styles.infoText}>* Recommended space 200 MB, you have sufficient space available {'(' + this.state.availableSpace + ').'}</Text> :
+              <Text style={styles.infoText}>* Available space is less than the recommended 200 MB, please continue with manual sync option.</Text>}
+            <Text style={styles.infoText}>* Your current network speed ({this.state.networkSpeed}) is {this.state.networkState}</Text>
           </View>
 
           <View style={{ padding: 5 }}>

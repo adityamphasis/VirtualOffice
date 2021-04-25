@@ -10,9 +10,40 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import { SUPPORT_RAISE_TICKET } from '../../utils/apiConfig';
 
 import { getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
 
+const contactList = [
+  {
+    name: 'NINAD KAMBLI',
+    phone: '7400115321'
+  },
+  {
+    name: 'AKASH ACHREKAR',
+    phone: '90821774183'
+  },
+  {
+    name: 'DHANASHREE PARAB',
+    phone: '9867984199'
+  },
+  {
+    name: 'HARSHIKA BUCHE',
+    phone: '9067586964'
+  },
+  {
+    name: 'SHUBHAM PATIL',
+    phone: '7350718325'
+  },
+  {
+    name: 'GAURAV CHANDRAWALE',
+    phone: '8898107104'
+  },
+  {
+    name: 'AKSHAY PHAPALE',
+    phone: '7057052813'
+  }
+]
 
 export default class Support extends React.Component {
 
@@ -62,12 +93,12 @@ export default class Support extends React.Component {
     console.log('onCallPress', input);
 
     if (Platform.OS === 'android')
-      phoneNumber = `tel:${input}`;
+      input = `tel:${input}`;
     else
-      phoneNumber = `telprompt:${input}`;
+      input = `telprompt:${input}`;
 
     try {
-      Linking.openURL(phoneNumber);
+      Linking.openURL(input);
     } catch (error) {
       console.log('error', JSON.stringify(error));
     }
@@ -75,7 +106,7 @@ export default class Support extends React.Component {
   }
 
   raiseTicket = () => {
-    Linking.openURL("https://bhartiaxagi.symphonysummit.com/");
+    Linking.openURL(SUPPORT_RAISE_TICKET);
   }
 
 
@@ -108,80 +139,28 @@ export default class Support extends React.Component {
                   </View>
                 </TouchableOpacity>
               </View>
-
-
               <View
                 style={styles.appcontaine2}>
-                <TouchableOpacity
-                  onPress={() => this.onCallPress('7400115321')}
-                  style={styles.buttonContainer}>
-                  <Image resizeMode="contain" style={styles.appIcon}
-                    source={require('../../../assets/phn_icon.png')} />
-                  <View style={styles.appBackground1}>
-                    <Text style={styles.appName1}>NINAD KAMBLI</Text>
-                    <Text style={styles.appName}>7400115321</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.onCallPress('90821774183')}
-                  style={styles.buttonContainer}>
-                  <Image resizeMode="contain" style={styles.appIcon}
-                    source={require('../../../assets/phn_icon.png')} />
-                  <View style={styles.appBackground1}>
-                    <Text style={styles.appName1}>AKASH ACHREKAR</Text>
-                    <Text style={styles.appName}>90821774183</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.onCallPress('9867984199')}
-                  style={styles.buttonContainer}>
-                  <Image resizeMode="contain" style={styles.appIcon}
-                    source={require('../../../assets/phn_icon.png')} />
-                  <View style={styles.appBackground1}>
-                    <Text style={styles.appName1}>DHANASHREE PARAB</Text>
-                    <Text style={styles.appName}>9867984199</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.onCallPress('9067586964')}
-                  style={styles.buttonContainer}>
-                  <Image resizeMode="contain" style={styles.appIcon}
-                    source={require('../../../assets/phn_icon.png')} />
-                  <View style={styles.appBackground1}>
-                    <Text style={styles.appName1}>HARSHIKA BUCHE</Text>
-                    <Text style={styles.appName}>9067586964</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.onCallPress('7350718325')}
-                  style={styles.buttonContainer}>
-                  <Image resizeMode="contain" style={styles.appIcon}
-                    source={require('../../../assets/phn_icon.png')} />
-                  <View style={styles.appBackground1}>
-                    <Text style={styles.appName1}>SHUBHAM PATIL</Text>
-                    <Text style={styles.appName}>7350718325</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.onCallPress('8898107104')}
-                  style={styles.buttonContainer}>
-                  <Image resizeMode="contain" style={styles.appIcon}
-                    source={require('../../../assets/phn_icon.png')} />
-                  <View style={styles.appBackground1}>
-                    <Text style={styles.appName1}>GAURAV CHANDRAWALE</Text>
-                    <Text style={styles.appName}>8898107104</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.onCallPress('7057052813')}
-                  style={styles.buttonContainer}>
-                  <Image resizeMode="contain" style={styles.appIcon}
-                    source={require('../../../assets/phn_icon.png')} />
-                  <View style={styles.appBackground1}>
-                    <Text style={styles.appName1}>AKSHAY PHAPALE</Text>
-                    <Text style={styles.appName}>7057052813</Text>
-                  </View>
-                </TouchableOpacity>
+
+                <FlatList
+                  data={contactList}
+                  renderItem={({ item }) => {
+                    console.log('item', JSON.stringify(item));
+                    return (
+                      <TouchableOpacity
+                        onPress={() => this.onCallPress(item.phone)}
+                        style={styles.buttonContainer}>
+                        <Image resizeMode="contain" style={styles.appIcon}
+                          source={require('../../../assets/phn_icon.png')} />
+                        <View style={styles.appBackground1}>
+                          <Text style={styles.appName1}>{item.name}</Text>
+                          <Text style={styles.appName}>{item.phone}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    )
+                  }}
+                  keyExtractor={(item, index) => index.toString()} />
+
               </View>
             </View>
 

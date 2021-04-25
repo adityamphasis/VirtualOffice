@@ -184,13 +184,13 @@ class DrawerContent extends Component {
 
           <View style={styles.divider} />
 
-          <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('Help')}>
+          {/* <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('Help')}>
             <Image resizeMode="contain" style={styles.tileIcon}
               source={require('./assets/hrlp_icon.png')} />
             <Text style={styles.tileTitle}> Help </Text>
           </TouchableOpacity>
 
-          <View style={styles.divider} />
+          <View style={styles.divider} /> */}
 
           <TouchableOpacity style={styles.tile} onPress={() => this.askForPopup()} >
             <Image resizeMode="contain" style={styles.tileIcon}

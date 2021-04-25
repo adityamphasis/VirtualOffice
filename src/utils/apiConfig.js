@@ -9,7 +9,7 @@ const PATH = 'MiscServices/'
 const MCUSTOMER_URL = 'https://sidlce25m2.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //PROD
 
 const I_SERVICE_URL = 'https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1';
-const SUPPORT_RAISE_TICKET = 'http://bhartiaxa.itservicedesk.com/';
+const SUPPORT_RAISE_TICKET = 'https://bhartiaxagi.symphonysummit.com/';
 const HELP_URL = 'http://d2zbgc97r2t7yn.cloudfront.net/guidlines.html';
 
 const UAT = false;
