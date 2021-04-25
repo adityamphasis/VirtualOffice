@@ -75,7 +75,7 @@ export default class Support extends React.Component {
   }
 
   raiseTicket = () => {
-    Linking.openURL("http://bhartiaxa.itservicedesk.com/");
+    Linking.openURL("https://bhartiaxagi.symphonysummit.com/");
   }
 
 
