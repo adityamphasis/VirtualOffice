@@ -261,7 +261,7 @@ export default class AppVersionDialog extends React.Component {
       this.verUpdated = false;
       let allInstalled = true;
 
-      await versionApiData.map(async (item, index) => {
+      versionApiData.map(async (item, index) => {
 
         console.log('item=>', JSON.stringify(item));
 
@@ -274,6 +274,7 @@ export default class AppVersionDialog extends React.Component {
         const iconIndex = appArray.findIndex(x => x.packageName === item.PackageName);
 
         console.log('foundIndex', foundIndex + item.AppName);
+
         if (foundIndex === -1)
           allInstalled = false;
 
@@ -305,13 +306,15 @@ export default class AppVersionDialog extends React.Component {
         if (needUpdate)
           this.verUpdated = needUpdate;
 
-      });
+        if (index >= (versionApiData.length - 1)) {
+          console.log('allInstalled', allInstalled);
+          if (allInstalled) {
+            await setStorage('isDownloaded', 'yes');
+            this.setState({ activeTab: true, isDownloaded: true });
+          }
+        }
 
-      console.log('allInstalled', allInstalled);
-      // if (allInstalled) {
-      //   // await setStorage('isDownloaded', 'yes');
-      //   // this.setState({ activeTab: true, isDownloaded: true });
-      // }
+      });
 
       this.setSize();
 
@@ -323,6 +326,7 @@ export default class AppVersionDialog extends React.Component {
       this.setState({ appList: tempList });
 
       await setStorage('isDialogShown', 'yes');
+
 
     } catch (error) {
       console.log('error', JSON.stringify(error));
@@ -438,9 +442,9 @@ export default class AppVersionDialog extends React.Component {
     if (this.task)
       this.task.stop();
 
-    await setStorage('isDownloaded', 'yes');
+    // await setStorage('isDownloaded', 'yes');
 
-    this.setState({ started: false, isDownloaded: true, appList: tempList, appName: 'Completed', dProgress: '' });
+    this.setState({ started: false, appList: tempList, appName: 'Completed', dProgress: '' });
 
   }
 

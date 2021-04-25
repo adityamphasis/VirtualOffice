@@ -62,6 +62,8 @@ const onInstallUpdatePress = async (item, input) => {
 
 const renderButton = (item, activeTab, started, isDownloaded) => {
 
+    console.log('isDownloaded', isDownloaded);
+
     if (!activeTab) {
         return (
             <View>
@@ -76,7 +78,7 @@ const renderButton = (item, activeTab, started, isDownloaded) => {
                     onPress={() => !started && onInstallUpdatePress(item, 'Install')}
                     textColor={started ? 'grey' : 'rgb(30,77,155)'}
                     borderColor={started ? 'grey' : 'rgb(30,77,155)'}
-                    title={'Install'} />}
+                    title={started ? 'Done' : 'Install'} />}
             </View>
         )
     }
@@ -84,8 +86,8 @@ const renderButton = (item, activeTab, started, isDownloaded) => {
     return (
 
         <View>
-            {item.needUpdate && <Text style={{ fontSize: 10, color: 'red', textAlign: 'center' }}>{'Update Required'}</Text>}
-            {(item.isInstalled && item.needUpdate) || (!item.isInstalled) && <ButtonOutline
+            {(item.isInstalled && item.needUpdate) && <Text style={{ fontSize: 10, color: 'red', textAlign: 'center' }}>{'Update Required'}</Text>}
+            {((item.isInstalled && item.needUpdate) || (!item.isInstalled)) && <ButtonOutline
                 width={150}
                 onPress={() => onInstallUpdatePress(item)}
                 textColor='rgb(30,77,155)'
