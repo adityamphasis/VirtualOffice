@@ -530,7 +530,7 @@ export default class AppVersionDialog extends React.Component {
                     Individual App</Text>
               </View>
               <ButtonOutline
-                style={{ alignSelf: 'center', margin: 10 }}
+                style={{ alignSelf: 'center', margin: 5 }}
                 width={250}
                 onPress={() => {
                   if (this.state.started || this.state.downloadIndex >= this.state.appList.length) {
