@@ -63,8 +63,8 @@ export default class AppVersionDialog extends React.Component {
     const isDownloaded = await getStorage('isDownloaded');
 
     this.sycnOption = await getStorage('sync');
-    if (this.sycnOption != '' && this.sycnOption != undefined && this.sycnOption != null)
-      this.setState({ activeTab: true });
+    if (this.sycnOption === 'playstore')
+      this.setState({ activeTab: true, isDownloaded: true });
 
     if (isDownloaded) {
       this.setState({ isDownloaded: true, activeTab: true, appName: 'Completed' });
