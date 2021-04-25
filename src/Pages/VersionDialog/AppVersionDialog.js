@@ -499,8 +499,13 @@ export default class AppVersionDialog extends React.Component {
           {!this.state.activeTab && this.state.isSuficient && !this.state.isDownloaded &&
             <View alignItems={'center'}>
               <View flexDirection='row' alignItems='center' justifyContent='center'>
-                <Text style={[styles.infoText]}>Download All</Text>
-                <Switch
+                <Text onPress={() => { }} style={[styles.infoText]}>
+                  <Image
+                    style={{ height: 20, width: 20, margin: 5 }}
+                    source={this.state.activeTab ? require('../../../assets/uncheck.png') : require('../../../assets/check.png')} /> {'\t'}
+                    Download All
+                  </Text>
+                {/* <Switch
                   trackColor={{ false: "#767577", true: "#81b0ff" }}
                   thumbColor={this.state.activeTab ? "#f5dd4b" : "#f4f3f4"}
                   style={{ marginStart: 20, marginRight: 20 }}
@@ -516,11 +521,16 @@ export default class AppVersionDialog extends React.Component {
                     }
                     alert('Your chosen option is already under process. Cannot be changed now.');
                     // this.setState({ activeTab: switchValue });
-                  }} />
-                <Text style={[styles.infoText]}>Individual App</Text>
+                  }} /> */}
+                <Text onPress={() => this.askForPlaystoreConfirmation()}
+                  style={[styles.infoText]}>
+                  <Image
+                    style={{ height: 20, width: 20, margin: 5 }}
+                    source={this.state.activeTab ? require('../../../assets/check.png') : require('../../../assets/uncheck.png')} /> {'\t'}
+                    Individual App</Text>
               </View>
               <ButtonOutline
-                style={{ alignSelf: 'center' }}
+                style={{ alignSelf: 'center', margin: 10 }}
                 width={250}
                 onPress={() => {
                   if (this.state.started || this.state.downloadIndex >= this.state.appList.length) {
@@ -652,7 +662,9 @@ const styles = StyleSheet.create({
     color: 'rgb(30,77,155)',
     fontSize: 12,
     fontFamily: 'WorkSans-Medium',
-    padding: 2
+    padding: 2,
+    marginLeft: 10,
+    marginRight: 10
   },
   errorText: {
     color: 'red',

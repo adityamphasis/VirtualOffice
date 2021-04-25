@@ -86,7 +86,7 @@ export default class Splash extends React.Component {
       }
 
     } catch (error) {
-
+      console.log('error', JSON.stringify(error));
     }
 
 
