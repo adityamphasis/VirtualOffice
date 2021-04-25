@@ -347,10 +347,10 @@ export default class AppVersionDialog extends React.Component {
 
   closeVersionPopup = async () => {
 
-    if (this.state.started || !this.state.isDownloaded) {
-      alert('You need to install/update listed apps to madantory version.');
-      return;
-    }
+    // if (this.state.started || !this.state.isDownloaded) {
+    //   alert('You need to install/update listed apps to mandatory version.');
+    //   return;
+    // }
 
     this.props.navigation.goBack();
   }
