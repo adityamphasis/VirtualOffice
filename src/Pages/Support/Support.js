@@ -21,7 +21,7 @@ const contactList = [
   },
   {
     name: 'AKASH ACHREKAR',
-    phone: '90821774183'
+    phone: '9082177418'
   },
   {
     name: 'DHANASHREE PARAB',

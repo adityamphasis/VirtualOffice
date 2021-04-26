@@ -280,8 +280,15 @@ export default class AppVersionDialog extends React.Component {
 
         const isFetching = index === this.downloadIndex ? true : false;
         let needUpdate = false;
-        if (this.state.activeTab)
+        let isInd = foundIndex != -1 ? true : false;
+
+        if (this.state.activeTab) {
           needUpdate = foundIndex === -1 ? false : this.checkUpdateRequired(installedApps[foundIndex].versionName, item.MandatoryVersion);
+        } else {
+          const updateCheck = foundIndex === -1 ? false : this.checkUpdateRequired(installedApps[foundIndex].versionName, item.MandatoryVersion);
+          if (isInd && updateCheck)
+            isInd = false;
+        }
 
         console.log('isFetching', item.AppName + ' ' + isFetching);
         console.log('needUpdate', needUpdate);
@@ -294,7 +301,7 @@ export default class AppVersionDialog extends React.Component {
           packageName: item.PackageName,
           iosId: item.iosId ? item.iosId : '',
           lastUpdated: foundIndex != -1 ? moment(installedApps[foundIndex].lastUpdateTime).format("DD/MM/YYYY") : '',
-          isInstalled: foundIndex != -1 ? true : false,
+          isInstalled: isInd,
           isFetching: isFetching,
           isExists: isExists,
           needUpdate: needUpdate,
@@ -489,7 +496,7 @@ export default class AppVersionDialog extends React.Component {
 
             <Text style={styles.appStatuts}>APPS STATUS</Text>
             <TouchableOpacity
-              style={{ width: '20%', justifyContent: 'center', alignItems: 'center' }}
+              style={{ justifyContent: 'center', alignItems: 'center' }}
               onPress={() => this.closeVersionPopup()}>
               <Image style={{ width: 25, height: 25 }}
                 source={require('../../../assets/close.png')} />
@@ -498,39 +505,26 @@ export default class AppVersionDialog extends React.Component {
 
           {!this.state.activeTab && this.state.isSuficient && !this.state.isDownloaded &&
             <View alignItems={'center'}>
-              <View flexDirection='row' alignItems='center' justifyContent='center'>
-                <Text onPress={() => { }} style={[styles.infoText]}>
-                  <Image
-                    style={{ height: 20, width: 20, margin: 5 }}
-                    source={this.state.activeTab ? require('../../../assets/uncheck.png') : require('../../../assets/check.png')} /> {'\t'}
-                    Download All
-                  </Text>
-                {/* <Switch
-                  trackColor={{ false: "#767577", true: "#81b0ff" }}
-                  thumbColor={this.state.activeTab ? "#f5dd4b" : "#f4f3f4"}
-                  style={{ marginStart: 20, marginRight: 20 }}
-                  value={this.state.activeTab}
-                  onValueChange={(switchValue) => {
-                    console.log('sw:', switchValue);
-                    // this.setState({ activeTab: switchValue });
-                    // return;
+              <View flexDirection='row' alignItems='center' justifyContent='center' margin={5}>
 
-                    if (switchValue) {
-                      this.askForPlaystoreConfirmation();
-                      return;
-                    }
-                    alert('Your chosen option is already under process. Cannot be changed now.');
-                    // this.setState({ activeTab: switchValue });
-                  }} /> */}
-                <Text onPress={() => this.askForPlaystoreConfirmation()}
-                  style={[styles.infoText]}>
+                <Image
+                  style={{ height: 20, width: 20 }}
+                  source={this.state.activeTab ? require('../../../assets/uncheck.png')
+                    : require('../../../assets/check.png')} />
+                <Text onPress={() => { }} style={[styles.infoText]}>{'\t'}Download All</Text>
+
+                <TouchableOpacity
+                  style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20 }}
+                  onPress={() => this.askForPlaystoreConfirmation()}>
                   <Image
-                    style={{ height: 20, width: 20, margin: 5 }}
-                    source={this.state.activeTab ? require('../../../assets/check.png') : require('../../../assets/uncheck.png')} /> {'\t'}
-                    Individual App</Text>
+                    style={{ height: 20, width: 20 }}
+                    source={this.state.activeTab ? require('../../../assets/check.png')
+                      : require('../../../assets/uncheck.png')} />
+                  <Text style={[styles.infoText]}>{'\t'}Individual App</Text>
+                </TouchableOpacity>
               </View>
               <ButtonOutline
-                style={{ alignSelf: 'center', margin: 5 }}
+                style={{ alignSelf: 'center' }}
                 width={250}
                 onPress={() => {
                   if (this.state.started || this.state.downloadIndex >= this.state.appList.length) {
@@ -663,8 +657,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'WorkSans-Medium',
     padding: 2,
-    marginLeft: 10,
-    marginRight: 10
   },
   errorText: {
     color: 'red',
