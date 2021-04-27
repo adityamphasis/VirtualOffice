@@ -491,14 +491,15 @@ export default class AppVersionDialog extends React.Component {
 
           <View style={{
             flexDirection: 'row', backgroundColor: 'transparent',
-            height: '9%', justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            paddingBottom: 2
           }}>
 
             <Text style={styles.appStatuts}>APPS STATUS</Text>
             <TouchableOpacity
               style={{ justifyContent: 'center', alignItems: 'center' }}
               onPress={() => this.closeVersionPopup()}>
-              <Image style={{ width: 25, height: 25 }}
+              <Image style={{ width: 25, height: 25, marginRight: 10 }}
                 source={require('../../../assets/close.png')} />
             </TouchableOpacity>
           </View>
