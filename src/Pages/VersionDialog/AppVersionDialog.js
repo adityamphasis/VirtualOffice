@@ -1,14 +1,15 @@
+import React, { PropTypes } from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity,
   ImageBackground, Image, StatusBar, Keyboard, AppState,
   Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert, Switch
 } from 'react-native';
-import React, { PropTypes } from 'react';
 
 import axios from 'react-native-axios';
 import RNAndroidInstalledApps from 'react-native-android-installed-apps';
 import moment from "moment";
 // import networkSpeed from 'react-native-network-speed';
+
 import RNBackgroundDownloader from 'react-native-background-downloader';
 import { measureConnectionSpeed } from 'react-native-network-bandwith-speed';
 

@@ -227,8 +227,8 @@ export default class Dashboard extends React.Component {
   copyToClipboard = () => {
 
     console.log("copy to clipboard", getConfiguration('encryptedToken', ''));
-
-    Clipboard.setString(getConfiguration('encryptedToken', ''))
+    if (UAT)
+      Clipboard.setString(getConfiguration('encryptedToken', ''))
   }
 
   closePopUp = () => {
@@ -311,8 +311,8 @@ export default class Dashboard extends React.Component {
           <Image resizeMode="contain" style={styles.leftLogo}
             source={require('../../../assets/logo_rht.png')} />
         </TouchableOpacity>
-        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center' }]}> UAT </Text>}
-        <View style={styles.welcomContainer}>
+        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (27 Apr 21:00) </Text>}
+        <View style={[styles.welcomContainer, { marginLeft: UAT ? '5%' : '30%' }]}>
           <Text style={styles.headerTitle}> Welcome to</Text>
           <Text style={styles.headerTitle1}>M-Smart</Text>
         </View>
@@ -749,10 +749,8 @@ const styles = StyleSheet.create({
   },
   welcomContainer:
   {
-    width: '30%',
+    // width: '30%',
     height: '100%',
-
-    marginLeft: '30%',
     justifyContent: 'center',
     alignItems: 'center'
   },

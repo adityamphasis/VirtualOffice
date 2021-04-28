@@ -1,8 +1,8 @@
+import React, { PropTypes } from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image,
   StatusBar, Keyboard, Platform, NativeModules, BackHandler, Alert, Linking
 } from 'react-native';
-import React, { PropTypes } from 'react';
 
 import {
   widthPercentageToDP as wp,
@@ -29,9 +29,8 @@ import { encryptData, decryptData } from '../../utils/AES';
 const API_KEY = 'AIzaSyA2X9535aZI2NG3AgVevcfr4qYmVbOJuFM';
 
 const config = {
-  issuer: 'https://accounts.bharti-axalife.com',
-  //clientId: 'Bj4ppdGozkaf4fOTeYameOExlfIa',
-  clientId: '7Io_iFf5oiq3P2KjUqXbStKmKpYa',
+  issuer: apiConfig.SSO_BASE,
+  clientId: apiConfig.SSO_CLIENT_ID,//'Bj4ppdGozkaf4fOTeYameOExlfIa',
   redirectUrl: 'com.bhartiaxa.virtualoffice://oauth',
   scopes: ['openid'],
   additionalParameters: {
@@ -39,8 +38,8 @@ const config = {
     display: 'popup'
   },
   serviceConfiguration: {
-    authorizationEndpoint: 'https://accounts.bharti-axalife.com/oauth2/authorize',
-    tokenEndpoint: 'https://accounts.bharti-axalife.com/oauth2/token',
+    authorizationEndpoint: apiConfig.SSO_BASE + '/oauth2/authorize',
+    tokenEndpoint: apiConfig.SSO_BASE + '/oauth2/token',
     // revocationEndpoint: 'https://demo.identityserver.io/connect/revoke'
   }
 };

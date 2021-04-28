@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1090275634218",
+    "project_id": "baxa-virtual-office",
+    "storage_bucket": "baxa-virtual-office.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090275634218:android:8b9b57c66556059012a753",
+        "android_client_info": {
+          "package_name": "com.bhartiaxa.virtualoffice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1090275634218-7tm0n1oetml3l01a1m8d5mto9at857pb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2X9535aZI2NG3AgVevcfr4qYmVbOJuFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1090275634218-7tm0n1oetml3l01a1m8d5mto9at857pb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
