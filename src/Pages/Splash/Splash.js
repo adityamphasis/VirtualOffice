@@ -30,7 +30,7 @@ const API_KEY = 'AIzaSyA2X9535aZI2NG3AgVevcfr4qYmVbOJuFM';
 
 const config = {
   issuer: apiConfig.SSO_BASE,
-  clientId: apiConfig.SSO_CLIENT_ID,//'Bj4ppdGozkaf4fOTeYameOExlfIa',
+  clientId: apiConfig.SSO_CLIENT_ID,
   redirectUrl: 'com.bhartiaxa.virtualoffice://oauth',
   scopes: ['openid'],
   additionalParameters: {
@@ -288,10 +288,10 @@ export default class Splash extends React.Component {
 
     var sales = result.IsSalesAgent;
     var etoken = result.EncodedJWT;
-    var agentToken = result.AgentCode;
-    var employeeCode = result.EmployeeCode
-    var agentName = result.AgentName;
-    var mobileNumber = result.Mobile
+    var agentToken = result.AgentCode ? result.AgentCode : '';
+    var employeeCode = result.EmployeeCode ? result.EmployeeCode : '';
+    var agentName = result.AgentName ? result.AgentName : '';
+    var mobileNumber = result.Mobile ? result.Mobile : '';
 
     // console.log("gafsvfhvb", sales);
 

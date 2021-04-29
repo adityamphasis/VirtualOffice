@@ -47,7 +47,7 @@ export default class MCustomer extends React.Component {
     console.log('MCUSTOMER_URL', MCUSTOMER_URL);
     console.log('ISERVICE', I_SERVICE_URL);
 
-    console.log("sxgvhbh",getConfiguration('encryptedToken'));
+    console.log("sxgvhbh", getConfiguration('encryptedToken'));
   }
 
   componentWillUnmount() {
@@ -59,14 +59,14 @@ export default class MCustomer extends React.Component {
   }
 
   onScriptSuccess = (event) => {
-   // https://onboarding.bhartiaxa.com/app
-   // https://uat.bhartiaxa.tk/app
-    if (!this.isRedirect && event.url.includes('https://onboarding.bhartiaxa.com/app?ssoid=')) {
+    // https://onboarding.bhartiaxa.com/app
+    // https://uat.bhartiaxa.tk/app
+    if (!this.isRedirect &&
+      (event.url.includes('https://onboarding.bhartiaxa.com/app?ssoid='))) {
       console.log('mcustomeer url =', JSON.stringify(event.url));
       this.webview.stopLoading();
       this.isRedirect = true;
       this.setState({ isLoading: false });
-      this.ssoid = event.url.substring(event.url.lastIndexOf('=') + 1);
       this.goBack();
       Linking.openURL(event.url);
     }

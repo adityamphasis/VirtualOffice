@@ -26,7 +26,7 @@ import { requestStoragePermission } from '../../utils/permissionsUtil';
 import { Loader, ButtonOutline, InstallItem } from '../../../components';
 import appArray from './appArray';
 
-const iterations = 512;
+const iterations = 2048;
 
 export default class AppVersionDialog extends React.Component {
 
