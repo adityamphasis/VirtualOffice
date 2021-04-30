@@ -8,6 +8,7 @@ import AppLink from 'react-native-app-link';
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
 import Clipboard from '@react-native-community/clipboard';
 import axios from 'react-native-axios';
+import crashlytics from "@react-native-firebase/crashlytics";
 
 import {
   widthPercentageToDP as wp,
@@ -45,11 +46,13 @@ export default class Dashboard extends React.Component {
 
 
   componentDidMount() {
+    crashlytics().log("Dashboard view mounted.");
     this.validateTokenApi();
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
+    crashlytics().log("Dashboard view unmounted.");
     // this.focusListener.remove();
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -240,6 +243,8 @@ export default class Dashboard extends React.Component {
 
   gotoVymo = () => {
 
+    crashlytics().log("Clicked on Vymo");
+
     IntentLauncher.startAppByPackageName('com.getvymo.android')
       .then((result) => {
         console.log('startAppByPackageName started');
@@ -262,6 +267,8 @@ export default class Dashboard extends React.Component {
   }
 
   gotoMSell = () => {
+
+    crashlytics().log("Clicked on Msell");
 
     IntentLauncher.startAppByPackageName('com.enparadigm.bharthiaxa')
       .then((result) => {
@@ -311,7 +318,7 @@ export default class Dashboard extends React.Component {
           <Image resizeMode="contain" style={styles.leftLogo}
             source={require('../../../assets/logo_rht.png')} />
         </TouchableOpacity>
-        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (29 Apr 11:00) </Text>}
+        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (30 Apr 23:00) </Text>}
         <View style={[styles.welcomContainer, { marginLeft: UAT ? '5%' : '30%' }]}>
           <Text style={styles.headerTitle}> Welcome to</Text>
           <Text style={styles.headerTitle1}>M-Smart</Text>

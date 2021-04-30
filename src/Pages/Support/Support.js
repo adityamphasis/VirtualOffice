@@ -5,6 +5,7 @@ import {
   ImageBackground, Image, ScrollView, StatusBar, Keyboard,
   Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
 } from 'react-native';
+import crashlytics from "@react-native-firebase/crashlytics";
 
 import {
   widthPercentageToDP as wp,
@@ -70,6 +71,7 @@ export default class Support extends React.Component {
   }
 
   componentWillUnmount() {
+    crashlytics().log("Support view unmounted.");
     // this.focusListener.remove();
     // BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -106,6 +108,7 @@ export default class Support extends React.Component {
   }
 
   raiseTicket = () => {
+    crashlytics().log("Clicked on i raise ticket");
     Linking.openURL(SUPPORT_RAISE_TICKET);
   }
 

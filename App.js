@@ -8,18 +8,20 @@
 
 import { Platform, StyleSheet, Text, View, Alert, LogBox } from 'react-native';
 import React, { Component } from 'react';
+import crashlytics from "@react-native-firebase/crashlytics";
+
 import Navigation from './Navigation';
 // import { API_ROOT } from './env';
 // import configureStore from './src/redux/store';
 // import { Provider } from 'react-redux';
 import { setConfiguration, unsetConfiguration } from './src/utils/configuration';
-// type Props = {};
 
 
 export default class App extends Component {
 
+
   componentDidMount() {
-    // console.disableYellowBox = true
+    crashlytics().log("App mounted.");
     LogBox.ignoreAllLogs(true)
   }
 
@@ -48,6 +50,7 @@ export default class App extends Component {
       </View>
     );
   }
+
 }
 
 const styles = StyleSheet.create({

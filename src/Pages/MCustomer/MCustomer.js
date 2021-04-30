@@ -21,6 +21,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import crashlytics from "@react-native-firebase/crashlytics";
 
 import { MCUSTOMER_URL, I_SERVICE_URL } from '../../utils/apiConfig';
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
@@ -43,14 +44,15 @@ export default class MCustomer extends React.Component {
   }
 
   componentDidMount() {
+    crashlytics().log("MCustomer, ISERVICE view mounted.");
     // this.renderView();
     console.log('MCUSTOMER_URL', MCUSTOMER_URL);
     console.log('ISERVICE', I_SERVICE_URL);
 
-    console.log("sxgvhbh", getConfiguration('encryptedToken'));
   }
 
   componentWillUnmount() {
+    crashlytics().log("MCustomer, ISERVICE view unmounted.");
 
   }
 
@@ -61,8 +63,12 @@ export default class MCustomer extends React.Component {
   onScriptSuccess = (event) => {
     // https://onboarding.bhartiaxa.com/app
     // https://uat.bhartiaxa.tk/app
+    // https://dev.bhartiaxa.tk/app
+
     if (!this.isRedirect &&
-      (event.url.includes('https://onboarding.bhartiaxa.com/app?ssoid='))) {
+      (event.url.includes('https://onboarding.bhartiaxa.com/app?ssoid=')
+        || event.url.includes('https://uat.bhartiaxa.tk/app')
+        || event.url.includes('https://dev.bhartiaxa.tk/app'))) {
       console.log('mcustomeer url =', JSON.stringify(event.url));
       this.webview.stopLoading();
       this.isRedirect = true;
@@ -75,6 +81,7 @@ export default class MCustomer extends React.Component {
   renderView = () => {
 
     if (this.comingScreen === 'customer') {
+      crashlytics().log("mCustomer rendering on web");
       return <WebView
         ref={(ref) => { this.webview = ref; }}
         originWhitelist={['*']}
@@ -105,6 +112,8 @@ export default class MCustomer extends React.Component {
       />
 
     }
+
+    crashlytics().log("services rendering on web");
 
     return <WebView
       originWhitelist={['*']}

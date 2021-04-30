@@ -9,6 +9,7 @@ import axios from 'react-native-axios';
 import RNAndroidInstalledApps from 'react-native-android-installed-apps';
 import moment from "moment";
 // import networkSpeed from 'react-native-network-speed';
+import crashlytics from "@react-native-firebase/crashlytics";
 
 import RNBackgroundDownloader from 'react-native-background-downloader';
 import { measureConnectionSpeed } from 'react-native-network-bandwith-speed';
@@ -82,6 +83,7 @@ export default class AppVersionDialog extends React.Component {
   }
 
   componentWillUnmount() {
+    crashlytics().log("App Version view unmounted.");
     unsetConfiguration('appVersion');
     AppState.removeEventListener("change", this._handleAppStateChange);
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);

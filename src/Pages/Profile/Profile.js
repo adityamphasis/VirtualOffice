@@ -9,6 +9,7 @@ import {
 } from 'react-native-responsive-screen';
 import { DrawerActions } from 'react-navigation-drawer';
 import axios from 'react-native-axios';
+import crashlytics from "@react-native-firebase/crashlytics";
 
 import { apiConfig } from '../../utils/apiConfig';
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
@@ -46,6 +47,10 @@ export default class ProfileScreen extends React.Component {
       this.getAgentProfile();
     else
       this.getEmployeeProfile();
+  }
+
+  componentWillUnmount(){
+    crashlytics().log("Profile view unmounted.");
   }
 
   goBack() {

@@ -15,6 +15,8 @@ import { checkVersion } from "react-native-check-version";
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import JailMonkey from 'jail-monkey'
 import RNGoogleSafetyNet from 'react-native-google-safetynet';
+import crashlytics from "@react-native-firebase/crashlytics";
+
 
 import { clearAll, getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
 import { getStorage, setStorage, clearStorage } from '../../utils/authentication';
@@ -57,9 +59,9 @@ export default class Splash extends React.Component {
 
 
   componentDidMount = async () => {
+    crashlytics().log("Splash view mounted.");
 
     const currentVersion = DeviceInfo.getVersion();
-
     this.setState({ versionCode: currentVersion });
 
     try {
@@ -126,12 +128,14 @@ export default class Splash extends React.Component {
       setConfiguration('token', savedToken);
       setConfiguration('idToken', await getStorage('idToken'));
       setConfiguration('refreshToken', await getStorage('refreshToken'));
-      setConfiguration('salesflag', await getStorage('salesflag') === 'true' ? true : false);
       setConfiguration('encryptedToken', await getStorage('encryptedToken'));
-      setConfiguration('Agent', await getStorage('Agent'));
-      setConfiguration('Employee', await getStorage('Employee'));
-      setConfiguration('AgentName', await getStorage('AgentName'));
-      setConfiguration('MobileNumber', await getStorage('MobileNumber'));
+
+      setConfiguration('salesflag', await getStorage('salesflag') === 'true' ? true : false);
+
+      setConfiguration('Agent', await decryptData(await getStorage('Agent'), 8));
+      setConfiguration('Employee', await decryptData(await getStorage('Employee'), 8));
+      setConfiguration('AgentName', await decryptData(await getStorage('AgentName'), 8));
+      setConfiguration('MobileNumber', await decryptData(await getStorage('MobileNumber'), 8));
 
     }
 
@@ -140,6 +144,7 @@ export default class Splash extends React.Component {
   }
 
   componentWillUnmount() {
+    crashlytics().log("Splash view unmounted.");
     FingerprintScanner.release();
   }
 
@@ -216,8 +221,12 @@ export default class Splash extends React.Component {
 
     }
 
+    crashlytics().log("request sso to login.");
+
     try {
       const result = await authorize(config);
+
+      crashlytics().log("sso login success.");
 
       console.log('token result=>', JSON.stringify(result));
 
@@ -233,6 +242,7 @@ export default class Splash extends React.Component {
 
     }
     catch (error) {
+      crashlytics().log("sso login error.");
       console.log(error);
       BackHandler.exitApp();
     }
@@ -294,13 +304,16 @@ export default class Splash extends React.Component {
     var mobileNumber = result.Mobile ? result.Mobile : '';
 
     // console.log("gafsvfhvb", sales);
+    crashlytics().log("employeeCode:" + employeeCode);
+    crashlytics().log("AgentCode:" + agentToken);
+    crashlytics().log("sales:" + sales);
 
-    await setStorage('salesflag', sales + '');
-    await setStorage('encryptedToken', etoken + '');
-    await setStorage('Agent', agentToken + '');
-    await setStorage('Employee', employeeCode + '');
-    await setStorage('AgentName', agentName + '');
-    await setStorage('MobileNumber', mobileNumber + '');
+    await setStorage('encryptedToken', etoken+'');
+    await setStorage('salesflag', sales+'');
+    await setStorage('Agent', await encryptData(agentToken + '', 8));
+    await setStorage('Employee', await encryptData(employeeCode + '', 8));
+    await setStorage('AgentName', await encryptData(agentName + '', 8));
+    await setStorage('MobileNumber', await encryptData(mobileNumber + '', 8));
 
     setConfiguration('salesflag', sales);
     setConfiguration('encryptedToken', etoken);
@@ -340,6 +353,8 @@ export default class Splash extends React.Component {
       .then(biometryType => {
         console.log('Available');
 
+        crashlytics().log("Request boimetric");
+
         Alert.alert(
           'Biometric Setup!',
           'Do you want to setup biometric for authentication?',
@@ -347,12 +362,14 @@ export default class Splash extends React.Component {
             {
               text: 'YES',
               onPress: () => {
+                crashlytics().log("accepted boimetric");
                 this.onBioAuthenticate();
               },
               // style: 'cancel',
             },
             {
               text: 'NO', onPress: async () => {
+                crashlytics().log("Denied boimetric");
                 setConfiguration('isBioEnabled', 'disable');
                 await setStorage('isBioEnabled', 'disable');
                 this.props.navigation.navigate('MainScreen');

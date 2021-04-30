@@ -12,6 +12,7 @@ import {
 import axios from 'react-native-axios';
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
 import { DrawerActions } from 'react-navigation-drawer';
+import crashlytics from "@react-native-firebase/crashlytics";
 
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { Loader } from '../../../components';
@@ -30,7 +31,12 @@ export default class MLife extends React.Component {
   }
 
   componentDidMount = () => {
+    crashlytics().log("MLife view mounted.");
     // this.versionApiData = getConfiguration('appsData');
+  }
+
+  componentWillUnmount = () => {
+    crashlytics().log("MLife view unmounted.");
   }
 
   goBack() {
@@ -45,6 +51,8 @@ export default class MLife extends React.Component {
   }
 
   clickiLearn = () => {
+
+    crashlytics().log("Clicked on i Learn");
 
     IntentLauncher.startAppByPackageName('com.chaptervitamins.bharatiaxa')
       .then((result) => {
@@ -71,6 +79,8 @@ export default class MLife extends React.Component {
 
   clickiearn = () => {
 
+    crashlytics().log("Clicked on i Earn");
+
     IntentLauncher.startAppByPackageName('com.bhartiaxa.mlife')
       .then((result) => {
         console.log('startAppByPackageName started');
@@ -94,6 +104,8 @@ export default class MLife extends React.Component {
   }
 
   gotoRecruit() {
+
+    crashlytics().log("Clicked on i Recruit");
 
     IntentLauncher.startAppByPackageName('com.bhartiaxa.recruit')
       .then((result) => {
@@ -119,6 +131,8 @@ export default class MLife extends React.Component {
   }
 
   gotoService = () => {
+
+    crashlytics().log("Clicked on i service");
 
     if (getConfiguration('salesflag')) {
       this.props.navigation.navigate('MCustomer', { screen: 'service' })
