@@ -9,7 +9,7 @@ import axios from 'react-native-axios';
 import RNAndroidInstalledApps from 'react-native-android-installed-apps';
 import moment from "moment";
 // import networkSpeed from 'react-native-network-speed';
-import crashlytics from "@react-native-firebase/crashlytics";
+import analytics from '@react-native-firebase/analytics';
 
 import RNBackgroundDownloader from 'react-native-background-downloader';
 import { measureConnectionSpeed } from 'react-native-network-bandwith-speed';
@@ -27,7 +27,7 @@ import { requestStoragePermission } from '../../utils/permissionsUtil';
 import { Loader, ButtonOutline, InstallItem } from '../../../components';
 import appArray from './appArray';
 
-const iterations = 2048;
+const iterations = 512;
 
 export default class AppVersionDialog extends React.Component {
 
@@ -54,6 +54,7 @@ export default class AppVersionDialog extends React.Component {
   }
 
   componentDidMount = async () => {
+    await analytics().logScreenView({ screen_name: 'VersionStatusScreen', screen_class: 'VersionStatusScreen' });
 
     console.log('-----------------------App version componentDidMount------------------')
 
@@ -83,7 +84,6 @@ export default class AppVersionDialog extends React.Component {
   }
 
   componentWillUnmount() {
-    crashlytics().log("App Version view unmounted.");
     unsetConfiguration('appVersion');
     AppState.removeEventListener("change", this._handleAppStateChange);
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
@@ -181,20 +181,19 @@ export default class AppVersionDialog extends React.Component {
     this.setState({ isLoading: true });
 
     let params = {
-      'Platform': Platform.OS === 'android' ? 'Android' : 'Ios',
+      'Platform': Platform.OS === 'android' ? 'Android' : 'Iphone',
       'PartnerKey': 'VC18APP02SER'
     }
 
-    const encryptedParam = await encryptData(JSON.stringify(params), iterations);
+    const URL = apiConfig.VERSION_STATUS;
+    console.log('URL:' + URL);
 
+    const encryptedParam = await encryptData(JSON.stringify(params), iterations);
     console.log('version ecrypted data: ', encryptedParam);
 
     let encParams = {
       "request": encryptedParam
     };
-
-    const URL = apiConfig.VERSION_STATUS;
-    console.log('URL:' + URL);
 
     axios.post(URL, encParams, {
       "headers": {
@@ -357,6 +356,8 @@ export default class AppVersionDialog extends React.Component {
 
   closeVersionPopup = async () => {
 
+    console.log('closeVersionPopup');
+
     // if (this.state.started || !this.state.isDownloaded) {
     //   alert('You need to install/update listed apps to mandatory version.');
     //   return;
@@ -389,8 +390,10 @@ export default class AppVersionDialog extends React.Component {
     }
 
 
-    if (!this.state.started)
+    if (!this.state.started) {
+      await analytics().logEvent('Action', { click: 's3' });
       this.setState({ started: true, appName: 'Checking...' });
+    }
 
     await setStorage('sync', 'download');
 
@@ -476,6 +479,7 @@ export default class AppVersionDialog extends React.Component {
         },
         {
           text: 'Continue', onPress: async () => {
+            await analytics().logEvent('Action', { click: 'playstore' });
             await setStorage('sync', 'playstore');
             this.setState({ activeTab: true });
           }

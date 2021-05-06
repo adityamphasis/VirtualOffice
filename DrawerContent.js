@@ -7,6 +7,7 @@ import {
 import axios from 'react-native-axios';
 import { getConfiguration, setConfiguration, unsetConfiguration } from './src/utils/configuration';
 import { clearStorage } from './src/utils/authentication';
+import analytics from '@react-native-firebase/analytics';
 
 import { encryptData, decryptData } from './src/utils/AES';
 import { apiConfig } from './src/utils/apiConfig';
@@ -18,7 +19,9 @@ class DrawerContent extends Component {
   }
 
   navigateToScreen = (route) => (
-    () => {
+    async () => {
+      await analytics().logEvent('Action', { click: route });
+
       this.props.navigation.closeDrawer();
       this.props.navigation.navigate(route);
     })
@@ -49,6 +52,8 @@ class DrawerContent extends Component {
   }
 
   logout = async () => {
+
+    await analytics().logEvent('Action', { click: 'Logout' });
 
     this.LogoutApi();
 
@@ -81,7 +86,7 @@ class DrawerContent extends Component {
 
     // let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/logout"
 
-        
+
     const URL = apiConfig.LOGOUT;
     console.log('URL:' + URL);
 

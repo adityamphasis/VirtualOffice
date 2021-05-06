@@ -1,21 +1,28 @@
 
-const BASE_URL = 'https://online.bharti-axalife.com/';
+const UAT = false;
 
+const UAT_BASE_URL = 'https://online.bharti-axalife.com/';
+const AWS_BASE_URL = 'https://online.bhartiaxa.com/';
 const PATH = 'MiscServices/'
 
-// const MCUSTOMER_URL = 'https://bharti-axa-auth-qa.qa3.tothenew.net/api/v1/auth/externalLogin'; //AQ3
-const MCUSTOMER_URL = 'https://tpfrdk01sc.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //DEV
-// const MCUSTOMER_URL = 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin'; //UAT
-// const MCUSTOMER_URL = 'https://sidlce25m2.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //PROD
+// aws urls
+const BASE_URL = UAT ? UAT_BASE_URL : AWS_BASE_URL;
+
+const AQ_MCUSTOMER_URL = 'https://bharti-axa-auth-qa.qa3.tothenew.net/api/v1/auth/externalLogin'; //AQ3
+const DEV_MCUSTOMER_URL = 'https://tpfrdk01sc.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //DEV
+const UAT_MCUSTOMER_URL = 'https://id2hs3de2e.execute-api.ap-south-1.amazonaws.com/uat/api/v1/auth/externalLogin'; //UAT
+const PROD_MCUSTOMER_URL = 'https://sidlce25m2.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //PROD
+const AWS_MCUSTOMER_URL = 'https://sidlce25m2.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //PROD
+
+const MCUSTOMER_URL = UAT ? DEV_MCUSTOMER_URL : AWS_MCUSTOMER_URL;
 
 const I_SERVICE_URL = 'https://online.bharti-axalife.com/BAL_DSS_PREPROD/Login.aspx?VO=1';
 const SUPPORT_RAISE_TICKET = 'https://bhartiaxagi.symphonysummit.com/';
 const HELP_URL = 'http://d2zbgc97r2t7yn.cloudfront.net/guidlines.html';
 
-const UAT = true;
 
 //uat urls
-const apiConfig = {
+const UAT_Urls = {
     SSO_BASE: 'https://uat-accounts.bharti-axalife.com',
     SSO_CLIENT_ID: 'JPVBwQeFbq4NvcHG6VPJ6jHQ9K0a',
     // SSO_CLIENT_ID: '7Io_iFf5oiq3P2KjUqXbStKmKpYa',
@@ -41,5 +48,20 @@ const apiConfig = {
 //     AGENT: BASE_URL + PATH + 'AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails',
 //     LOGOUT: BASE_URL + PATH + 'iwin-prod-web/api/compass-sso-wrapper/logout'
 // }
+
+//aws urls
+const AWS_Urls = {
+    SSO_BASE: 'https://accounts.bharti-axalife.com',
+    SSO_CLIENT_ID: '7Io_iFf5oiq3P2KjUqXbStKmKpYa',
+    TOKEN_CODE: BASE_URL + PATH + 'JWTAgentRESTServiceNew/Service1.svc/CheckAgentCodeJWT',
+    VERSION_STATUS: BASE_URL + PATH + 'VersionControlRestService/Service1.svc/GetVersionControlDetails',
+    VALIDATE_JWT: BASE_URL + PATH + 'JWTAgentRESTServiceNew/Service1.svc/ValidateJWT',
+    I_WIN: BASE_URL + PATH + 'iwin-prod-web/api/compass-sso-wrapper/login',
+    EMPLOYEE: BASE_URL + PATH + 'DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted',
+    AGENT: BASE_URL + PATH + 'AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails',
+    LOGOUT: BASE_URL + PATH + 'iwin-prod-web/api/compass-sso-wrapper/logout'
+}
+
+const apiConfig = UAT ? UAT_Urls : AWS_Urls;
 
 export { apiConfig, MCUSTOMER_URL, I_SERVICE_URL, SUPPORT_RAISE_TICKET, HELP_URL, UAT };

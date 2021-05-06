@@ -12,7 +12,7 @@ import {
 import axios from 'react-native-axios';
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
 import { DrawerActions } from 'react-navigation-drawer';
-import crashlytics from "@react-native-firebase/crashlytics";
+import analytics from '@react-native-firebase/analytics';
 
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { Loader } from '../../../components';
@@ -30,13 +30,12 @@ export default class MLife extends React.Component {
 
   }
 
-  componentDidMount = () => {
-    crashlytics().log("MLife view mounted.");
+  componentDidMount = async () => {
+    await analytics().logScreenView({ screen_name: 'MLifeScreen', screen_class: 'MLifeScreen' });
     // this.versionApiData = getConfiguration('appsData');
   }
 
   componentWillUnmount = () => {
-    crashlytics().log("MLife view unmounted.");
   }
 
   goBack() {
@@ -50,9 +49,9 @@ export default class MLife extends React.Component {
     this.props.navigation.dispatch(DrawerActions.openDrawer());
   }
 
-  clickiLearn = () => {
+  clickiLearn = async () => {
 
-    crashlytics().log("Clicked on i Learn");
+    await analytics().logEvent('Action', { click: 'open iLearn' });
 
     IntentLauncher.startAppByPackageName('com.chaptervitamins.bharatiaxa')
       .then((result) => {
@@ -77,9 +76,9 @@ export default class MLife extends React.Component {
 
   }
 
-  clickiearn = () => {
+  clickiearn = async () => {
 
-    crashlytics().log("Clicked on i Earn");
+    await analytics().logEvent('Action', { click: 'open iEarn' });
 
     IntentLauncher.startAppByPackageName('com.bhartiaxa.mlife')
       .then((result) => {
@@ -103,9 +102,9 @@ export default class MLife extends React.Component {
 
   }
 
-  gotoRecruit() {
+  gotoRecruit = async () => {
 
-    crashlytics().log("Clicked on i Recruit");
+    await analytics().logEvent('Action', { click: 'open iRecruit' });
 
     IntentLauncher.startAppByPackageName('com.bhartiaxa.recruit')
       .then((result) => {
@@ -130,9 +129,9 @@ export default class MLife extends React.Component {
 
   }
 
-  gotoService = () => {
+  gotoService = async () => {
 
-    crashlytics().log("Clicked on i service");
+    await analytics().logEvent('Action', { click: 'open iServices' });
 
     if (getConfiguration('salesflag')) {
       this.props.navigation.navigate('MCustomer', { screen: 'service' })

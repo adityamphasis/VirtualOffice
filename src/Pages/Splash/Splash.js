@@ -16,7 +16,8 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 import JailMonkey from 'jail-monkey'
 import RNGoogleSafetyNet from 'react-native-google-safetynet';
 import crashlytics from "@react-native-firebase/crashlytics";
-
+import analytics from '@react-native-firebase/analytics';
+import { fetch } from 'react-native-ssl-pinning';
 
 import { clearAll, getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
 import { getStorage, setStorage, clearStorage } from '../../utils/authentication';
@@ -26,7 +27,7 @@ import { authorize } from 'react-native-app-auth';
 import { Page } from '../../../components';
 
 import { Loader } from '../../../components';
-import { encryptData, decryptData } from '../../utils/AES';
+import { encryptData, decryptData, rasData } from '../../utils/AES';
 
 const API_KEY = 'AIzaSyA2X9535aZI2NG3AgVevcfr4qYmVbOJuFM';
 
@@ -59,7 +60,8 @@ export default class Splash extends React.Component {
 
 
   componentDidMount = async () => {
-    crashlytics().log("Splash view mounted.");
+
+    await analytics().logScreenView({ screen_name: 'SplashScreen', screen_class: 'SplashScreen' });
 
     const currentVersion = DeviceInfo.getVersion();
     this.setState({ versionCode: currentVersion });
@@ -90,30 +92,66 @@ export default class Splash extends React.Component {
       console.log('error', JSON.stringify(error));
     }
 
-    if (JailMonkey.isJailBroken()) {
-      console.log('JailMonkey: ', JailMonkey.isJailBroken());
-      this.showAlertForSplash('You can not use this app on rooted device as per security policy.');
-      return;
-    }
+    // if (JailMonkey.isJailBroken()) {
+    //   console.log('JailMonkey: ', JailMonkey.isJailBroken());
+    //   this.showAlertForSplash('You can not use this app on rooted device as per security policy.');
+    //   return;
+    // }
 
-    const isPlayService = await RNGoogleSafetyNet.isPlayServicesAvailable();
-    console.log('isPlayService', isPlayService);
+    // const isPlayService = await RNGoogleSafetyNet.isPlayServicesAvailable();
+    // console.log('isPlayService', isPlayService);
 
-    if (!isPlayService) {
-      this.showAlertForSplash('Google play services is not availble.');
-      return;
-    }
+    // if (!isPlayService) {
+    //   this.showAlertForSplash('Google play services is not availble.');
+    //   return;
+    // }
 
-    const nonce = await RNGoogleSafetyNet.generateNonce(16);
-    console.log('nounce', JSON.stringify(nonce));
+    // const nonce = await RNGoogleSafetyNet.generateNonce(16);
+    // console.log('nounce', JSON.stringify(nonce));
 
-    const safetyResponse = await RNGoogleSafetyNet.sendAttestationRequest(nonce, API_KEY);
-    console.log('safetyReespone', JSON.stringify(safetyResponse));
+    // const safetyResponse = await RNGoogleSafetyNet.sendAttestationRequest(nonce, API_KEY);
+    // console.log('safetyReespone', JSON.stringify(safetyResponse));
 
-    if (!safetyResponse.ctsProfileMatch) {
-      this.showAlertForSplash('OS or Application installed on your device are violating Android playstore safetynet policies.');
-      return;
-    }
+    // if (!safetyResponse.ctsProfileMatch) {
+    //   this.showAlertForSplash('OS or Application installed on your device are violating Android playstore safetynet policies.');
+    //   return;
+    // }
+
+    // fetch("https://online.bhartiaxa.com", {
+    //   method: "GET",
+    //   pkPinning: true,
+    //   sslPinning: {
+    //     certs: ['aws_bharti']
+    //     // certs: [
+    //     //   "sha256/JSMzqOOrtyOT1kmau6zKhgT676hGgczD5VMdRMyJZFA=",
+    //     //   "sha256/zTlCX9pDYzkvadzpWldHQIMtbMA9ZFzGVXeoCsVymq4=",
+    //     //   "sha256/JSMzqOOrtyOT1kmau6zKhgT676hGgczD5VMdRMyJZFA=",
+    //     //   "sha256/++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=",
+    //     //   "sha256/47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+    //     // ]
+    //     // certs: ["sha256/47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+    //     //   "sha256/sha256/JSMzqOOrtyOT1kmau6zKhgT676hGgczD5VMdRMyJZFA=",
+    //     //   "sha256/++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=",
+    //     //   "sha256/5e16eed3c218991038e429b8041c3c220d4eaa67",
+    //     //   "sha256/6EBBA3BB1A3A25F92169A4BFE167C62EC3D8DC039513EB0B3BC4185F06A5EC2B",
+    //     //   "sha1/5E16EED3C218991038E429B8041C3C220D4EAA67",
+    //     //   "sha1/7c:02:49:a5:b1:4f:05:4c:df:28:43:62:88:76:e5:14:79:1e:24:6a",
+    //     //   "sha256/B88ECC25A136B236147AD476D4AE27B06522381518F05ED1DC2BBFE943071278",
+    //     //   "sha1/69E634112E49C3CD3EAC27A0C137915C46781A90",
+    //     //   "sha256/d107f7f97109b0cb307aa7c721c7e75f9c5ed0b6cb36f71cb6c47320148b4fca",
+    //     //   "sha256/6E:BB:A3:BB:1A:3A:25:F9:21:69:A4:BF:E1:67:C6:2E:C3:D8:DC:03:95:13:EB:0B:3B:C4:18:5F:06:A5:EC:2B"]
+    //   },
+    //   headers: {
+    //     Accept: "application/json; charset=utf-8", "Access-Control-Allow-Origin": "*", "e_platform": "mobile",
+    //   }
+    // }).then(() => {
+    //   console.log('ssl pinning success');
+    // }).catch(error => {
+    //   console.log('error pinning: ', JSON.stringify(error));
+    // })
+
+    // return;
+
 
     const bioEnable = await getStorage('isBioEnabled');
     if (bioEnable)
@@ -134,7 +172,7 @@ export default class Splash extends React.Component {
 
       setConfiguration('Agent', await decryptData(await getStorage('Agent'), 8));
       setConfiguration('Employee', await decryptData(await getStorage('Employee'), 8));
-      setConfiguration('AgentName', await decryptData(await getStorage('AgentName'), 8));
+      setConfiguration('AgentName', await getStorage('AgentName'));
       setConfiguration('MobileNumber', await decryptData(await getStorage('MobileNumber'), 8));
 
     }
@@ -144,7 +182,6 @@ export default class Splash extends React.Component {
   }
 
   componentWillUnmount() {
-    crashlytics().log("Splash view unmounted.");
     FingerprintScanner.release();
   }
 
@@ -190,10 +227,12 @@ export default class Splash extends React.Component {
     FingerprintScanner
       .authenticate({ title: 'Log in with Biometrics' })
       .then(async () => {
+        await analytics().logEvent('Action', { biometric: 'Yes' });
         await setStorage('isBioEnabled', 'enable');
         setConfiguration('isBioEnabled', 'enable');
         this.getData();
-      }).catch((error) => {
+      }).catch(async (error) => {
+        await analytics().logEvent('Action', { biometric: 'No' });
         try {
           const isBioEnabled = getConfiguration('isBioEnabled');
           if (isBioEnabled && isBioEnabled === 'enable') {
@@ -221,12 +260,8 @@ export default class Splash extends React.Component {
 
     }
 
-    crashlytics().log("request sso to login.");
-
     try {
       const result = await authorize(config);
-
-      crashlytics().log("sso login success.");
 
       console.log('token result=>', JSON.stringify(result));
 
@@ -242,7 +277,6 @@ export default class Splash extends React.Component {
 
     }
     catch (error) {
-      crashlytics().log("sso login error.");
       console.log(error);
       BackHandler.exitApp();
     }
@@ -296,6 +330,7 @@ export default class Splash extends React.Component {
 
     console.log('jwt result => ', result);
 
+
     var sales = result.IsSalesAgent;
     var etoken = result.EncodedJWT;
     var agentToken = result.AgentCode ? result.AgentCode : '';
@@ -303,16 +338,20 @@ export default class Splash extends React.Component {
     var agentName = result.AgentName ? result.AgentName : '';
     var mobileNumber = result.Mobile ? result.Mobile : '';
 
-    // console.log("gafsvfhvb", sales);
-    crashlytics().log("employeeCode:" + employeeCode);
-    crashlytics().log("AgentCode:" + agentToken);
-    crashlytics().log("sales:" + sales);
+    await analytics().logLogin({ method: 'M-Smart' });
 
-    await setStorage('encryptedToken', etoken+'');
-    await setStorage('salesflag', sales+'');
+    await analytics().setUserProperties({
+      'account_name': agentName + '',
+      'employeeCode': employeeCode + '',
+      'AgentCode': agentToken + '',
+      'sales': sales + ''
+    });
+
+    await setStorage('encryptedToken', etoken + '');
+    await setStorage('salesflag', sales + '');
     await setStorage('Agent', await encryptData(agentToken + '', 8));
     await setStorage('Employee', await encryptData(employeeCode + '', 8));
-    await setStorage('AgentName', await encryptData(agentName + '', 8));
+    await setStorage('AgentName', agentName + '');
     await setStorage('MobileNumber', await encryptData(mobileNumber + '', 8));
 
     setConfiguration('salesflag', sales);
@@ -380,7 +419,6 @@ export default class Splash extends React.Component {
       }).catch(error => this.props.navigation.navigate('MainScreen'));
 
   }
-
 
   render() {
 

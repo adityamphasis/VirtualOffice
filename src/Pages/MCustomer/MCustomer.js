@@ -21,7 +21,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
-import crashlytics from "@react-native-firebase/crashlytics";
+import analytics from '@react-native-firebase/analytics';
 
 import { MCUSTOMER_URL, I_SERVICE_URL } from '../../utils/apiConfig';
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
@@ -43,8 +43,8 @@ export default class MCustomer extends React.Component {
 
   }
 
-  componentDidMount() {
-    crashlytics().log("MCustomer, ISERVICE view mounted.");
+  componentDidMount = async () => {
+    // await analytics().logScreenView({ screen_name: 'WebViewScreen', screen_class: 'WebViewScreen' });
     // this.renderView();
     console.log('MCUSTOMER_URL', MCUSTOMER_URL);
     console.log('ISERVICE', I_SERVICE_URL);
@@ -52,8 +52,6 @@ export default class MCustomer extends React.Component {
   }
 
   componentWillUnmount() {
-    crashlytics().log("MCustomer, ISERVICE view unmounted.");
-
   }
 
   goBack() {
@@ -81,7 +79,6 @@ export default class MCustomer extends React.Component {
   renderView = () => {
 
     if (this.comingScreen === 'customer') {
-      crashlytics().log("mCustomer rendering on web");
       return <WebView
         ref={(ref) => { this.webview = ref; }}
         originWhitelist={['*']}
@@ -112,8 +109,6 @@ export default class MCustomer extends React.Component {
       />
 
     }
-
-    crashlytics().log("services rendering on web");
 
     return <WebView
       originWhitelist={['*']}
@@ -147,8 +142,6 @@ export default class MCustomer extends React.Component {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 
-        <Loader visible={this.state.isLoading} />
-
         {this.comingScreen != 'service' && <View style={styles.headerView}>
           <TouchableOpacity
             style={styles.backTouchable}
@@ -175,6 +168,8 @@ export default class MCustomer extends React.Component {
 
           {/* </View> */}
         </View>
+        
+        <Loader visible={this.state.isLoading} />
 
       </SafeAreaView>
     );

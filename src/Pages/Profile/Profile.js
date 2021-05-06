@@ -9,7 +9,7 @@ import {
 } from 'react-native-responsive-screen';
 import { DrawerActions } from 'react-navigation-drawer';
 import axios from 'react-native-axios';
-import crashlytics from "@react-native-firebase/crashlytics";
+import analytics from '@react-native-firebase/analytics';
 
 import { apiConfig } from '../../utils/apiConfig';
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
@@ -42,15 +42,15 @@ export default class ProfileScreen extends React.Component {
   }
 
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    await analytics().logScreenView({ screen_name: 'ProfileScreen', screen_class: 'ProfileScreen' });
     if (getConfiguration('salesflag'))
       this.getAgentProfile();
     else
       this.getEmployeeProfile();
   }
 
-  componentWillUnmount(){
-    crashlytics().log("Profile view unmounted.");
+  componentWillUnmount() {
   }
 
   goBack() {
@@ -82,7 +82,7 @@ export default class ProfileScreen extends React.Component {
       'Agent_Code': getConfiguration('Employee'),
       'PartnerKey': 'POIN06EM11'
     }
-    
+
     const URL = apiConfig.EMPLOYEE;
     console.log('URL:' + URL);
 
@@ -121,7 +121,7 @@ export default class ProfileScreen extends React.Component {
       'Agent_Code': getConfiguration('Agent'),
       'PartnerKey': 'POIN06EM11'
     }
-    
+
     const URL = apiConfig.AGENT;
     console.log('URL:' + URL);
 

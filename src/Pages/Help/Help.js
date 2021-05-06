@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 
 import { WebView } from 'react-native-webview';
-import crashlytics from "@react-native-firebase/crashlytics";
+import analytics from '@react-native-firebase/analytics';
 
 import {
   widthPercentageToDP as wp,
@@ -44,12 +44,8 @@ export default class Help extends React.Component {
 
   }
 
-  componentDidMount() {
-    crashlytics().log("Help view mounted.");
-  }
-
-  componentWillUnmount() {
-    crashlytics().log("Help view unmounted.");
+  componentDidMount = async () => {
+    await analytics().logScreenView({ screen_name: 'HelpScreen', screen_class: 'HelpScreen' });
   }
 
   goBack() {

@@ -8,7 +8,7 @@ import AppLink from 'react-native-app-link';
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
 import Clipboard from '@react-native-community/clipboard';
 import axios from 'react-native-axios';
-import crashlytics from "@react-native-firebase/crashlytics";
+import analytics from '@react-native-firebase/analytics';
 
 import {
   widthPercentageToDP as wp,
@@ -45,14 +45,13 @@ export default class Dashboard extends React.Component {
   }
 
 
-  componentDidMount() {
-    crashlytics().log("Dashboard view mounted.");
+  componentDidMount = async () => {
+    await analytics().logScreenView({ screen_name: 'DashboardScreen', screen_class: 'DashboardScreen' });
     this.validateTokenApi();
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
-    crashlytics().log("Dashboard view unmounted.");
     // this.focusListener.remove();
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -218,9 +217,10 @@ export default class Dashboard extends React.Component {
     this.props.navigation.navigate('MLife')
   }
 
-  gotomcustomer = () => {
+  gotomcustomer = async () => {
     console.log("salesflag", getConfiguration('salesflag'));
     if (getConfiguration('salesflag')) {
+      await analytics().logEvent('Action', { click: 'open MCustomre' });
       this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken, screen: 'customer' })
     } else {
       alert('Application is not applicable to login user.');
@@ -241,9 +241,9 @@ export default class Dashboard extends React.Component {
     })
   }
 
-  gotoVymo = () => {
+  gotoVymo = async () => {
 
-    crashlytics().log("Clicked on Vymo");
+    await analytics().logEvent('Action', { click: 'open vymo' });
 
     IntentLauncher.startAppByPackageName('com.getvymo.android')
       .then((result) => {
@@ -266,9 +266,9 @@ export default class Dashboard extends React.Component {
 
   }
 
-  gotoMSell = () => {
+  gotoMSell = async () => {
 
-    crashlytics().log("Clicked on Msell");
+    await analytics().logEvent('Action', { click: 'open MSell' });
 
     IntentLauncher.startAppByPackageName('com.enparadigm.bharthiaxa')
       .then((result) => {

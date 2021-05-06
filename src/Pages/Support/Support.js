@@ -5,7 +5,7 @@ import {
   ImageBackground, Image, ScrollView, StatusBar, Keyboard,
   Platform, SafeAreaView, Linking, NativeModules, FlatList, BackHandler, Alert
 } from 'react-native';
-import crashlytics from "@react-native-firebase/crashlytics";
+import analytics from '@react-native-firebase/analytics';
 
 import {
   widthPercentageToDP as wp,
@@ -64,14 +64,14 @@ export default class Support extends React.Component {
   }
 
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    await analytics().logScreenView({ screen_name: 'SupportScreen', screen_class: 'SupportScreen' });
     setConfiguration('isSupport', false)
     // this.validateTokenApi();
     // BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
-    crashlytics().log("Support view unmounted.");
     // this.focusListener.remove();
     // BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -108,7 +108,6 @@ export default class Support extends React.Component {
   }
 
   raiseTicket = () => {
-    crashlytics().log("Clicked on i raise ticket");
     Linking.openURL(SUPPORT_RAISE_TICKET);
   }
 
@@ -167,12 +166,17 @@ export default class Support extends React.Component {
               </View>
             </View>
 
-            <View style={{ backgroundColor: 'transparent', flexDirection: 'row', justifyContent: 'center', alignItems: 'center',marginTop:'10%' }}>
+            <View style={{
+              backgroundColor: 'transparent',
+              flexDirection: 'row', justifyContent: 'center',
+              alignItems: 'center', marginTop: '10%', marginBottom: 10
+            }}>
 
               <Text style={styles.appName1}>To raise ticket in Symphony</Text>
               <TouchableOpacity onPress={() => this.raiseTicket()}>
                 <Text style={{ color: 'blue', textDecorationLine: 'underline', marginLeft: 5, marginTop: 5 }}>Click here</Text>
               </TouchableOpacity>
+
             </View>
 
           </ScrollView>
