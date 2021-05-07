@@ -21,7 +21,7 @@ import { fetch } from 'react-native-ssl-pinning';
 
 import { clearAll, getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
 import { getStorage, setStorage, clearStorage } from '../../utils/authentication';
-import { apiConfig } from '../../utils/apiConfig';
+import { apiConfig, CERTS_SHA } from '../../utils/apiConfig';
 
 import { authorize } from 'react-native-app-auth';
 import { Page } from '../../../components';
@@ -116,42 +116,6 @@ export default class Splash extends React.Component {
     //   this.showAlertForSplash('OS or Application installed on your device are violating Android playstore safetynet policies.');
     //   return;
     // }
-
-    // fetch("https://online.bhartiaxa.com", {
-    //   method: "GET",
-    //   pkPinning: true,
-    //   sslPinning: {
-    //     certs: ['aws_bharti']
-    //     // certs: [
-    //     //   "sha256/JSMzqOOrtyOT1kmau6zKhgT676hGgczD5VMdRMyJZFA=",
-    //     //   "sha256/zTlCX9pDYzkvadzpWldHQIMtbMA9ZFzGVXeoCsVymq4=",
-    //     //   "sha256/JSMzqOOrtyOT1kmau6zKhgT676hGgczD5VMdRMyJZFA=",
-    //     //   "sha256/++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=",
-    //     //   "sha256/47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
-    //     // ]
-    //     // certs: ["sha256/47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
-    //     //   "sha256/sha256/JSMzqOOrtyOT1kmau6zKhgT676hGgczD5VMdRMyJZFA=",
-    //     //   "sha256/++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=",
-    //     //   "sha256/5e16eed3c218991038e429b8041c3c220d4eaa67",
-    //     //   "sha256/6EBBA3BB1A3A25F92169A4BFE167C62EC3D8DC039513EB0B3BC4185F06A5EC2B",
-    //     //   "sha1/5E16EED3C218991038E429B8041C3C220D4EAA67",
-    //     //   "sha1/7c:02:49:a5:b1:4f:05:4c:df:28:43:62:88:76:e5:14:79:1e:24:6a",
-    //     //   "sha256/B88ECC25A136B236147AD476D4AE27B06522381518F05ED1DC2BBFE943071278",
-    //     //   "sha1/69E634112E49C3CD3EAC27A0C137915C46781A90",
-    //     //   "sha256/d107f7f97109b0cb307aa7c721c7e75f9c5ed0b6cb36f71cb6c47320148b4fca",
-    //     //   "sha256/6E:BB:A3:BB:1A:3A:25:F9:21:69:A4:BF:E1:67:C6:2E:C3:D8:DC:03:95:13:EB:0B:3B:C4:18:5F:06:A5:EC:2B"]
-    //   },
-    //   headers: {
-    //     Accept: "application/json; charset=utf-8", "Access-Control-Allow-Origin": "*", "e_platform": "mobile",
-    //   }
-    // }).then(() => {
-    //   console.log('ssl pinning success');
-    // }).catch(error => {
-    //   console.log('error pinning: ', JSON.stringify(error));
-    // })
-
-    // return;
-
 
     const bioEnable = await getStorage('isBioEnabled');
     if (bioEnable)
@@ -264,16 +228,14 @@ export default class Splash extends React.Component {
       const result = await authorize(config);
 
       console.log('token result=>', JSON.stringify(result));
-
-      await setStorage('token', result.accessToken);
       await setStorage('idToken', result.idToken);
       await setStorage('refreshToken', result.refreshToken);
 
-      setConfiguration('token', result.accessToken);
       setConfiguration('idToken', result.idToken);
       setConfiguration('refreshToken', result.refreshToken);
 
       this.JWTCheckAgentCode(result.accessToken);
+
 
     }
     catch (error) {
@@ -305,21 +267,46 @@ export default class Splash extends React.Component {
       "request": encryptedParams//"wZ41JrpUFxYN657xEboMROidcqi+SuudbDsP9Co2zeTjD6u1YHmdD5IYFReAL4vHAmty0BZVSxyiprqQbcNjZhS0ybG6D1HCTz7tU1CpN/ownifuNlThzFDgG9EHnXcUt5V4F76t4qcoBI6jkyKb37zgt5zRMWg51nECtBXVoYgYV35mYYCPNz8UK+JIjQRdB5trVjZblvfCj1ru4++DxGzr7KF3BY6KVnTAhuObg45O4fjdDQFsAtnG86IG9fMC9MEc+v8bNy1M3al+QmBfmRvYaavleXjbzJNpAS+bVLF0wZgD8SnaqfUFXwJxlgvoy7D7DpscCWonWZMQdKvZO66I/XQXt1fa5rHhfKy38qzki/g8o/GraaRRKjnq6xXxth5KKhG3ZM32PbMEvbYGvhPCSK0ZUb16Y60pdA98eK8qmpSlgm93XvisN/TDojkWRBq9MJKlczwOGocsWY8ih5VPKirjXGUaEEje8GmLKRmQ49OJtQYJUHuujDlblxSMHhHylyaiYUaI4wuhVQPGrqTrbw/2w9wRH/w3SQlcErsXNUOvcMWgPYiQwoQBl7kuhbTdhoEfFY95FNh1n7QQOtViCUIzhorCHKdNLTzbjuNYeiPWFtWl4G17tBz6EwxA"
     };
 
-    axios.post(URL, encParams, {
-      "headers": {
-        "content-type": "application/json",
+    fetch(URL, {
+      method: "POST",
+      timeoutInterval: 100000,
+      body: JSON.stringify(encParams),
+      pkPinning: true,
+      disableAllSecurity: true,
+      sslPinning: {
+        certs: CERTS_SHA
       },
-    }).then(response => {
-
-      console.log("jwt response => ", JSON.stringify(response.data));
-      this.parseTokenApiData(response.data, token);
-
+      headers: {
+        Accept: "application/json; charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
+        "e_platform": "mobile",
+        // "content-type": "application/json"
+      }
+    }).then((response) => response.json()).then(result => {
+      console.log('ssl pinning success', JSON.stringify(result));
+      this.parseTokenApiData(result, token);
     }).catch(async error => {
-      console.log("jwt error", error);
+      console.log('error pinning: ', JSON.stringify(error));
       await clearStorage();
       this.setState({ isLoading: false });
       alert('Something went wrong. Please try again after some time.');
     });
+
+    // axios.post(URL, encParams, {
+    //   "headers": {
+    //     "content-type": "application/json",
+    //   },
+    // }).then(response => {
+
+    //   console.log("jwt response => ", JSON.stringify(response.data));
+    //   this.parseTokenApiData(response.data, token);
+
+    // }).catch(async error => {
+    //   console.log("jwt error", error);
+    //   await clearStorage();
+    //   this.setState({ isLoading: false });
+    //   alert('Something went wrong. Please try again after some time.');
+    // });
 
   }
 
@@ -353,6 +340,9 @@ export default class Splash extends React.Component {
     await setStorage('Employee', await encryptData(employeeCode + '', 8));
     await setStorage('AgentName', agentName + '');
     await setStorage('MobileNumber', await encryptData(mobileNumber + '', 8));
+
+    await setStorage('token', accessToken);
+    setConfiguration('token', accessToken);
 
     setConfiguration('salesflag', sales);
     setConfiguration('encryptedToken', etoken);

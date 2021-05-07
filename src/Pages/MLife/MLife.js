@@ -51,7 +51,7 @@ export default class MLife extends React.Component {
 
   clickiLearn = async () => {
 
-    await analytics().logEvent('Action', { click: 'open iLearn' });
+    await analytics().logEvent('Action', { click: 'iLearn' });
 
     IntentLauncher.startAppByPackageName('com.chaptervitamins.bharatiaxa')
       .then((result) => {
@@ -78,7 +78,7 @@ export default class MLife extends React.Component {
 
   clickiearn = async () => {
 
-    await analytics().logEvent('Action', { click: 'open iEarn' });
+    await analytics().logEvent('Action', { click: 'iEarn' });
 
     IntentLauncher.startAppByPackageName('com.bhartiaxa.mlife')
       .then((result) => {
@@ -104,7 +104,7 @@ export default class MLife extends React.Component {
 
   gotoRecruit = async () => {
 
-    await analytics().logEvent('Action', { click: 'open iRecruit' });
+    await analytics().logEvent('Action', { click: 'iRecruit' });
 
     IntentLauncher.startAppByPackageName('com.bhartiaxa.recruit')
       .then((result) => {
@@ -131,7 +131,7 @@ export default class MLife extends React.Component {
 
   gotoService = async () => {
 
-    await analytics().logEvent('Action', { click: 'open iServices' });
+    await analytics().logEvent('Action', { click: 'iServices' });
 
     if (getConfiguration('salesflag')) {
       this.props.navigation.navigate('MCustomer', { screen: 'service' })

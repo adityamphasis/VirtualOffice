@@ -7,17 +7,15 @@ import {
 import AppLink from 'react-native-app-link';
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
 import Clipboard from '@react-native-community/clipboard';
-import axios from 'react-native-axios';
 import analytics from '@react-native-firebase/analytics';
+
+import axios from 'react-native-axios';
+import { fetch } from 'react-native-ssl-pinning';
 
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
-
-import { apiConfig, UAT } from '../../utils/apiConfig';
-import { getConfiguration, unsetConfiguration } from '../../utils/configuration';
-import { clearStorage, getStorage } from '../../utils/authentication';
 
 import {
   Page, Button, ButtonOutline, ButtonContainer,
@@ -25,6 +23,11 @@ import {
 } from '../../../components';
 
 import { Loader } from '../../../components';
+
+import { apiConfig, UAT, CERTS_SHA } from '../../utils/apiConfig';
+import { getConfiguration, unsetConfiguration } from '../../utils/configuration';
+import { clearStorage, getStorage } from '../../utils/authentication';
+
 import { encryptData, decryptData } from '../../utils/AES';
 
 
@@ -76,21 +79,46 @@ export default class Dashboard extends React.Component {
       "request": encryptedParam
     };
 
-    axios.post(URL, encParams, {
-      "headers": {
-        "content-type": "application/json",
+    fetch(URL, {
+      method: "POST",
+      timeoutInterval: 100000,
+      body: JSON.stringify(encParams),
+      pkPinning: true,
+      disableAllSecurity: true,
+      sslPinning: {
+        certs: CERTS_SHA
+      },
+      headers: {
+        Accept: "application/json; charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
+        "e_platform": "mobile",
+        // "content-type": "application/json"
       }
-    }).then(response => {
-
-      console.log("validate response => ", JSON.stringify(response.data));
-
-      this.parseData(response.data);
-
-    }).catch(error => {
-      console.log("validate error", JSON.stringify(error));
+    }).then((response) => response.json()).then(result => {
+      console.log('dashboard ssl pinning success', JSON.stringify(result));
+      this.parseData(result);
+    }).catch(async error => {
+      console.log('dashboard error pinning: ', JSON.stringify(error));
       this.setState({ isLoading: false });
       alert('Something went wrong. Please try again after some time.');
     });
+
+
+    // axios.post(URL, encParams, {
+    //   "headers": {
+    //     "content-type": "application/json",
+    //   }
+    // }).then(response => {
+
+    //   console.log("validate response => ", JSON.stringify(response.data));
+
+    //   this.parseData(response.data);
+
+    // }).catch(error => {
+    //   console.log("validate error", JSON.stringify(error));
+    //   this.setState({ isLoading: false });
+    //   alert('Something went wrong. Please try again after some time.');
+    // });
 
   }
 
@@ -179,7 +207,12 @@ export default class Dashboard extends React.Component {
             onPress: () => console.log('Cancel Pressed'),
             style: 'cancel',
           },
-          { text: 'OK', onPress: () => BackHandler.exitApp() },
+          {
+            text: 'OK', onPress: async () => {
+              await analytics().logEvent('Action', { click: 'ExitApp' });
+              BackHandler.exitApp();
+            }
+          },
         ]
       );
       return true;
@@ -189,8 +222,9 @@ export default class Dashboard extends React.Component {
 
   }
 
-  openDrawerClick = () => {
+  openDrawerClick = async () => {
     // this.props.navigation.dispatch(DrawerActions.openDrawer());
+    // await analytics().logEvent('Action', { click: 'DrawerOpen' });
     this.props.navigation.openDrawer();
   }
 
@@ -212,15 +246,16 @@ export default class Dashboard extends React.Component {
     })
   }
 
-  gotomlife = () => {
+  gotomlife = async () => {
     //this.logout()
+    await analytics().logEvent('Action', { click: 'MLife' });
     this.props.navigation.navigate('MLife')
   }
 
   gotomcustomer = async () => {
     console.log("salesflag", getConfiguration('salesflag'));
     if (getConfiguration('salesflag')) {
-      await analytics().logEvent('Action', { click: 'open MCustomre' });
+      await analytics().logEvent('Action', { click: 'MCustomre' });
       this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken, screen: 'customer' })
     } else {
       alert('Application is not applicable to login user.');
@@ -243,7 +278,7 @@ export default class Dashboard extends React.Component {
 
   gotoVymo = async () => {
 
-    await analytics().logEvent('Action', { click: 'open vymo' });
+    await analytics().logEvent('Action', { click: 'vymo' });
 
     IntentLauncher.startAppByPackageName('com.getvymo.android')
       .then((result) => {
@@ -268,7 +303,7 @@ export default class Dashboard extends React.Component {
 
   gotoMSell = async () => {
 
-    await analytics().logEvent('Action', { click: 'open MSell' });
+    await analytics().logEvent('Action', { click: 'MSell' });
 
     IntentLauncher.startAppByPackageName('com.enparadigm.bharthiaxa')
       .then((result) => {
@@ -318,7 +353,7 @@ export default class Dashboard extends React.Component {
           <Image resizeMode="contain" style={styles.leftLogo}
             source={require('../../../assets/logo_rht.png')} />
         </TouchableOpacity>
-        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (30 Apr 23:00) </Text>}
+        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (07 May 15:30) </Text>}
         <View style={[styles.welcomContainer, { marginLeft: UAT ? '5%' : '30%' }]}>
           <Text style={styles.headerTitle}> Welcome to</Text>
           <Text style={styles.headerTitle1}>M-Smart</Text>

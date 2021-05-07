@@ -1,5 +1,5 @@
 
-const UAT = false;
+const UAT = true;
 
 const UAT_BASE_URL = 'https://online.bharti-axalife.com/';
 const AWS_BASE_URL = 'https://online.bhartiaxa.com/';
@@ -62,6 +62,17 @@ const AWS_Urls = {
     LOGOUT: BASE_URL + PATH + 'iwin-prod-web/api/compass-sso-wrapper/logout'
 }
 
+const CERTS_SHA = [
+    "sha256/JSMzqOOrtyOT1kmau6zKhgT676hGgczD5VMdRMyJZFA=",
+    "sha256/zTlCX9pDYzkvadzpWldHQIMtbMA9ZFzGVXeoCsVymq4=",
+    "sha256/++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=",
+    "sha256/47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+    //for uat
+    "sha256/5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=",
+    "sha256/zFfoFtZn7Ym1omSjLdmxv/OeXrFGveTv+r8ksRuvoLk=",
+    "sha256/r/mIkG3eEpVdm+u/ko/cwxzOMo1bk4TyHIlByibiA5E="
+]
+
 const apiConfig = UAT ? UAT_Urls : AWS_Urls;
 
-export { apiConfig, MCUSTOMER_URL, I_SERVICE_URL, SUPPORT_RAISE_TICKET, HELP_URL, UAT };
+export { apiConfig, MCUSTOMER_URL, I_SERVICE_URL, SUPPORT_RAISE_TICKET, HELP_URL, UAT, CERTS_SHA };
