@@ -10,10 +10,12 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import axios from 'react-native-axios';
+
 import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
 import { DrawerActions } from 'react-navigation-drawer';
 import analytics from '@react-native-firebase/analytics';
 
+import { apiConfig } from '../../utils/apiConfig';
 import { getConfiguration, setConfiguration } from '../../utils/configuration';
 import { Loader } from '../../../components';
 import { encryptData, decryptData } from '../../utils/AES';
@@ -51,7 +53,7 @@ export default class MLife extends React.Component {
 
   clickiLearn = async () => {
 
-    await analytics().logEvent('Action', { click: 'iLearn' });
+    await analytics().logEvent('iLearn', { click: 'iLearn' });
 
     IntentLauncher.startAppByPackageName('com.chaptervitamins.bharatiaxa')
       .then((result) => {
@@ -78,7 +80,7 @@ export default class MLife extends React.Component {
 
   clickiearn = async () => {
 
-    await analytics().logEvent('Action', { click: 'iEarn' });
+    await analytics().logEvent('iEarn', { click: 'iEarn' });
 
     IntentLauncher.startAppByPackageName('com.bhartiaxa.mlife')
       .then((result) => {
@@ -104,7 +106,7 @@ export default class MLife extends React.Component {
 
   gotoRecruit = async () => {
 
-    await analytics().logEvent('Action', { click: 'iRecruit' });
+    await analytics().logEvent('iRecruit', { click: 'iRecruit' });
 
     IntentLauncher.startAppByPackageName('com.bhartiaxa.recruit')
       .then((result) => {
@@ -131,7 +133,7 @@ export default class MLife extends React.Component {
 
   gotoService = async () => {
 
-    await analytics().logEvent('Action', { click: 'iServices' });
+    await analytics().logEvent('iServices', { click: 'iServices' });
 
     if (getConfiguration('salesflag')) {
       this.props.navigation.navigate('MCustomer', { screen: 'service' })
@@ -151,18 +153,19 @@ export default class MLife extends React.Component {
 
   ApiWin = async () => {
 
+
     console.log('ApiWin');
     this.setState({ isLoading: true });
 
-    //let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/login"
+    const URL = apiConfig.I_WIN;
+    console.log('URL:' + URL);
 
-    let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/login"
+    await analytics().logEvent('iWin', { click: 'iWin' });
 
     let params = {
       'jwtToken': getConfiguration('encryptedToken', ''),
       'PartnerKey': 'JWT12SER02'
     }
-
 
     const encryptedParams = await encryptData(JSON.stringify(params));
 
@@ -172,7 +175,7 @@ export default class MLife extends React.Component {
       "request": encryptedParams//"wZ41JrpUFxYN657xEboMROidcqi+SuudbDsP9Co2zeTjD6u1YHmdD5IYFReAL4vHAmty0BZVSxyiprqQbcNjZhS0ybG6D1HCTz7tU1CpN/ownifuNlThzFDgG9EHnXcUt5V4F76t4qcoBI6jkyKb37zgt5zRMWg51nECtBXVoYgYV35mYYCPNz8UK+JIjQRdB5trVjZblvfCj1ru4++DxGzr7KF3BY6KVnTAhuObg45O4fjdDQFsAtnG86IG9fMC9MEc+v8bNy1M3al+QmBfmRvYaavleXjbzJNpAS+bVLF0wZgD8SnaqfUFXwJxlgvoy7D7DpscCWonWZMQdKvZO66I/XQXt1fa5rHhfKy38qzki/g8o/GraaRRKjnq6xXxth5KKhG3ZM32PbMEvbYGvhPCSK0ZUb16Y60pdA98eK8qmpSlgm93XvisN/TDojkWRBq9MJKlczwOGocsWY8ih5VPKirjXGUaEEje8GmLKRmQ49OJtQYJUHuujDlblxSMHhHylyaiYUaI4wuhVQPGrqTrbw/2w9wRH/w3SQlcErsXNUOvcMWgPYiQwoQBl7kuhbTdhoEfFY95FNh1n7QQOtViCUIzhorCHKdNLTzbjuNYeiPWFtWl4G17tBz6EwxA"
     };
 
-    axios.post(url, encParams, {
+    axios.post(URL, encParams, {
       "headers": {
         "content-type": "application/json",
       },

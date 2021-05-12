@@ -111,7 +111,6 @@ export default class Dashboard extends React.Component {
     // }).then(response => {
 
     //   console.log("validate response => ", JSON.stringify(response.data));
-
     //   this.parseData(response.data);
 
     // }).catch(error => {
@@ -226,6 +225,7 @@ export default class Dashboard extends React.Component {
     // this.props.navigation.dispatch(DrawerActions.openDrawer());
     // await analytics().logEvent('Action', { click: 'DrawerOpen' });
     this.props.navigation.openDrawer();
+
   }
 
   appInstall() {
@@ -248,14 +248,14 @@ export default class Dashboard extends React.Component {
 
   gotomlife = async () => {
     //this.logout()
-    await analytics().logEvent('Action', { click: 'MLife' });
+    await analytics().logEvent('MLife', { click: 'MLife' });
     this.props.navigation.navigate('MLife')
   }
 
   gotomcustomer = async () => {
     console.log("salesflag", getConfiguration('salesflag'));
     if (getConfiguration('salesflag')) {
-      await analytics().logEvent('Action', { click: 'MCustomre' });
+      await analytics().logEvent('MCustomre', { click: 'MCustomre' });
       this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken, screen: 'customer' })
     } else {
       alert('Application is not applicable to login user.');
@@ -278,32 +278,33 @@ export default class Dashboard extends React.Component {
 
   gotoVymo = async () => {
 
-    await analytics().logEvent('Action', { click: 'vymo' });
+    await analytics().logEvent('vymo', { click: 'vymo' });
+
+    const clientId = 'baxa';
+    const accessToken = getConfiguration('token');
+
+    // const url = 'vymo://auth_session?client_id=$' + clientId + '&auth_token=' + accessToken;
+    // const url = 'maps://app?saddr=Cupertino&San+Francisco';
+
+    // Linking.openURL(url)
+    //   .catch(error => {
+    //     Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
+    //   });
+
 
     IntentLauncher.startAppByPackageName('com.getvymo.android')
       .then((result) => {
         console.log('startAppByPackageName started');
       }).catch((error) => {
         console.warn('startAppByPackageName: could not open', error);
-
-        // if (this.versionApiData) {
-        //   const index = this.versionApiData.findIndex(x => x.PackageName === 'com.getvymo.android');
-        //   console.log('index', index);
-        //   if (index != -1) {
-        //     Linking.openURL(this.versionApiData[index].AppDownloadLink);
-        //     return;
-        //   }
-        // }
-
         Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
-
       });
 
   }
 
   gotoMSell = async () => {
 
-    await analytics().logEvent('Action', { click: 'MSell' });
+    await analytics().logEvent('MSell', { click: 'MSell' });
 
     IntentLauncher.startAppByPackageName('com.enparadigm.bharthiaxa')
       .then((result) => {
@@ -311,18 +312,7 @@ export default class Dashboard extends React.Component {
       })
       .catch((error) => {
         console.warn('startAppByPackageName: could not open', error);
-
-        // if (this.versionApiData) {
-        //   const index = this.versionApiData.findIndex(x => x.PackageName === 'com.enparadigm.bharthiaxa');
-        //   console.log('index', index);
-        //   if (index != -1) {
-        //     Linking.openURL(this.versionApiData[index].AppDownloadLink);
-        //     return;
-        //   }
-        // }
-
         Linking.openURL('https://play.google.com/store/apps/details?id=com.enparadigm.bharthiaxa');
-
       });
   }
 
@@ -353,7 +343,7 @@ export default class Dashboard extends React.Component {
           <Image resizeMode="contain" style={styles.leftLogo}
             source={require('../../../assets/logo_rht.png')} />
         </TouchableOpacity>
-        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (07 May 15:30) </Text>}
+        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (12 May 12:00) </Text>}
         <View style={[styles.welcomContainer, { marginLeft: UAT ? '5%' : '30%' }]}>
           <Text style={styles.headerTitle}> Welcome to</Text>
           <Text style={styles.headerTitle1}>M-Smart</Text>

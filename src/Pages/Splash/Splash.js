@@ -92,30 +92,30 @@ export default class Splash extends React.Component {
       console.log('error', JSON.stringify(error));
     }
 
-    // if (JailMonkey.isJailBroken()) {
-    //   console.log('JailMonkey: ', JailMonkey.isJailBroken());
-    //   this.showAlertForSplash('You can not use this app on rooted device as per security policy.');
-    //   return;
-    // }
+    if (JailMonkey.isJailBroken()) {
+      console.log('JailMonkey: ', JailMonkey.isJailBroken());
+      this.showAlertForSplash('You can not use this app on rooted device as per security policy.');
+      return;
+    }
 
-    // const isPlayService = await RNGoogleSafetyNet.isPlayServicesAvailable();
-    // console.log('isPlayService', isPlayService);
+    const isPlayService = await RNGoogleSafetyNet.isPlayServicesAvailable();
+    console.log('isPlayService', isPlayService);
 
-    // if (!isPlayService) {
-    //   this.showAlertForSplash('Google play services is not availble.');
-    //   return;
-    // }
+    if (!isPlayService) {
+      this.showAlertForSplash('Google play services is not availble.');
+      return;
+    }
 
-    // const nonce = await RNGoogleSafetyNet.generateNonce(16);
-    // console.log('nounce', JSON.stringify(nonce));
+    const nonce = await RNGoogleSafetyNet.generateNonce(16);
+    console.log('nounce', JSON.stringify(nonce));
 
-    // const safetyResponse = await RNGoogleSafetyNet.sendAttestationRequest(nonce, API_KEY);
-    // console.log('safetyReespone', JSON.stringify(safetyResponse));
+    const safetyResponse = await RNGoogleSafetyNet.sendAttestationRequest(nonce, API_KEY);
+    console.log('safetyReespone', JSON.stringify(safetyResponse));
 
-    // if (!safetyResponse.ctsProfileMatch) {
-    //   this.showAlertForSplash('OS or Application installed on your device are violating Android playstore safetynet policies.');
-    //   return;
-    // }
+    if (!safetyResponse.ctsProfileMatch) {
+      this.showAlertForSplash('OS or Application installed on your device are violating Android playstore safetynet policies.');
+      return;
+    }
 
     const bioEnable = await getStorage('isBioEnabled');
     if (bioEnable)
@@ -191,12 +191,12 @@ export default class Splash extends React.Component {
     FingerprintScanner
       .authenticate({ title: 'Log in with Biometrics' })
       .then(async () => {
-        await analytics().logEvent('Action', { biometric: 'Yes' });
+        await analytics().logEvent('Biometric', { biometric: 'Yes' });
         await setStorage('isBioEnabled', 'enable');
         setConfiguration('isBioEnabled', 'enable');
         this.getData();
       }).catch(async (error) => {
-        await analytics().logEvent('Action', { biometric: 'No' });
+        await analytics().logEvent('Biometric', { biometric: 'No' });
         try {
           const isBioEnabled = getConfiguration('isBioEnabled');
           if (isBioEnabled && isBioEnabled === 'enable') {

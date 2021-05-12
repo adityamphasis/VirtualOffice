@@ -7,6 +7,8 @@ import {
 
 import axios from 'react-native-axios';
 import RNAndroidInstalledApps from 'react-native-android-installed-apps';
+// import AppList from 'react-native-installed-apps';
+
 import moment from "moment";
 // import networkSpeed from 'react-native-network-speed';
 import analytics from '@react-native-firebase/analytics';

@@ -82,20 +82,13 @@ class DrawerContent extends Component {
 
     console.log('ApiWin');
 
-    //let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/logout"
-
-    // let url = "https://online.bharti-axalife.com/MiscServices/iwin-uat-web/api/compass-sso-wrapper/logout"
-
-
     const URL = apiConfig.LOGOUT;
     console.log('URL:' + URL);
-
 
     let params = {
       'jwtToken': getConfiguration('encryptedToken'),
       'PartnerKey': 'JWT12SER02'
     }
-
 
     const encryptedParams = await encryptData(JSON.stringify(params));
 

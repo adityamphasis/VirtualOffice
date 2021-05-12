@@ -146,6 +146,7 @@ export default class Support extends React.Component {
 
                 <FlatList
                   data={contactList}
+                  nestedScrollEnabled={false}
                   renderItem={({ item }) => {
                     console.log('item', JSON.stringify(item));
                     return (

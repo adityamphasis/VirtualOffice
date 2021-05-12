@@ -1,5 +1,5 @@
 
-const UAT = true;
+const UAT = false;
 
 const UAT_BASE_URL = 'https://online.bharti-axalife.com/';
 const AWS_BASE_URL = 'https://online.bhartiaxa.com/';
