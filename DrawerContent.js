@@ -53,7 +53,7 @@ class DrawerContent extends Component {
 
   logout = async () => {
 
-    await analytics().logEvent('Action', { click: 'Logout' });
+    await analytics().logEvent('Logout', { click: 'Logout' });
 
     this.LogoutApi();
 

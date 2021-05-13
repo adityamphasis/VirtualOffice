@@ -191,12 +191,12 @@ export default class Splash extends React.Component {
     FingerprintScanner
       .authenticate({ title: 'Log in with Biometrics' })
       .then(async () => {
-        await analytics().logEvent('Biometric', { biometric: 'Yes' });
+        await analytics().logEvent('Biometric_yes', { biometric: 'Yes' });
         await setStorage('isBioEnabled', 'enable');
         setConfiguration('isBioEnabled', 'enable');
         this.getData();
       }).catch(async (error) => {
-        await analytics().logEvent('Biometric', { biometric: 'No' });
+        await analytics().logEvent('Biometric_no', { biometric: 'No' });
         try {
           const isBioEnabled = getConfiguration('isBioEnabled');
           if (isBioEnabled && isBioEnabled === 'enable') {
