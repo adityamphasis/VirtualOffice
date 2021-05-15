@@ -279,6 +279,11 @@ export default class Dashboard extends React.Component {
   gotoVymo = async () => {
 
     await analytics().logEvent('vymo', { click: 'vymo' });
+    
+    if (!getConfiguration('salesflag')) {
+      alert('Application is not applicable to login user.');
+      return;
+    }
 
     const clientId = 'baxa';
     const accessToken = getConfiguration('token');
@@ -290,7 +295,6 @@ export default class Dashboard extends React.Component {
     //   .catch(error => {
     //     Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
     //   });
-
 
     IntentLauncher.startAppByPackageName('com.getvymo.android')
       .then((result) => {

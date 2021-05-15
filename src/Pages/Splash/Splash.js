@@ -92,6 +92,7 @@ export default class Splash extends React.Component {
       console.log('error', JSON.stringify(error));
     }
 
+
     if (JailMonkey.isJailBroken()) {
       console.log('JailMonkey: ', JailMonkey.isJailBroken());
       this.showAlertForSplash('You can not use this app on rooted device as per security policy.');

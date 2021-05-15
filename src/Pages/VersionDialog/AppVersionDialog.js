@@ -472,7 +472,7 @@ export default class AppVersionDialog extends React.Component {
 
     Alert.alert(
       'Confirm!',
-      'Once you select \'Install individual app\' option, you will not be able choose \'Download all\' option. Do you want to continue?',
+      'Once you select \'Install individual app\' option, you will not be able to choose \'Download all\' option. Do you want to continue?',
       [
         {
           text: 'Cancel',

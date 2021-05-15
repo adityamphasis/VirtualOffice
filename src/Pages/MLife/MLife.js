@@ -81,6 +81,11 @@ export default class MLife extends React.Component {
   clickiearn = async () => {
 
     await analytics().logEvent('iEarn', { click: 'iEarn' });
+    
+    if (!getConfiguration('salesflag')) {
+      alert('Application is not applicable to login user.');
+      return;
+    }
 
     IntentLauncher.startAppByPackageName('com.bhartiaxa.mlife')
       .then((result) => {
@@ -107,6 +112,11 @@ export default class MLife extends React.Component {
   gotoRecruit = async () => {
 
     await analytics().logEvent('iRecruit', { click: 'iRecruit' });
+
+    if (!getConfiguration('salesflag')) {
+      alert('Application is not applicable to login user.');
+      return;
+    }
 
     IntentLauncher.startAppByPackageName('com.bhartiaxa.recruit')
       .then((result) => {
