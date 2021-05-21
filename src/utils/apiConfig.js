@@ -1,5 +1,5 @@
 
-const UAT = false;
+const UAT = true;
 
 const UAT_BASE_URL = 'https://online.bharti-axalife.com/';
 const AWS_BASE_URL = 'https://online.bhartiaxa.com/';
@@ -32,7 +32,8 @@ const UAT_Urls = {
     I_WIN: BASE_URL + PATH + 'iwin-uat-web/api/compass-sso-wrapper/login',
     EMPLOYEE: BASE_URL + PATH + 'DarwinHierarchyRESTServiceUAT/Service1.svc/DarwinboxHierarchyDetailsEncrypted',
     AGENT: BASE_URL + PATH + 'AgentHierarchyRESTWebServiceUAT/Service1.svc/AgentHierarchyDetails',
-    LOGOUT: BASE_URL + PATH + 'iwin-uat-web/api/compass-sso-wrapper/logout'
+    LOGOUT: BASE_URL + PATH + 'iwin-uat-web/api/compass-sso-wrapper/logout',
+    LOGOUT_VYMO: BASE_URL + PATH + 'VymoSSOLogout_UAT_WebService/api/VymoSSOWrapper/logout'
 }
 
 
@@ -47,6 +48,7 @@ const UAT_Urls = {
 //     EMPLOYEE: BASE_URL + PATH + 'DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted',
 //     AGENT: BASE_URL + PATH + 'AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails',
 //     LOGOUT: BASE_URL + PATH + 'iwin-prod-web/api/compass-sso-wrapper/logout'
+//     LOGOUT_VYMO: BASE_URL + PATH + 'VymoSSOLogout_UAT_WebService/api/VymoSSOWrapper/logout'
 // }
 
 //aws urls
@@ -59,7 +61,8 @@ const AWS_Urls = {
     I_WIN: BASE_URL + PATH + 'iwin-prod-web/api/compass-sso-wrapper/login',
     EMPLOYEE: BASE_URL + PATH + 'DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted',
     AGENT: BASE_URL + PATH + 'AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails',
-    LOGOUT: BASE_URL + PATH + 'iwin-prod-web/api/compass-sso-wrapper/logout'
+    LOGOUT: BASE_URL + PATH + 'iwin-prod-web/api/compass-sso-wrapper/logout',
+    LOGOUT_VYMO: BASE_URL + PATH + 'VymoSSOLogout_UAT_WebService/api/VymoSSOWrapper/logout'
 }
 
 const CERTS_SHA = [

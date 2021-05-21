@@ -212,7 +212,7 @@ export default class MLife extends React.Component {
 
       console.log('iWIn result => ', result.data.deepLink);
 
-      const url = result.data.deepLink
+      const url = result.data.deepLink;
 
       if (url.includes("https")) {
         Linking.openURL(url).catch((err) => console.error('An error occurred', err));

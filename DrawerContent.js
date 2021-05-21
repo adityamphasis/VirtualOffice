@@ -56,6 +56,7 @@ class DrawerContent extends Component {
     await analytics().logEvent('Logout', { click: 'Logout' });
 
     this.LogoutApi();
+    this.LogoutVymoApi();
 
     unsetConfiguration('token');
     unsetConfiguration('salesflag');
@@ -75,6 +76,41 @@ class DrawerContent extends Component {
     this.props.navigation.navigate('SplashScreen');
 
     return;
+
+  }
+
+  LogoutVymoApi = async () => {
+
+    console.log('LogoutVymoApi');
+
+    const URL = apiConfig.LOGOUT_VYMO;
+    console.log('URL:' + URL);
+
+    let params = {
+      'jwtToken': getConfiguration('encryptedToken'),
+      'PartnerKey': 'JWT12SER02'
+    }
+
+    const encryptedParams = await encryptData(JSON.stringify(params));
+
+    console.log('encryptedParams', encryptedParams);
+
+    let encParams = {
+      "request": encryptedParams//"wZ41JrpUFxYN657xEboMROidcqi+SuudbDsP9Co2zeTjD6u1YHmdD5IYFReAL4vHAmty0BZVSxyiprqQbcNjZhS0ybG6D1HCTz7tU1CpN/ownifuNlThzFDgG9EHnXcUt5V4F76t4qcoBI6jkyKb37zgt5zRMWg51nECtBXVoYgYV35mYYCPNz8UK+JIjQRdB5trVjZblvfCj1ru4++DxGzr7KF3BY6KVnTAhuObg45O4fjdDQFsAtnG86IG9fMC9MEc+v8bNy1M3al+QmBfmRvYaavleXjbzJNpAS+bVLF0wZgD8SnaqfUFXwJxlgvoy7D7DpscCWonWZMQdKvZO66I/XQXt1fa5rHhfKy38qzki/g8o/GraaRRKjnq6xXxth5KKhG3ZM32PbMEvbYGvhPCSK0ZUb16Y60pdA98eK8qmpSlgm93XvisN/TDojkWRBq9MJKlczwOGocsWY8ih5VPKirjXGUaEEje8GmLKRmQ49OJtQYJUHuujDlblxSMHhHylyaiYUaI4wuhVQPGrqTrbw/2w9wRH/w3SQlcErsXNUOvcMWgPYiQwoQBl7kuhbTdhoEfFY95FNh1n7QQOtViCUIzhorCHKdNLTzbjuNYeiPWFtWl4G17tBz6EwxA"
+    };
+
+    axios.post(URL, encParams, {
+      "headers": {
+        "content-type": "application/json",
+      },
+    }).then(response => {
+
+      console.log("logout vymo encrypted response => ", JSON.stringify(response.data));
+      // this.parseLogoutApiData(response.data);
+
+    }).catch(error => {
+      console.log("logout vymo", error);
+    });
 
   }
 
