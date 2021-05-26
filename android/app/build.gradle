@@ -1,5 +1,10 @@
 apply plugin: "com.android.application"
 
+apply plugin: 'com.google.gms.google-services' // Google Services Gradle plugin
+
+// Apply the Crashlytics Gradle plugin
+apply plugin: 'com.google.firebase.crashlytics'
+
 import com.android.build.OutputFile
 
 
@@ -129,12 +134,16 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
+
+
     defaultConfig {
         applicationId "com.bhartiaxa.virtualoffice"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.1"
+        versionCode 4
+        versionName "2.0"
         multiDexEnabled true
         manifestPlaceholders = [
                 appAuthRedirectScheme: 'com.bhartiaxa.virtualoffice://oauth'
@@ -188,11 +197,14 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
-    //implementation project(':react-native-inappbrowser-reborn')
-     implementation project(':react-native-version-info')
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'com.android.support:multidex:1.0.3'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
+    implementation platform('com.google.firebase:firebase-bom:27.1.0')
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

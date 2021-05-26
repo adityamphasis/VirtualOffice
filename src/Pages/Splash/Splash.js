@@ -21,7 +21,7 @@ import { fetch } from 'react-native-ssl-pinning';
 
 import { clearAll, getConfiguration, setConfiguration, unsetConfiguration } from '../../utils/configuration';
 import { getStorage, setStorage, clearStorage } from '../../utils/authentication';
-import { apiConfig, CERTS_SHA } from '../../utils/apiConfig';
+import { apiConfig, CERTS_SHA, UAT } from '../../utils/apiConfig';
 
 import { authorize } from 'react-native-app-auth';
 import { Page } from '../../../components';
@@ -61,6 +61,8 @@ export default class Splash extends React.Component {
 
   componentDidMount = async () => {
 
+    await analytics().setAnalyticsCollectionEnabled(!UAT);
+
     await analytics().logScreenView({ screen_name: 'SplashScreen', screen_class: 'SplashScreen' });
 
     const currentVersion = DeviceInfo.getVersion();
@@ -93,30 +95,30 @@ export default class Splash extends React.Component {
     }
 
 
-    if (JailMonkey.isJailBroken()) {
-      console.log('JailMonkey: ', JailMonkey.isJailBroken());
-      this.showAlertForSplash('You can not use this app on rooted device as per security policy.');
-      return;
-    }
+    // if (JailMonkey.isJailBroken()) {
+    //   console.log('JailMonkey: ', JailMonkey.isJailBroken());
+    //   this.showAlertForSplash('You can not use this app on rooted device as per security policy.');
+    //   return;
+    // }
 
-    const isPlayService = await RNGoogleSafetyNet.isPlayServicesAvailable();
-    console.log('isPlayService', isPlayService);
+    // const isPlayService = await RNGoogleSafetyNet.isPlayServicesAvailable();
+    // console.log('isPlayService', isPlayService);
 
-    if (!isPlayService) {
-      this.showAlertForSplash('Google play services is not availble.');
-      return;
-    }
+    // if (!isPlayService) {
+    //   this.showAlertForSplash('Google play services is not availble.');
+    //   return;
+    // }
 
-    const nonce = await RNGoogleSafetyNet.generateNonce(16);
-    console.log('nounce', JSON.stringify(nonce));
+    // const nonce = await RNGoogleSafetyNet.generateNonce(16);
+    // console.log('nounce', JSON.stringify(nonce));
 
-    const safetyResponse = await RNGoogleSafetyNet.sendAttestationRequest(nonce, API_KEY);
-    console.log('safetyReespone', JSON.stringify(safetyResponse));
+    // const safetyResponse = await RNGoogleSafetyNet.sendAttestationRequest(nonce, API_KEY);
+    // console.log('safetyReespone', JSON.stringify(safetyResponse));
 
-    if (!safetyResponse.ctsProfileMatch) {
-      this.showAlertForSplash('OS or Application installed on your device are violating Android playstore safetynet policies.');
-      return;
-    }
+    // if (!safetyResponse.ctsProfileMatch) {
+    //   this.showAlertForSplash('OS or Application installed on your device are violating Android playstore safetynet policies.');
+    //   return;
+    // }
 
     const bioEnable = await getStorage('isBioEnabled');
     if (bioEnable)
@@ -285,7 +287,8 @@ export default class Splash extends React.Component {
       }
     }).then((response) => response.json()).then(result => {
       console.log('ssl pinning success', JSON.stringify(result));
-      this.parseTokenApiData(result, token);
+      // if (!result.ErrorDesc)
+        this.parseTokenApiData(result, token);
     }).catch(async error => {
       console.log('error pinning: ', JSON.stringify(error));
       await clearStorage();
@@ -424,19 +427,26 @@ export default class Splash extends React.Component {
           justifyContent: 'center',
           alignItems: 'center'
         }}>
-          <Image resizeMode="stretch" style={{ top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%', backgroundColor: 'transparent' }}
+          <Image resizeMode="stretch"
+            style={{ top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%', backgroundColor: 'transparent' }}
             source={require('../../../assets/spalsh_logo.png')}
           />
           <Text style={styles.welocmeText}> Welcome to </Text>
         </View>
 
-        <ImageBackground resizeMode="contain" source={require('../../../assets/splash_img3.png')} style={{
-          backgroundColor: 'transparent',
-          width: wp('100%'),
-          height: hp('85%'),
-          marginTop: 40,
-        }}>
-          <Image resizeMode="center" style={{ alignSelf: 'center', width: '40%', height: '40%', backgroundColor: 'transparent' }}
+        <ImageBackground
+          resizeMode="contain"
+          source={require('../../../assets/splash_img3.png')} style={{
+            backgroundColor: 'transparent',
+            width: wp('100%'),
+            height: hp('85%'),
+            marginTop: 40,
+          }}>
+          <Image resizeMode="center"
+            style={{
+              alignSelf: 'center', width: '40%',
+              height: '40%', backgroundColor: 'transparent'
+            }}
             source={require('../../../assets/splash_img2.png')}
           />
         </ImageBackground>

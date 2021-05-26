@@ -2,12 +2,10 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "28.0.3"
-        minSdkVersion = 16
-        compileSdkVersion = 28
-        targetSdkVersion = 28
-       // androidXAnnotation = "1.1.0"
-       // androidXBrowser = "1.0.0"
+        buildToolsVersion = "29.0.3"
+        minSdkVersion = 19
+        compileSdkVersion = 29
+        targetSdkVersion = 29
     }
     repositories {
         google()
@@ -15,8 +13,11 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:3.5.3")
+        classpath 'com.google.gms:google-services:4.3.5'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
     }
 }
 

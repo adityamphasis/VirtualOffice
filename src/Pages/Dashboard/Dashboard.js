@@ -279,30 +279,30 @@ export default class Dashboard extends React.Component {
   gotoVymo = async () => {
 
     await analytics().logEvent('vymo', { click: 'vymo' });
-    
+
     if (!getConfiguration('salesflag')) {
       alert('Application is not applicable to login user.');
       return;
     }
 
     const clientId = 'baxa';
-    const accessToken = getConfiguration('token');
+    const accessToken = getConfiguration('encryptedToken');
 
-    // const url = 'vymo://auth_session?client_id=$' + clientId + '&auth_token=' + accessToken;
+    const url = 'vymo://auth_session?client_id=' + clientId + '&auth_token=' + accessToken;
     // const url = 'maps://app?saddr=Cupertino&San+Francisco';
 
-    // Linking.openURL(url)
-    //   .catch(error => {
-    //     Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
-    //   });
-
-    IntentLauncher.startAppByPackageName('com.getvymo.android')
-      .then((result) => {
-        console.log('startAppByPackageName started');
-      }).catch((error) => {
-        console.warn('startAppByPackageName: could not open', error);
+    Linking.openURL(url)
+      .catch(error => {
         Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
       });
+
+    // IntentLauncher.startAppByPackageName('com.getvymo.android')
+    //   .then((result) => {
+    //     console.log('startAppByPackageName started');
+    //   }).catch((error) => {
+    //     console.warn('startAppByPackageName: could not open', error);
+    //     Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
+    //   });
 
   }
 
@@ -318,13 +318,14 @@ export default class Dashboard extends React.Component {
         console.warn('startAppByPackageName: could not open', error);
         Linking.openURL('https://play.google.com/store/apps/details?id=com.enparadigm.bharthiaxa');
       });
+
   }
 
   closePopUp = () => {
     this.setState({
       clickOnApp: false,
       checkinstallstatus: true
-    })
+    });
   }
 
   installApp = () => {
@@ -333,9 +334,8 @@ export default class Dashboard extends React.Component {
   }
 
   showAlert = () => {
-    alert('Coming Soon')
+    alert('Coming Soon');
   }
-
 
   rederHeader = () => {
 
@@ -347,7 +347,7 @@ export default class Dashboard extends React.Component {
           <Image resizeMode="contain" style={styles.leftLogo}
             source={require('../../../assets/logo_rht.png')} />
         </TouchableOpacity>
-        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (12 May 12:00) </Text>}
+        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (21 May 19:30) </Text>}
         <View style={[styles.welcomContainer, { marginLeft: UAT ? '5%' : '30%' }]}>
           <Text style={styles.headerTitle}> Welcome to</Text>
           <Text style={styles.headerTitle1}>M-Smart</Text>

@@ -1,5 +1,5 @@
 
-const UAT = true;
+const UAT = false;
 
 const UAT_BASE_URL = 'https://online.bharti-axalife.com/';
 const AWS_BASE_URL = 'https://online.bhartiaxa.com/';
@@ -62,7 +62,7 @@ const AWS_Urls = {
     EMPLOYEE: BASE_URL + PATH + 'DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted',
     AGENT: BASE_URL + PATH + 'AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails',
     LOGOUT: BASE_URL + PATH + 'iwin-prod-web/api/compass-sso-wrapper/logout',
-    LOGOUT_VYMO: BASE_URL + PATH + 'VymoSSOLogout_UAT_WebService/api/VymoSSOWrapper/logout'
+    LOGOUT_VYMO: BASE_URL + PATH + 'VymoSSOLogout_PRODRESTWebService/api/VymoSSOWrapper/logout'
 }
 
 const CERTS_SHA = [

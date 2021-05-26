@@ -3,8 +3,7 @@ import { ImageBackground, StyleSheet, SafeAreaView } from 'react-native';
 
 const Page = ({ children }) => (
   <ImageBackground
-    style={[styles.background, { width: '100%', height: '100%' }]}
-  >
+    style={[styles.background, { width: '100%', height: '100%' }]}>
     <SafeAreaView style={styles.safe}>{children}</SafeAreaView>
   </ImageBackground>
 );
