@@ -265,15 +265,15 @@ export default class Dashboard extends React.Component {
   copyToClipboard = () => {
 
     console.log("copy to clipboard", getConfiguration('encryptedToken', ''));
-    if (UAT)
-      Clipboard.setString(getConfiguration('encryptedToken', ''))
+    // if (UAT)
+      Clipboard.setString(getConfiguration('encryptedToken', ''));
   }
 
   closePopUp = () => {
     this.setState({
       clickOnApp: false,
       checkinstallstatus: true
-    })
+    });
   }
 
   gotoVymo = async () => {
@@ -295,6 +295,7 @@ export default class Dashboard extends React.Component {
       .catch(error => {
         Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
       });
+
 
     // IntentLauncher.startAppByPackageName('com.getvymo.android')
     //   .then((result) => {
@@ -347,7 +348,7 @@ export default class Dashboard extends React.Component {
           <Image resizeMode="contain" style={styles.leftLogo}
             source={require('../../../assets/logo_rht.png')} />
         </TouchableOpacity>
-        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (21 May 19:30) </Text>}
+        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (27 May 17:00) </Text>}
         <View style={[styles.welcomContainer, { marginLeft: UAT ? '5%' : '30%' }]}>
           <Text style={styles.headerTitle}> Welcome to</Text>
           <Text style={styles.headerTitle1}>M-Smart</Text>
@@ -404,9 +405,7 @@ export default class Dashboard extends React.Component {
       <View style={[styles.overlayAppView, { alignItems: 'stretch' }]}>
 
         <View style={styles.appStatusContainer}>
-
           <View style={{ flexDirection: 'row', backgroundColor: 'transparent', height: '10%', justifyContent: 'space-between' }}>
-
             <Text style={styles.appStatuts}>APPS STATUS</Text>
             <TouchableOpacity
               style={{ width: '20%', justifyContent: 'center', alignItems: 'center' }}

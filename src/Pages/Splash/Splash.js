@@ -344,10 +344,9 @@ export default class Splash extends React.Component {
     await setStorage('Employee', await encryptData(employeeCode + '', 8));
     await setStorage('AgentName', agentName + '');
     await setStorage('MobileNumber', await encryptData(mobileNumber + '', 8));
-
     await setStorage('token', accessToken);
-    setConfiguration('token', accessToken);
 
+    setConfiguration('token', accessToken);
     setConfiguration('salesflag', sales);
     setConfiguration('encryptedToken', etoken);
     setConfiguration('Agent', agentToken);

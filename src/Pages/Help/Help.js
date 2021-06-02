@@ -36,12 +36,6 @@ export default class Help extends React.Component {
 
     this.state = { isLoading: true };
 
-    // this.accessToken = getConfiguration('encryptedToken');
-    // this.platform = Platform.OS;// ==='android'
-    // this.comingScreen = this.props.navigation.getParam('screen');
-    // this.isSales = getConfiguration('salesflag', '');
-    // this.isRedirect = false;
-
   }
 
   componentDidMount = async () => {

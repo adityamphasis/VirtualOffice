@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import axios from 'react-native-axios';
 import { getConfiguration, setConfiguration, unsetConfiguration } from './src/utils/configuration';
-import { clearStorage } from './src/utils/authentication';
+import { clearStorage, getStorage, setStorage } from './src/utils/authentication';
 import analytics from '@react-native-firebase/analytics';
 
 import { encryptData, decryptData } from './src/utils/AES';
@@ -55,8 +55,15 @@ class DrawerContent extends Component {
 
     await analytics().logEvent('Logout', { click: 'Logout' });
 
-    this.LogoutApi();
-    this.LogoutVymoApi();
+    let params = {
+      'jwtToken': getConfiguration('encryptedToken'),
+      'PartnerKey': 'JWT12SER02'
+    }
+
+    const encryptedParams = await encryptData(JSON.stringify(params));
+
+    this.LogoutApi(encryptedParams);
+    this.LogoutVymoApi(encryptedParams);
 
     unsetConfiguration('token');
     unsetConfiguration('salesflag');
@@ -66,7 +73,19 @@ class DrawerContent extends Component {
     unsetConfiguration('AgentName');
     unsetConfiguration('MobileNumber');
 
-    await clearStorage();
+    try {
+      const isBioEnabled = getConfiguration('isBioEnabled');
+      const isDownloaded = await getStorage('isDownloaded');
+
+      await clearStorage();
+      if (isBioEnabled)
+        await setStorage('isBioEnabled', isBioEnabled);
+      if (isDownloaded)
+        await setStorage('isDownloaded', isDownloaded);
+        
+    } catch (error) {
+
+    }
 
     if (Platform.OS == 'android')
       NativeModules.HelloWorldModule.ShowMessage('', 'false', 5000);
@@ -79,19 +98,12 @@ class DrawerContent extends Component {
 
   }
 
-  LogoutVymoApi = async () => {
+  LogoutVymoApi = async (encryptedParams) => {
 
     console.log('LogoutVymoApi');
 
     const URL = apiConfig.LOGOUT_VYMO;
     console.log('URL:' + URL);
-
-    let params = {
-      'jwtToken': getConfiguration('encryptedToken'),
-      'PartnerKey': 'JWT12SER02'
-    }
-
-    const encryptedParams = await encryptData(JSON.stringify(params));
 
     console.log('encryptedParams', encryptedParams);
 
@@ -114,19 +126,12 @@ class DrawerContent extends Component {
 
   }
 
-  LogoutApi = async () => {
+  LogoutApi = async (encryptedParams) => {
 
     console.log('ApiWin');
 
     const URL = apiConfig.LOGOUT;
     console.log('URL:' + URL);
-
-    let params = {
-      'jwtToken': getConfiguration('encryptedToken'),
-      'PartnerKey': 'JWT12SER02'
-    }
-
-    const encryptedParams = await encryptData(JSON.stringify(params));
 
     console.log('encryptedParams', encryptedParams);
 
@@ -250,6 +255,8 @@ class DrawerContent extends Component {
       </View>
     )
   }
+
+
 }
 
 

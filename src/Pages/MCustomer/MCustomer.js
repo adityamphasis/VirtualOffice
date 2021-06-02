@@ -74,6 +74,7 @@ export default class MCustomer extends React.Component {
       this.goBack();
       Linking.openURL(event.url);
     }
+    
   }
 
   renderView = () => {

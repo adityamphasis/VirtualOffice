@@ -1,12 +1,11 @@
 
-const UAT = false;
+const UAT = true;
 
-const UAT_BASE_URL = 'https://online.bharti-axalife.com/';
-const AWS_BASE_URL = 'https://online.bhartiaxa.com/';
+// const UAT_BASE_URL = 'https://online.bharti-axalife.com/';
+// const AWS_BASE_URL = 'https://online.bhartiaxa.com/';
+
+const BASE_URL = 'https://online.bhartiaxa.com/';
 const PATH = 'MiscServices/'
-
-// aws urls
-const BASE_URL = UAT ? UAT_BASE_URL : AWS_BASE_URL;
 
 const AQ_MCUSTOMER_URL = 'https://bharti-axa-auth-qa.qa3.tothenew.net/api/v1/auth/externalLogin'; //AQ3
 const DEV_MCUSTOMER_URL = 'https://tpfrdk01sc.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //DEV
@@ -36,20 +35,6 @@ const UAT_Urls = {
     LOGOUT_VYMO: BASE_URL + PATH + 'VymoSSOLogout_UAT_WebService/api/VymoSSOWrapper/logout'
 }
 
-
-//prod urls
-// const apiConfig = {
-//     SSO_BASE:'https://accounts.bharti-axalife.com',
-//     SSO_CLIENT_ID:'7Io_iFf5oiq3P2KjUqXbStKmKpYa',
-//     TOKEN_CODE: BASE_URL + PATH + 'JWTAgentRESTServiceNew/Service1.svc/CheckAgentCodeJWT',
-//     VERSION_STATUS: BASE_URL + PATH + 'VersionControlRestService/Service1.svc/GetVersionControlDetails',
-//     VALIDATE_JWT: BASE_URL + PATH + 'JWTAgentRESTServiceNew/Service1.svc/ValidateJWT',
-//     I_WIN: BASE_URL + PATH + 'iwin-prod-web/api/compass-sso-wrapper/login',
-//     EMPLOYEE: BASE_URL + PATH + 'DarwinHierarchyRESTService/Service1.svc/DarwinboxHierarchyDetailsEncrypted',
-//     AGENT: BASE_URL + PATH + 'AgentHierarchyRESTWebService/Service1.svc/AgentHierarchyDetails',
-//     LOGOUT: BASE_URL + PATH + 'iwin-prod-web/api/compass-sso-wrapper/logout'
-//     LOGOUT_VYMO: BASE_URL + PATH + 'VymoSSOLogout_UAT_WebService/api/VymoSSOWrapper/logout'
-// }
 
 //aws urls
 const AWS_Urls = {
