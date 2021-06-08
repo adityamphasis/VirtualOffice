@@ -1,10 +1,10 @@
 
 const UAT = true;
 
-// const UAT_BASE_URL = 'https://online.bharti-axalife.com/';
-// const AWS_BASE_URL = 'https://online.bhartiaxa.com/';
+const UAT_BASE_URL = 'https://online.bharti-axalife.com/';
+const AWS_BASE_URL = 'https://online.bhartiaxa.com/';
 
-const BASE_URL = 'https://online.bhartiaxa.com/';
+const BASE_URL = UAT_BASE_URL;//AWS_BASE_URL;
 const PATH = 'MiscServices/'
 
 const AQ_MCUSTOMER_URL = 'https://bharti-axa-auth-qa.qa3.tothenew.net/api/v1/auth/externalLogin'; //AQ3

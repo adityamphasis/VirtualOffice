@@ -177,7 +177,9 @@ export default class Splash extends React.Component {
 
     try {
       const isBioEnabled = getConfiguration('isBioEnabled');
-      if (isBioEnabled && isBioEnabled === 'enable') {
+      const accessToken = getConfiguration('token');
+
+      if (isBioEnabled && isBioEnabled === 'enable' && accessToken && accessToken != '') {
         this.onBioAuthenticate();
         return;
       }
@@ -288,7 +290,7 @@ export default class Splash extends React.Component {
     }).then((response) => response.json()).then(result => {
       console.log('ssl pinning success', JSON.stringify(result));
       // if (!result.ErrorDesc)
-        this.parseTokenApiData(result, token);
+      this.parseTokenApiData(result, token);
     }).catch(async error => {
       console.log('error pinning: ', JSON.stringify(error));
       await clearStorage();
@@ -384,24 +386,21 @@ export default class Splash extends React.Component {
       .isSensorAvailable()
       .then(biometryType => {
         console.log('Available');
-
-        crashlytics().log("Request boimetric");
-
         Alert.alert(
           'Biometric Setup!',
           'Do you want to setup biometric for authentication?',
           [
             {
               text: 'YES',
-              onPress: () => {
-                crashlytics().log("accepted boimetric");
+              onPress: async () => {
+                // await analytics().logEvent('Biometric_yes', { biometric: 'Yes' });
                 this.onBioAuthenticate();
               },
               // style: 'cancel',
             },
             {
               text: 'NO', onPress: async () => {
-                crashlytics().log("Denied boimetric");
+                await analytics().logEvent('Biometric_no', { biometric: 'No' });
                 setConfiguration('isBioEnabled', 'disable');
                 await setStorage('isBioEnabled', 'disable');
                 this.props.navigation.navigate('MainScreen');

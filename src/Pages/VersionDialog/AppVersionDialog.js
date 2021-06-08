@@ -258,7 +258,7 @@ export default class AppVersionDialog extends React.Component {
 
       const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
 
-      installedApps.map(app => console.log('installed app:-' + app.appName + ' version: ' + app.versionName));
+      installedApps.map(app => console.log('installed app:-' + JSON.stringify(app)));
 
       let tempList = [];
 
@@ -360,10 +360,10 @@ export default class AppVersionDialog extends React.Component {
 
     console.log('closeVersionPopup');
 
-    // if (this.state.started || !this.state.isDownloaded) {
-    //   alert('You need to install/update listed apps to mandatory version.');
-    //   return;
-    // }
+    if (this.state.started || !this.state.isDownloaded) {
+      alert('You need to install/update listed apps to mandatory version.');
+      return;
+    }
 
     this.props.navigation.goBack();
   }

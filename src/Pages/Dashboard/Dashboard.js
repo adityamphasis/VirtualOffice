@@ -143,6 +143,7 @@ export default class Dashboard extends React.Component {
     }
 
     const isDownloaded = await getStorage('isDownloaded');
+
     console.log('isDownloaded', isDownloaded);
     this.setState({ isLoading: false });
 
@@ -161,8 +162,21 @@ export default class Dashboard extends React.Component {
     unsetConfiguration('Employee');
     unsetConfiguration('AgentName');
     unsetConfiguration('MobileNumber');
+    
+    try {
+      const isBioEnabled = getConfiguration('isBioEnabled');
+      const isDownloaded = await getStorage('isDownloaded');
 
-    await clearStorage();
+      await clearStorage();
+      if (isBioEnabled)
+        await setStorage('isBioEnabled', isBioEnabled);
+      if (isDownloaded)
+        await setStorage('isDownloaded', isDownloaded);
+        
+    } catch (error) {
+
+    }
+
 
     if (Platform.OS == 'android')
       NativeModules.HelloWorldModule.ShowMessage('', 'false', 5000);
@@ -255,7 +269,7 @@ export default class Dashboard extends React.Component {
   gotomcustomer = async () => {
     console.log("salesflag", getConfiguration('salesflag'));
     if (getConfiguration('salesflag')) {
-      await analytics().logEvent('MCustomre', { click: 'MCustomre' });
+      await analytics().logEvent('MCustomer', { click: 'MCustomer' });
       this.props.navigation.navigate('MCustomer', { encToken: this.state.encryptedToken, screen: 'customer' })
     } else {
       alert('Application is not applicable to login user.');
@@ -265,7 +279,7 @@ export default class Dashboard extends React.Component {
   copyToClipboard = () => {
 
     console.log("copy to clipboard", getConfiguration('encryptedToken', ''));
-    // if (UAT)
+    if (UAT)
       Clipboard.setString(getConfiguration('encryptedToken', ''));
   }
 
@@ -289,8 +303,8 @@ export default class Dashboard extends React.Component {
     const accessToken = getConfiguration('encryptedToken');
 
     const url = 'vymo://auth_session?client_id=' + clientId + '&auth_token=' + accessToken;
-    // const url = 'maps://app?saddr=Cupertino&San+Francisco';
 
+    
     Linking.openURL(url)
       .catch(error => {
         Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
@@ -338,7 +352,7 @@ export default class Dashboard extends React.Component {
     alert('Coming Soon');
   }
 
-  rederHeader = () => {
+  renderHeader = () => {
 
     return (
       <View style={[styles.headerView]}>
@@ -348,7 +362,7 @@ export default class Dashboard extends React.Component {
           <Image resizeMode="contain" style={styles.leftLogo}
             source={require('../../../assets/logo_rht.png')} />
         </TouchableOpacity>
-        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (27 May 17:00) </Text>}
+        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (5 Jun 4:30) </Text>}
         <View style={[styles.welcomContainer, { marginLeft: UAT ? '5%' : '30%' }]}>
           <Text style={styles.headerTitle}> Welcome to</Text>
           <Text style={styles.headerTitle1}>M-Smart</Text>
@@ -490,7 +504,7 @@ export default class Dashboard extends React.Component {
     return (
 
       <SafeAreaView style={styles.background}>
-        {this.rederHeader()}
+        {this.renderHeader()}
 
         <View style={styles.imgcontainer}>
           <Image resizeMode="contain" style={styles.imgprofile}

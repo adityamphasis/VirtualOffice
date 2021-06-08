@@ -74,7 +74,7 @@ export default class MCustomer extends React.Component {
       this.goBack();
       Linking.openURL(event.url);
     }
-    
+
   }
 
   renderView = () => {
@@ -143,19 +143,20 @@ export default class MCustomer extends React.Component {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 
-        {this.comingScreen != 'service' && <View style={styles.headerView}>
-          <TouchableOpacity
-            style={styles.backTouchable}
-            onPress={() => this.goBack()}>
-            <Image resizeMode="contain" style={styles.leftLogo}
-              source={require('../../../assets/logo_rht.png')} />
-            <Text style={[styles.headerTitle1, { marginLeft: 5, color: 'black' }]}>M-Customer</Text>
-          </TouchableOpacity>
-          <View style={styles.welcomContainer}>
-            <Text style={styles.headerTitle}> Welcome to</Text>
-            <Text style={styles.headerTitle1}>M-Customer</Text>
+        {this.comingScreen != 'service' &&
+          <View style={styles.headerView}>
+            <TouchableOpacity
+              style={styles.backTouchable}
+              onPress={() => this.goBack()}>
+              <Image resizeMode="contain" style={styles.leftLogo}
+                source={require('../../../assets/logo_rht.png')} />
+              <Text style={[styles.headerTitle1, { marginLeft: 5, color: 'black' }]}>M-Customer</Text>
+            </TouchableOpacity>
+            <View style={styles.welcomContainer}>
+              <Text style={styles.headerTitle}> Welcome to</Text>
+              <Text style={styles.headerTitle1}>M-Customer</Text>
+            </View>
           </View>
-        </View>
         }
 
         <View style={styles.gridViewBackground}>
@@ -169,7 +170,7 @@ export default class MCustomer extends React.Component {
 
           {/* </View> */}
         </View>
-        
+
         <Loader visible={this.state.isLoading} />
 
       </SafeAreaView>
