@@ -41,6 +41,8 @@ const onInstallUpdatePress = async (item, input) => {
 
         Linking.openURL(link + item.packageName);
 
+        console.log('link', link + item.packageName);
+
     } else {
 
         if (item.AppDownloadLink != '') {

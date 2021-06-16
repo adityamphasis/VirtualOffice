@@ -164,17 +164,18 @@ export default class Dashboard extends React.Component {
     unsetConfiguration('MobileNumber');
     
     try {
-      const isBioEnabled = getConfiguration('isBioEnabled');
+      const isBioEnabled = await getStorage('isBioEnabled');
       const isDownloaded = await getStorage('isDownloaded');
 
       await clearStorage();
+
       if (isBioEnabled)
         await setStorage('isBioEnabled', isBioEnabled);
       if (isDownloaded)
         await setStorage('isDownloaded', isDownloaded);
         
     } catch (error) {
-
+      console.log('error', JSON.stringify(error));
     }
 
 
@@ -303,7 +304,7 @@ export default class Dashboard extends React.Component {
     const accessToken = getConfiguration('encryptedToken');
 
     const url = 'vymo://auth_session?client_id=' + clientId + '&auth_token=' + accessToken;
-
+    // vymoapp:///auth_session?client_id=clientId&auth_token=jwt_token
     
     Linking.openURL(url)
       .catch(error => {
@@ -362,7 +363,7 @@ export default class Dashboard extends React.Component {
           <Image resizeMode="contain" style={styles.leftLogo}
             source={require('../../../assets/logo_rht.png')} />
         </TouchableOpacity>
-        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (5 Jun 4:30) </Text>}
+        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (16 Jun 1:30) </Text>}
         <View style={[styles.welcomContainer, { marginLeft: UAT ? '5%' : '30%' }]}>
           <Text style={styles.headerTitle}> Welcome to</Text>
           <Text style={styles.headerTitle1}>M-Smart</Text>

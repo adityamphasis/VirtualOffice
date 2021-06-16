@@ -27,7 +27,7 @@ import { authorize } from 'react-native-app-auth';
 import { Page } from '../../../components';
 
 import { Loader } from '../../../components';
-import { encryptData, decryptData, rasData } from '../../utils/AES';
+import { encryptData, decryptData } from '../../utils/AES';
 
 const API_KEY = 'AIzaSyA2X9535aZI2NG3AgVevcfr4qYmVbOJuFM';
 
@@ -74,7 +74,7 @@ export default class Splash extends React.Component {
 
       console.log('version:' + JSON.stringify(verData) + ' currentVersion:' + currentVersion);
 
-      if (verData.version && this.isUpdateNeeded(currentVersion, verData.version)) {
+      if (verData.version && this.isUpdateNeeded(currentVersion, verData.version) && !UAT) {
 
         Alert.alert(
           'Update!',
@@ -240,7 +240,7 @@ export default class Splash extends React.Component {
       setConfiguration('refreshToken', result.refreshToken);
 
       this.JWTCheckAgentCode(result.accessToken);
-
+      ``
 
     }
     catch (error) {

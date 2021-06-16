@@ -74,7 +74,7 @@ class DrawerContent extends Component {
     unsetConfiguration('MobileNumber');
 
     try {
-      const isBioEnabled = getConfiguration('isBioEnabled');
+      const isBioEnabled = await getStorage('isBioEnabled');
       const isDownloaded = await getStorage('isDownloaded');
 
       await clearStorage();
