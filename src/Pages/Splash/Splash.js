@@ -42,7 +42,7 @@ const config = {
   },
   serviceConfiguration: {
     authorizationEndpoint: apiConfig.SSO_BASE + '/oauth2/authorize',
-    tokenEndpoint: apiConfig.SSO_BASE + '/oauth2/token',
+    tokenEndpoint: apiConfig.SSO_BASE + '/oauth2/token'
     // revocationEndpoint: 'https://demo.identityserver.io/connect/revoke'
   }
 };
@@ -95,30 +95,30 @@ export default class Splash extends React.Component {
     }
 
 
-    // if (JailMonkey.isJailBroken()) {
-    //   console.log('JailMonkey: ', JailMonkey.isJailBroken());
-    //   this.showAlertForSplash('You can not use this app on rooted device as per security policy.');
-    //   return;
-    // }
+    if (JailMonkey.isJailBroken()) {
+      console.log('JailMonkey: ', JailMonkey.isJailBroken());
+      this.showAlertForSplash('You can not use this app on rooted device as per security policy.');
+      return;
+    }
 
-    // const isPlayService = await RNGoogleSafetyNet.isPlayServicesAvailable();
-    // console.log('isPlayService', isPlayService);
+    const isPlayService = await RNGoogleSafetyNet.isPlayServicesAvailable();
+    console.log('isPlayService', isPlayService);
 
-    // if (!isPlayService) {
-    //   this.showAlertForSplash('Google play services is not availble.');
-    //   return;
-    // }
+    if (!isPlayService) {
+      this.showAlertForSplash('Google play services is not availble.');
+      return;
+    }
 
-    // const nonce = await RNGoogleSafetyNet.generateNonce(16);
-    // console.log('nounce', JSON.stringify(nonce));
+    const nonce = await RNGoogleSafetyNet.generateNonce(16);
+    console.log('nounce', JSON.stringify(nonce));
 
-    // const safetyResponse = await RNGoogleSafetyNet.sendAttestationRequest(nonce, API_KEY);
-    // console.log('safetyReespone', JSON.stringify(safetyResponse));
+    const safetyResponse = await RNGoogleSafetyNet.sendAttestationRequest(nonce, API_KEY);
+    console.log('safetyReespone', JSON.stringify(safetyResponse));
 
-    // if (!safetyResponse.ctsProfileMatch) {
-    //   this.showAlertForSplash('OS or Application installed on your device are violating Android playstore safetynet policies.');
-    //   return;
-    // }
+    if (!safetyResponse.ctsProfileMatch) {
+      this.showAlertForSplash('OS or Application installed on your device are violating Android playstore safetynet policies.');
+      return;
+    }
 
     const bioEnable = await getStorage('isBioEnabled');
     if (bioEnable)
@@ -144,7 +144,11 @@ export default class Splash extends React.Component {
 
     }
 
-    this.checkForBioAndProceed();
+    // this.checkForBioAndProceed();
+
+    setTimeout(() => {
+      this.checkForBioAndProceed();
+    }, Platform.OS === "ios" ? 3000 : 500);
 
   }
 
@@ -183,6 +187,7 @@ export default class Splash extends React.Component {
         this.onBioAuthenticate();
         return;
       }
+
     } catch (error) {
 
     }
@@ -201,7 +206,7 @@ export default class Splash extends React.Component {
         setConfiguration('isBioEnabled', 'enable');
         this.getData();
       }).catch(async (error) => {
-        await analytics().logEvent('Biometric_no', { biometric: 'No' });
+        // await analytics().logEvent('Biometric_no', { biometric: 'No' });
         try {
           const isBioEnabled = getConfiguration('isBioEnabled');
           if (isBioEnabled && isBioEnabled === 'enable') {
@@ -240,11 +245,10 @@ export default class Splash extends React.Component {
       setConfiguration('refreshToken', result.refreshToken);
 
       this.JWTCheckAgentCode(result.accessToken);
-      ``
 
     }
     catch (error) {
-      console.log(error);
+      console.log("app auth: " + error);
       BackHandler.exitApp();
     }
 
@@ -293,7 +297,7 @@ export default class Splash extends React.Component {
       this.parseTokenApiData(result, token);
     }).catch(async error => {
       console.log('error pinning: ', JSON.stringify(error));
-      await clearStorage();
+      // await clearStorage();
       this.setState({ isLoading: false });
       alert('Something went wrong. Please try again after some time.');
     });
@@ -309,7 +313,7 @@ export default class Splash extends React.Component {
 
     // }).catch(async error => {
     //   console.log("jwt error", error);
-    //   await clearStorage();
+    //   // await clearStorage();
     //   this.setState({ isLoading: false });
     //   alert('Something went wrong. Please try again after some time.');
     // });
@@ -368,7 +372,7 @@ export default class Splash extends React.Component {
 
     try {
       const isBioEnabled = getConfiguration('isBioEnabled');
-      if (isBioEnabled && isBioEnabled === 'enable') {
+      if (isBioEnabled) {
         this.props.navigation.navigate('MainScreen');
         return;
       }
@@ -399,7 +403,9 @@ export default class Splash extends React.Component {
               // style: 'cancel',
             },
             {
-              text: 'NO', onPress: async () => {
+              text: 'NO',
+              style: 'cancel',
+              onPress: async () => {
                 await analytics().logEvent('Biometric_no', { biometric: 'No' });
                 setConfiguration('isBioEnabled', 'disable');
                 await setStorage('isBioEnabled', 'disable');
@@ -427,14 +433,14 @@ export default class Splash extends React.Component {
         }}>
           <Image resizeMode="stretch"
             style={{ top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%', backgroundColor: 'transparent' }}
-            source={require('../../../assets/spalsh_logo.png')}
-          />
+            source={require('../../../assets/spalsh_logo.png')} />
           <Text style={styles.welocmeText}> Welcome to </Text>
         </View>
 
         <ImageBackground
           resizeMode="contain"
-          source={require('../../../assets/splash_img3.png')} style={{
+          source={require('../../../assets/splash_img3.png')}
+          style={{
             backgroundColor: 'transparent',
             width: wp('100%'),
             height: hp('85%'),
@@ -445,8 +451,7 @@ export default class Splash extends React.Component {
               alignSelf: 'center', width: '40%',
               height: '40%', backgroundColor: 'transparent'
             }}
-            source={require('../../../assets/splash_img2.png')}
-          />
+            source={require('../../../assets/splash_img2.png')} />
         </ImageBackground>
 
         <Text style={[{ position: 'absolute', bottom: 10, alignSelf: 'center', fontFamily: 'WorkSans-Medium' }]}>Version: {this.state.versionCode}</Text>
@@ -475,24 +480,20 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
-
   searchTextInput: {
     height: wp('10.33%'),
-
     paddingHorizontal: 5,
     backgroundColor: 'transparent',
     borderColor: 'gray',
     width: '100%',
     borderRadius: 0,
     fontSize: wp('4%'),
-
   },
   tileIcon: {
     width: wp('8%'),
     height: wp('10.33%'),
     marginLeft: 10
   },
-
   tile: {
     backgroundColor: 'white',
     width: 'auto',

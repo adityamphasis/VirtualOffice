@@ -12,7 +12,8 @@ import {
   ScrollView,
   Keyboard,
   Platform,
-  Linking
+  Linking,
+  BackHandler
 } from 'react-native';
 
 import { WebView } from 'react-native-webview';
@@ -41,6 +42,9 @@ export default class MCustomer extends React.Component {
     this.isSales = getConfiguration('salesflag', '');
     this.isRedirect = false;
 
+    // this.webview = React.createRef();
+    // this.canBack = false;
+
   }
 
   componentDidMount = async () => {
@@ -49,13 +53,26 @@ export default class MCustomer extends React.Component {
     console.log('MCUSTOMER_URL', MCUSTOMER_URL);
     console.log('ISERVICE', I_SERVICE_URL);
 
+    // BackHandler.addEventListener('hardwareBackPress', this.goBack);
+
   }
 
   componentWillUnmount() {
+    // BackHandler.removeEventListener('hardwareBackPress', this.goBack);
   }
 
-  goBack() {
-    this.props.navigation.goBack();
+  goBack = () => {
+
+    const { navigation } = this.props;
+
+    // console.log('goBack', this.webview.webViewRef.current);
+
+    // if (this.canBack) {
+    //   this.webview.current.goBack();
+    //   return true;
+    // }
+    navigation.goBack();
+
   }
 
   onScriptSuccess = (event) => {
@@ -73,6 +90,36 @@ export default class MCustomer extends React.Component {
       this.setState({ isLoading: false });
       this.goBack();
       Linking.openURL(event.url);
+    }
+
+  }
+
+  onMessage = (m) => {
+
+    console.log('onMessage', JSON.stringify(m));
+
+
+
+  }
+
+  onNavChange = (event) => {
+
+    console.log('onNavChange', JSON.stringify(event));
+
+    this.canBack = event.canGoBack;
+
+    if (event.url.includes('https://online.bharti-axalife.com/BAL_DSS_PREPROD/Earnings2.aspx')) {
+      let injectedData = `document.getElementById("ContentPlaceHolder1_lbtnDownload").href="javascript:void()";
+        document.getElementById("ContentPlaceHolder1_lbtnDownload").onclick=function(){
+          let type = document.getElementById("ContentPlaceHolder1_cmbViewDetailsFor").text;
+          let empCode = document.getElementById("ContentPlaceHolder1_txtDesignationCode").value;
+          let month = document.getElementById("ContentPlaceHolder1_cmbMonthQuarter").text;
+          let sType = document.getElementsByName("ContentPlaceHolder1_cmbStatementType").text;
+          let cycle = document.getElementsByName("ContentPlaceHolder1_cmbCycle").text;
+          let data = {type:type, empCode:empCode, month: month,sType:sType, cycle:cycle};
+          window.ReactNativeWebView.postMessage(data);
+      }`;
+      this.webview.injectJavaScript(injectedData);
     }
 
   }
@@ -112,21 +159,32 @@ export default class MCustomer extends React.Component {
     }
 
     return <WebView
+      ref={(ref) => { this.webview = ref; }}
       originWhitelist={['*']}
       cacheEnabled={false}
       setSupportMultipleWindows={false}
       saveFormDataDisabled={true}
+      domStorageEnabled={true}
+      startInLoadingState={true}
       allowsBackForwardNavigationGestures={true}
       onError={console.error.bind(console, 'error')}
       incognito={true}
       cacheMode={'LOAD_NO_CACHE'}
       javaScriptEnabled={true}
+      bounces={true}
+      useWebKit={true}
+      allowFileAccess={true}
+      allowFileAccessFromFileURLs={true}
+      allowUniversalAccessFromFileURLs={true}
+      // onMessage={(m) => this.onMessage(m)}
+      // onNavigationStateChange={(event) => this.onNavChange(event)}
       onLoadEnd={() => this.setState({ isLoading: false })}
       source={{
-        html: '<script type="text/javascript"> ' +
-          'window.onload=function(){' +
-          'document.forms["myForm"].submit();' + '}</script>' +
-          '<body >' +
+        html: '' +
+          '<script type="text/javascript"> ' +
+          'window.onload=function(){' + 'document.forms["myForm"].submit();' +
+          '}</script>' +
+          '<body>' +
           '<form id="myForm" method="POST" action="' + I_SERVICE_URL + '">' +
           '<input type="hidden" name="isSales" value="' + this.isSales + '"/>' +
           '<input type="hidden" name="jwtToken" value="' + this.accessToken + '"/>' +
@@ -217,18 +275,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(234,240,248)',
     justifyContent: 'center',
     alignItems: 'center',
-
-
   },
   rupeeContainer: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
     height: '50%',
     width: '50%',
-
     alignItems: 'center',
     justifyContent: 'space-between'
-
   },
   txttab: {
     fontSize: wp('4.8%'),
@@ -280,7 +334,6 @@ const styles = StyleSheet.create({
   rghtLogo: {
     width: 30,
     height: '90%',
-
     marginStart: 5,
     backgroundColor: 'transparent',
   },

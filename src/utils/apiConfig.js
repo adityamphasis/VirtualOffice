@@ -1,11 +1,12 @@
 
-const UAT = true;
+const UAT = false;
 
-// const UAT_BASE_URL = 'https://online.bharti-axalife.com/';
+// const UAT_BASE_URL = 'https://online.bharti-axalife.com/'; 
+const UAT_BASE_URL = 'https://online-uat.bhartiaxa.com/';
 const AWS_BASE_URL = 'https://online.bhartiaxa.com/';
 
-const BASE_URL = AWS_BASE_URL;
-const PATH = 'MiscServices/'
+const BASE_URL = UAT ? UAT_BASE_URL : AWS_BASE_URL;
+const PATH = 'MiscServices/';
 
 const AQ_MCUSTOMER_URL = 'https://bharti-axa-auth-qa.qa3.tothenew.net/api/v1/auth/externalLogin'; //AQ3
 const DEV_MCUSTOMER_URL = 'https://tpfrdk01sc.execute-api.ap-south-1.amazonaws.com/public/api/v1/auth/externalLogin'; //DEV
@@ -28,6 +29,7 @@ const UAT_Urls = {
     TOKEN_CODE: BASE_URL + PATH + 'JWT_CheckAgentRESTServiceNEWUAT/Service1.svc/CheckAgentCodeJWT',
     VERSION_STATUS: BASE_URL + PATH + 'VersionControlRestServiceUAT/Service1.svc/GetVersionControlDetails',
     VALIDATE_JWT: BASE_URL + PATH + 'JWT_CheckAgentRESTServiceNewUAT/Service1.svc/ValidateJWT',
+    // VALIDATE_JWT: BASE_URL + PATH + 'JWT_CheckAgentRestServiceValidateUAT/Service1.svc/ValidateNewJWT',
     I_WIN: BASE_URL + PATH + 'iwin-uat-web/api/compass-sso-wrapper/login',
     EMPLOYEE: BASE_URL + PATH + 'DarwinHierarchyRESTServiceUAT/Service1.svc/DarwinboxHierarchyDetailsEncrypted',
     AGENT: BASE_URL + PATH + 'AgentHierarchyRESTWebServiceUAT/Service1.svc/AgentHierarchyDetails',

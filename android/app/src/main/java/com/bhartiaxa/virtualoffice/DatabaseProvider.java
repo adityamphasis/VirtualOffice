@@ -84,6 +84,7 @@ public class DatabaseProvider extends ContentProvider {
                         String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(TOKEN_TABLE);
+        qb.setStrict(true);
 
         switch (uriMatcher.match(uri)) {
             case TOKEN:
@@ -109,7 +110,7 @@ public class DatabaseProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        int count = 0;
+        int count;
         switch (uriMatcher.match(uri)) {
             case TOKEN:
                 count = db.delete(TOKEN_TABLE, selection, selectionArgs);
@@ -117,14 +118,20 @@ public class DatabaseProvider extends ContentProvider {
 
             case TOKEN_ID:
                 String id = uri.getPathSegments().get(1);
-                count = db.delete(TOKEN_TABLE, "tokenId = " + id +
-                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                count = db.delete(TOKEN_TABLE, "tokenId = " + id + (!TextUtils.isEmpty(selection+" = ?") ? " AND (" + selection + ')' : ""), selectionArgs);
+                // count = db.delete(TOKEN_TABLE, "tokenId = " + id +
+                //         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        // getContext().getContentResolver().notifyChange(uri, null);
+
+        if(selection == null || count != 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
         return count;
     }
 

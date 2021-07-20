@@ -45,11 +45,6 @@ const onInstallUpdatePress = async (item, input) => {
 
     } else {
 
-        if (item.AppDownloadLink != '') {
-            Linking.openURL(item.AppDownloadLink);
-            return;
-        }
-
         if (item.iosId != '') {
             Linking.openURL("https://apps.apple.com/us/app/" + item.iosId);
             return;
@@ -81,6 +76,12 @@ const renderButton = (item, activeTab, started, isDownloaded) => {
                     textColor={started ? 'grey' : 'rgb(30,77,155)'}
                     borderColor={started ? 'grey' : 'rgb(30,77,155)'}
                     title={started ? 'Done' : 'Install'} />}
+                {/* {(item.needUpdate) && <ButtonOutline
+                    width={150}
+                    onPress={() => !started && onInstallUpdatePress(item, 'Install')}
+                    textColor={started ? 'grey' : 'rgb(30,77,155)'}
+                    borderColor={started ? 'grey' : 'rgb(30,77,155)'}
+                    title={started ? 'Done' : 'Install'} />} */}
             </View>
         )
     }

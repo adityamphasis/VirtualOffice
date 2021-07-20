@@ -162,7 +162,7 @@ export default class Dashboard extends React.Component {
     unsetConfiguration('Employee');
     unsetConfiguration('AgentName');
     unsetConfiguration('MobileNumber');
-    
+
     try {
       const isBioEnabled = await getStorage('isBioEnabled');
       const isDownloaded = await getStorage('isDownloaded');
@@ -173,7 +173,7 @@ export default class Dashboard extends React.Component {
         await setStorage('isBioEnabled', isBioEnabled);
       if (isDownloaded)
         await setStorage('isDownloaded', isDownloaded);
-        
+
     } catch (error) {
       console.log('error', JSON.stringify(error));
     }
@@ -305,7 +305,7 @@ export default class Dashboard extends React.Component {
 
     const url = 'vymo://auth_session?client_id=' + clientId + '&auth_token=' + accessToken;
     // vymoapp:///auth_session?client_id=clientId&auth_token=jwt_token
-    
+
     Linking.openURL(url)
       .catch(error => {
         Linking.openURL('https://play.google.com/store/apps/details?id=com.getvymo.android');
@@ -344,15 +344,6 @@ export default class Dashboard extends React.Component {
     });
   }
 
-  installApp = () => {
-    // https://play.google.com/store/apps/details?id=com.enparadigm.bharthiaxa&hl=en&gl=US
-    Linking.openURL("market://details?id=com.enparadigm.bharthiaxa&hl=en&gl=US");
-  }
-
-  showAlert = () => {
-    alert('Coming Soon');
-  }
-
   renderHeader = () => {
 
     return (
@@ -363,7 +354,7 @@ export default class Dashboard extends React.Component {
           <Image resizeMode="contain" style={styles.leftLogo}
             source={require('../../../assets/logo_rht.png')} />
         </TouchableOpacity>
-        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (16 Jun 1:30) </Text>}
+        {UAT && <Text style={[styles.headerTitle1, { alignSelf: 'center', fontSize: 12 }]}> UAT (02 Jul 12:30) </Text>}
         <View style={[styles.welcomContainer, { marginLeft: UAT ? '5%' : '30%' }]}>
           <Text style={styles.headerTitle}> Welcome to</Text>
           <Text style={styles.headerTitle1}>M-Smart</Text>

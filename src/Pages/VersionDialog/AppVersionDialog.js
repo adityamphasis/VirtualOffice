@@ -258,7 +258,7 @@ export default class AppVersionDialog extends React.Component {
 
       const installedApps = await RNAndroidInstalledApps.getNonSystemApps();
 
-      installedApps.map(app => console.log('installed app:-' + JSON.stringify(app)));
+      installedApps.map(app => console.log('installed app:-' + app.appName + '--' + app.packageName + '--' + app.versionName));
 
       let tempList = [];
 
@@ -267,7 +267,7 @@ export default class AppVersionDialog extends React.Component {
 
       versionApiData.map(async (item, index) => {
 
-        console.log('item=>', JSON.stringify(item));
+        console.log('item=>', JSON.stringify(item.AppName));
 
         const filePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + item.AppName + '_' + item.MandatoryVersion + '.apk';
 
@@ -393,7 +393,7 @@ export default class AppVersionDialog extends React.Component {
 
 
     if (!this.state.started) {
-      await analytics().logEvent('Action', { click: 's3' });
+      await analytics().logEvent('Download', { click: 's3' });
       this.setState({ started: true, appName: 'Checking...' });
     }
 
@@ -481,7 +481,7 @@ export default class AppVersionDialog extends React.Component {
         },
         {
           text: 'Continue', onPress: async () => {
-            await analytics().logEvent('Action', { click: 'playstore' });
+            await analytics().logEvent('Playstore', { click: 'playstore' });
             await setStorage('sync', 'playstore');
             this.setState({ activeTab: true });
           }

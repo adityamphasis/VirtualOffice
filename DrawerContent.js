@@ -82,7 +82,7 @@ class DrawerContent extends Component {
         await setStorage('isBioEnabled', isBioEnabled);
       if (isDownloaded)
         await setStorage('isDownloaded', isDownloaded);
-        
+
     } catch (error) {
 
     }
@@ -229,13 +229,13 @@ class DrawerContent extends Component {
 
           <View style={styles.divider} />
 
-          {/* <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('Help')}>
+          {/* {Platform.OS === 'android' && <TouchableOpacity style={styles.tile} onPress={this.navigateToScreen('Help')}>
             <Image resizeMode="contain" style={styles.tileIcon}
               source={require('./assets/hrlp_icon.png')} />
             <Text style={styles.tileTitle}> Help </Text>
-          </TouchableOpacity>
+          </TouchableOpacity>}
 
-          <View style={styles.divider} /> */}
+          {Platform.OS === 'android' && <View style={styles.divider} />} */}
 
           <TouchableOpacity style={styles.tile} onPress={() => this.askForPopup()} >
             <Image resizeMode="contain" style={styles.tileIcon}

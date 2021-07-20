@@ -33,9 +33,8 @@
                 <!-- <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>   -->
             </intent-filter>
             <intent-filter>
-                <!--                <action android:name="com.example.myapplication.HANDLE_AUTHORIZATION_RESPONSE" />-->
+                <!-- <action android:name="com.example.myapplication.HANDLE_AUTHORIZATION_RESPONSE" />-->
                 <action android:name="com.bhartiaxa.virtualoffice.HANDLE_AUTHORIZATION_RESPONSE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -55,7 +54,7 @@
         <provider
             android:name="com.bhartiaxa.virtualoffice.DatabaseProvider"
             android:authorities="com.bhartiaxa.virtualoffice.DatabaseProvider"
-            android:exported="true" />
+            android:exported="true"/>
 
     </application>
 
